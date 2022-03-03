@@ -8,6 +8,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * The main class for the Appointment Scheduler Desktop Application.
+ * This is where the JVM starts program execution.
+ * Contains the Java <code>main</code> method.
+ * <br>
+ * <h1>JavaDocs folder is located within the root folder, ie: acme-ims\javadocs\</h1>
+ * @author Joseph Curtis
+ * @version 2022.03.02
+ */
+
 public class MainApplication extends Application {
     /**
      * Launches JavaFX GUI.
