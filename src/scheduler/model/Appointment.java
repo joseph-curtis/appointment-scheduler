@@ -1,15 +1,16 @@
 package scheduler.model;
 
 import java.util.Date;
+import java.util.Optional;
 
 public record Appointment(int id,
                           String title,
-                          String description,
+                          Optional<String> description,
                           String location,
-                          String type,
+                          Optional<String> type,
                           Date start,
                           Date end,
-                          Customer customer,
-                          User user,
-                          Contact contact) {
+                          Optional<Customer> customer,
+                          Optional<User> user,
+                          Optional<Contact> contact) {
 }
