@@ -1,8 +1,9 @@
 package scheduler.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,11 +28,59 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private Label welcomeText;
+    private MenuItem aboutMenuItem;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
+    private Label errorLabel;
+
+    @FXML
+    private MenuItem exitMenuItem;
+
+    @FXML
+    private Label locationLabel;
+
+    @FXML
+    private Button loginButton;
+
+    @FXML
+    private MenuBar loginMenuBar;
+
+    @FXML
+    private Label loginText;
+
+    @FXML
+    private Label passwordLabel;
+
+    @FXML
+    private PasswordField passwordTxt;
+
+    @FXML
+    private MenuItem settingsMenuItem;
+
+    @FXML
+    private Label usernameLabel;
+
+    @FXML
+    private TextField usernameTxt;
+
+    @FXML
+    void onActionExitApplication(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionLogin(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionOpenSettings(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionShowAbout(ActionEvent event) {
+
     }
 
 }

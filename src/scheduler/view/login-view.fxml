@@ -1,16 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="scheduler.controller.LoginController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="scheduler.controller.LoginController">
+   <center>
+      <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
+          <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+          </padding>
+      
+          <Label fx:id="loginText" focusTraversable="false" text="Login">
+            <font>
+               <Font name="System Bold" size="24.0" />
+            </font>
+         </Label>
+         <GridPane alignment="TOP_CENTER" hgap="20.0" vgap="15.0">
+           <columnConstraints>
+             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150.0" />
+             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="150.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints vgrow="SOMETIMES" />
+             <RowConstraints vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+               <Label fx:id="usernameLabel" alignment="CENTER" focusTraversable="false" text="Username" />
+               <Label fx:id="passwordLabel" focusTraversable="false" text="Password" GridPane.columnIndex="1" />
+               <TextField fx:id="usernameTxt" minWidth="150.0" promptText="my login id" GridPane.rowIndex="1" />
+               <PasswordField fx:id="passwordTxt" alignment="CENTER_RIGHT" minWidth="150.0" promptText="my password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            </children>
+            <padding>
+               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+         </GridPane>
+          <Button fx:id="loginButton" alignment="CENTER_RIGHT" onAction="#onActionLogin" text="Login">
+            <VBox.margin>
+               <Insets left="250.0" />
+            </VBox.margin>
+         </Button>
+         <Label fx:id="errorLabel" focusTraversable="false" textFill="RED" wrapText="true">
+            <font>
+               <Font name="System Bold Italic" size="14.0" />
+            </font>
+         </Label>
+         <Label fx:id="locationLabel" text="ZoneId">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+      </VBox>
+   </center>
+   <top>
+      <MenuBar fx:id="loginMenuBar" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
