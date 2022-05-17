@@ -1,21 +1,29 @@
 package model;
 
-import java.util.Date;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 /**
  * Represents a Transfer Object used as a data carrier for Appointments.
+ * <p>Only userId is stored in database as foreign key;
+ * contactName and contactEmail are saved here for convenience and
+ * must be obtained through a table JOIN.</p>
+ * <p>Appointment start and end times are stored in database as UTC. Extract
+ * as {@link java.sql.Timestamp} object, then convert to LocalDateTime object.
+ * MySQL driver v8.0.x automatically converts to SystemDefault time
+ * when extracting from ResultSet.</p>
  * @author Joseph Curtis
- * @version 2022.03.05
+ * @version 2022.05.17
  */
-public record Appointment(int id,
+public record Appointment(Integer id,
                           String title,
-                          Optional<String> description,
+                          String description,
                           String location,
-                          Optional<String> type,
-                          Date start,
-                          Date end,
-                          Optional<Customer> customer,
-                          Optional<User> user,
-                          Optional<Contact> contact) {
+                          String type,
+                          LocalDateTime start,
+                          LocalDateTime end,
+                          Integer customerId,
+                          Integer userId,
+                          Integer contactId,
+                          String contactName,
+                          String contactEmail) {
 }

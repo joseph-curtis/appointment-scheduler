@@ -48,6 +48,8 @@ public class CustomerDaoImpl implements CustomerDao {
     public Optional<Customer> getById(int id) throws SQLException {
         ResultSet resultSet = null;
 
+        // TODO:  join countries and first-level divisions tables
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      "SELECT * FROM CUSTOMERS WHERE ID = ?")) {
@@ -75,6 +77,8 @@ public class CustomerDaoImpl implements CustomerDao {
             return false;
         }
 
+        // TODO:  insert Create_Date (DATETIME) field
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      "INSERT INTO CUSTOMERS VALUES (?,?,?,?,?,?)")) {
@@ -83,7 +87,7 @@ public class CustomerDaoImpl implements CustomerDao {
             statement.setString(3, customer.address());
             statement.setString(4, customer.postalCode());
             statement.setString(5, customer.phone());
-            statement.setInt(6, customer.division().id());
+            statement.setInt(6, customer.divisionId());
             return statement.execute();
         }
     }
@@ -93,6 +97,9 @@ public class CustomerDaoImpl implements CustomerDao {
      */
     @Override
     public boolean update(Customer customer) throws SQLException {
+
+        //TODO:  insert Last_Update (TIMESTAMP) field
+
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      "UPDATE CUSTOMERS SET " +
@@ -101,12 +108,12 @@ public class CustomerDaoImpl implements CustomerDao {
                              "Postal_Code = ?, " +
                              "Phone = ?, " +
                              "Division_ID = ? " +
-                         "WHERE ID = ?")) {
+                         "WHERE Customer_ID = ?")) {
             statement.setString(1, customer.name());
             statement.setString(2, customer.address());
             statement.setString(3, customer.postalCode());
             statement.setString(4, customer.phone());
-            statement.setInt(5, customer.division().id());
+            statement.setInt(5, customer.divisionId());
             statement.setInt(6, customer.id());
             return statement.executeUpdate() > 0;
         }
@@ -125,13 +132,14 @@ public class CustomerDaoImpl implements CustomerDao {
         }
     }
 
-    // TODO review Customer model object for FirstLevelDivision and set below
     private Customer createCustomerRecord(ResultSet resultSet) throws SQLException {
         return new Customer(resultSet.getInt("Customer_ID"),
                 resultSet.getString("Customer_Name"),
                 resultSet.getString("Address"),
                 resultSet.getString("Postal_Code"),
                 resultSet.getString("Phone"),
-                null);
+                resultSet.getInt("Division_ID"),
+                resultSet.getString("Division"),
+                resultSet.getString("Country"));
     }
 }
