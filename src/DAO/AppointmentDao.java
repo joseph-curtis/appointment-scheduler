@@ -1,6 +1,6 @@
-package scheduler.DAO;
+package DAO;
 
-import scheduler.model.Appointment;
+import model.Appointment;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,8 +20,8 @@ public interface AppointmentDao {
 
     /**
      * @param id unique identifier of the appointment.
-     * @return an optional with appointment if one with id
-     *     exists, empty optional otherwise.
+     * @return an optional container with an Appointment object
+     * if one with id exists, empty optional otherwise.
      * @throws Exception if any error occurs.
      */
     Optional<Appointment> getById(int id) throws Exception;
@@ -35,7 +35,7 @@ public interface AppointmentDao {
 
     /**
      * @param appointment the appointment to be updated.
-     * @return true if appointment exists and is updated, false otherwise.
+     * @return true if appointment exists and is updated, else false.
      * @throws Exception if any error occurs.
      */
     boolean update(Appointment appointment) throws Exception;

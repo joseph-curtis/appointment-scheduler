@@ -1,4 +1,4 @@
-package scheduler.model;
+package model;
 
 public record User(int id,
                    String name,

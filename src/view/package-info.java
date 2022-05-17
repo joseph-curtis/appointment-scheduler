@@ -21,4 +21,4 @@
  * <a href="https://javadoc.io/doc/org.openjfx/javafx-graphics/17.0.1/javafx.fxml/module-summary.html">
  *     javafx.fxml module summary</a></p>
  */
-package scheduler.view;
+package view;

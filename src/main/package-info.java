@@ -19,4 +19,4 @@
  * <br>
  * <h1>JavaDocs folder is located within the root folder, ie: appointment-scheduler\javadocs\</h1>
  */
-package scheduler;
+package main;

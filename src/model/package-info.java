@@ -14,9 +14,8 @@
  ******************************************************************************/
 
 /**
- * Contains the Data Access Objects (DAO).
- * <p>All calls to the database are located here,
- * as well as the constraining interface files.</p>
+ * Provides the Model classes as part of Model-View-Controller (MVC).
+ * <p>This is where the application logic creates and saves object data.</p>
  * <p>If you use this software, please cite it as indicated in the CITATION.cff file.</p>
  */
-package scheduler.DAO;
+package model;

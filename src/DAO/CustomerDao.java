@@ -1,9 +1,9 @@
-package scheduler.DAO;
+package DAO;
 
-import scheduler.model.Customer;
+import javafx.collections.ObservableList;
+import model.Customer;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Data Access Object for Customer data.
@@ -13,15 +13,15 @@ import java.util.stream.Stream;
 public interface CustomerDao {
 
     /**
-     * @return all the customers as a stream. The stream must be closed after use.
+     * @return all the customers as an observable list.
      * @throws Exception if any error occurs.
      */
-    Stream <Customer> getAll() throws Exception;
+    ObservableList<Customer> getAll() throws Exception;
 
     /**
      * @param id unique identifier of the customer.
-     * @return an optional with customer if one with id
-     *     exists, empty optional otherwise.
+     * @return an optional container with a Customer object
+     * if one with id exists, empty optional otherwise.
      * @throws Exception if any error occurs.
      */
     Optional <Customer> getById(int id) throws Exception;
@@ -35,7 +35,7 @@ public interface CustomerDao {
 
     /**
      * @param customer the customer to be updated.
-     * @return true if customer exists and is updated, false otherwise.
+     * @return true if customer exists and is updated, else false.
      * @throws Exception if any error occurs.
      */
     boolean update(Customer customer) throws Exception;
