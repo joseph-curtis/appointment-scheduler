@@ -80,6 +80,18 @@ public class PrimaryController {
     private RadioButton radioViewWeek;
 
     @FXML
+    private Button addAppointmentBtn;
+
+    @FXML
+    private Button updateAppointmentBtn;
+
+    @FXML
+    private Button deleteAppointmentBtn;
+
+    @FXML
+    private Label appDeleteConfirmLabel;
+
+    @FXML
     private TableView<Customer> customersTable;
 
     @FXML
@@ -102,6 +114,18 @@ public class PrimaryController {
 
     @FXML
     private TableColumn<Customer, String> country_col;
+
+    @FXML
+    private Button addCustomerBtn;
+
+    @FXML
+    private Button updateCustomerBtn;
+
+    @FXML
+    private Button deleteCustomerBtn;
+
+    @FXML
+    private Label custDeleteConfirmLabel;
 
     /**
      * Quits the application.
@@ -131,6 +155,16 @@ public class PrimaryController {
     }
 
     @FXML
+    void onAppointmentsTabChanged(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onCustomersTabChanged(ActionEvent event) {
+
+    }
+
+    @FXML
     void onActionViewAll(ActionEvent event) {
 
     }
@@ -145,5 +179,34 @@ public class PrimaryController {
 
     }
 
+    @FXML
+    void onActionAddAppointment(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionUpdateAppointment(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionDeleteAppointment(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionAddCustomer(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionUpdateCustomer(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionDeleteCustomer(ActionEvent event) {
+
+    }
 
 }
