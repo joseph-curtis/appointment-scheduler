@@ -50,24 +50,25 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.PrimaryController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
                <items>
-                  <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
                </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
           <items>
-            <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="About Acme Scheduler" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionShowAbout" text="About Acme Scheduler" />
           </items>
         </Menu>
       </menus>
@@ -129,9 +130,9 @@
                                     <Font name="System Bold Italic" size="18.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="addAppointmentBtn" accessibleHelp="Add an Appointment" accessibleText="Add an Appointment" mnemonicParsing="false" onAction="#onActionAddAppointment" prefHeight="30.0" prefWidth="60.0" text="Add" />
-                              <Button fx:id="updateAppointmentBtn" accessibleHelp="Modify selected Appointment" accessibleText="Modify selected Appointment" mnemonicParsing="false" onAction="#onActionUpdateAppointment" prefHeight="30.0" prefWidth="60.0" text="Update" />
-                              <Button fx:id="deleteAppointmentBtn" accessibleHelp="Delete selected Appointment" accessibleText="Delete selected Appointment" mnemonicParsing="false" onAction="#onActionDeleteAppointment" prefHeight="30.0" prefWidth="60.0" text="Delete" />
+                              <Button accessibleHelp="Add an Appointment" accessibleText="Add an Appointment" mnemonicParsing="false" onAction="#onActionAddAppointment" prefHeight="30.0" text="Add Appointment" />
+                              <Button accessibleHelp="Modify selected Appointment" accessibleText="Modify selected Appointment" mnemonicParsing="false" onAction="#onActionUpdateAppointment" prefHeight="30.0" prefWidth="60.0" text="Update" />
+                              <Button accessibleHelp="Delete selected Appointment" accessibleText="Delete selected Appointment" mnemonicParsing="false" onAction="#onActionDeleteAppointment" prefHeight="30.0" prefWidth="60.0" text="Delete" />
                            </children>
                            <padding>
                               <Insets left="10.0" right="10.0" />
@@ -175,9 +176,9 @@
                                     <Font name="System Bold Italic" size="18.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="addCustomerBtn" accessibleHelp="Add a Customer" accessibleText="Add a Customer" mnemonicParsing="false" onAction="#onActionAddCustomer" prefHeight="30.0" prefWidth="60.0" text="Add" />
-                              <Button fx:id="updateCustomerBtn" accessibleHelp="Update selected Customer" accessibleText="Update selected Customer" mnemonicParsing="false" onAction="#onActionUpdateCustomer" prefHeight="30.0" prefWidth="60.0" text="Update" />
-                              <Button fx:id="deleteCustomerBtn" accessibleHelp="Delete selected Customer" accessibleText="Delete selected Customer" mnemonicParsing="false" onAction="#onActionDeleteCustomer" prefHeight="30.0" prefWidth="60.0" text="Delete" />
+                              <Button accessibleHelp="Add a Customer" accessibleText="Add a Customer" mnemonicParsing="false" onAction="#onActionAddCustomer" prefHeight="30.0" text="Add Customer" />
+                              <Button accessibleHelp="Update selected Customer" accessibleText="Update selected Customer" mnemonicParsing="false" onAction="#onActionUpdateCustomer" prefHeight="30.0" prefWidth="60.0" text="Update" />
+                              <Button accessibleHelp="Delete selected Customer" accessibleText="Delete selected Customer" mnemonicParsing="false" onAction="#onActionDeleteCustomer" prefHeight="30.0" prefWidth="60.0" text="Delete" />
                            </children>
                            <BorderPane.margin>
                               <Insets bottom="10.0" left="10.0" right="10.0" />
