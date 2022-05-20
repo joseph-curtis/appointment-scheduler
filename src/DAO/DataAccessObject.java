@@ -82,13 +82,7 @@ public abstract class DataAccessObject <T extends DataTransferObject> {
      * Create a DTO from SQL result set.
      * @param resultSet object from SQL query
      * @return the Data Transfer Object
-     * @throws Exception
+     * @throws Exception if any error occurs.
      */
     protected abstract T createDtoRecord(ResultSet resultSet) throws Exception;
-
-    /**
-     * Gets an ID for newly created DTOs, ensuring no conflicts.
-     * @return an ID unique to the appropriate table in database
-     */
-    protected abstract int acquireNewId();
 }

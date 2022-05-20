@@ -29,6 +29,17 @@ import java.util.Optional;
 public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
 
     /**
+     * Gets an ID for newly created Appointment, ensuring no conflicts.
+     * @return an ID unique to the APPOINTMENTS table in database
+     */
+    public static int acquireNewId() {
+
+        // TODO:  implement method!
+
+        return 0;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -161,16 +172,5 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
                 resultSet.getInt("Contact_ID"),
                 resultSet.getString("Contact_Name"),
                 resultSet.getString("Email"));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected int acquireNewId() {
-
-        // TODO:  implement method!
-
-        return 0;
     }
 }
