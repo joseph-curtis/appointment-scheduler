@@ -5,7 +5,7 @@
 
  http://opensource.org/licenses/ECL-2.0
 
-  Unless required by applicable law or agreed to in writing, software
+ Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  License for the specific language governing permissions and limitations under
@@ -29,7 +29,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.03.05
+ * @version 2022.05.19
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -37,25 +37,15 @@ public abstract class DBUtil {
     private static final String DB_URL = "db.url";
     private static final String USERNAME = "db.username";
     private static final String PASSWORD = "db.password";
-    private static Properties properties = null;
-    private static MysqlDataSource dataSource;
-//    private static final String MYSQL_JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-//    private static final String PROTOCOL = "jdbc:";
-//    private static final String SUBPROTOCOL = "mysql://";
-//    private static final String HOST_NAME = "localhost/";
-//    private static final String DATABASE_NAME = "client_schedule";
-//    private static final String JDBC_URL = PROTOCOL + SUBPROTOCOL + HOST_NAME + DATABASE_NAME
-//            + "?connectionTimeZone=SERVER";
-//    private static final String USERNAME = "sqlUser";
-//    private static final String PASSWORD = "Passw0rd!";
 
+    private static MysqlDataSource dataSource;
     private static Connection connection = null;
     private static Statement statement;
     private static ResultSet resultSet;
 
     static {
         try {
-            properties = new Properties();
+            Properties properties = new Properties();
             properties.load(new FileInputStream("src/Database.properties"));
 
             dataSource = new MysqlDataSource();
@@ -119,9 +109,11 @@ public abstract class DBUtil {
      * Executes statement from given string.
      * <p>Only use if calling directly from this static class.</p>
      * <p>For better security using Prepared statements, get DataSource instead.</p>
+     * @param query SQL string (query, DML or DDL) to execute
+     * @return number of rows added/updated
      */
     @Deprecated
-    public int executeSqlString(String query) {
+    public static int executeSqlString(String query) {
         int rowCount = -1;
         try {
             if(connection == null || connection.isClosed()) openConnection();
@@ -160,11 +152,11 @@ public abstract class DBUtil {
     }
 
     /**
-     * Manual implementation to open DB connection.
-     * <p>Only use if calling directly from this static class.</p>
+     * @return result set from executed SQL query.
+     * <p>Use only after calling executeSqlString (static general call for manual SQL execution)</p>
      */
     @Deprecated
-    public ResultSet getResultSet() {
+    public static ResultSet getResultSet() {
         return resultSet;
     }
 
