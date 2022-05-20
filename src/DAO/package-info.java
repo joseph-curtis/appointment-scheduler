@@ -15,8 +15,8 @@
 
 /**
  * Contains the Data Access Objects (DAO).
- * <p>All calls to the database are located here,
- * as well as the constraining interface files.</p>
+ * <p>The constraining interface is located here (as abstract class),
+ * as well as the implementing concrete classes.</p>
  * <p>If you use this software, please cite it as indicated in the CITATION.cff file.</p>
  */
 package DAO;

@@ -1,36 +1,35 @@
+/*
+ Copyright 2022 Joseph Curtis Licensed under the Educational
+ Community License, Version 2.0 (the "License"); you may not use this file
+ except in compliance with the License. You may obtain a copy of the License at
+
+ http://opensource.org/licenses/ECL-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ License for the specific language governing permissions and limitations under
+ the License.
+
+ ******************************************************************************/
+
 package DAO;
 
 import javafx.collections.ObservableList;
 import model.Customer;
-import utility.DBUtil;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 /**
- * Implementation of {@link DAO.CustomerDao} to persist Customer objects from a database.
+ * Implementation of {@link DAO.DataAccessObject} to persist Customer objects from a database.
  * @author Joseph Curtis
- * @version 2022.04.21
+ * @version 2022.05.19
  */
-public class CustomerDaoImpl implements CustomerDao {
-
-    private static final Logger log = Logger.getLogger("log.txt");
-
-    private final DataSource dataSource;
-
-    /**
-     * Creates an instance of {@link CustomerDaoImpl} with provided <code>dataSource</code> object.
-     * Datasource is used to get connections to database.
-     * <p>Use getConnection method within a try-with-resources block.</p>
-     */
-    public CustomerDaoImpl() {
-        dataSource = DBUtil.getDataSource();
-    }
+public class CustomerDaoImpl extends DataAccessObject<Customer> {
 
     /**
      * {@inheritDoc}
@@ -52,11 +51,11 @@ public class CustomerDaoImpl implements CustomerDao {
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
-                     "SELECT * FROM CUSTOMERS WHERE ID = ?")) {
+                     "SELECT * FROM CUSTOMERS WHERE Customer_ID = ?")) {
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(createCustomerRecord(resultSet));
+                return Optional.of(createDtoRecord(resultSet));
             } else {
                 return Optional.empty();
             }
@@ -123,16 +122,23 @@ public class CustomerDaoImpl implements CustomerDao {
      * {@inheritDoc}
      */
     @Override
-    public boolean delete(Customer customer) throws SQLException {
+    public boolean delete(int id) throws SQLException {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      "DELETE FROM CUSTOMERS WHERE Customer_ID = ?")) {
-            statement.setInt(1, customer.id());
+            statement.setInt(1, id);
             return statement.executeUpdate() > 0;
         }
     }
 
-    private Customer createCustomerRecord(ResultSet resultSet) throws SQLException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Customer createDtoRecord(ResultSet resultSet) throws SQLException {
+
+        // TODO:  get division and country from table JOIN
+
         return new Customer(resultSet.getInt("Customer_ID"),
                 resultSet.getString("Customer_Name"),
                 resultSet.getString("Address"),

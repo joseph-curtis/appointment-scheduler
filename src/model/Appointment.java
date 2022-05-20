@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * MySQL driver v8.0.x automatically converts to SystemDefault time
  * when extracting from ResultSet.</p>
  * @author Joseph Curtis
- * @version 2022.05.17
+ * @version 2022.05.19
  */
 public record Appointment(Integer id,
                           String title,
@@ -25,5 +25,5 @@ public record Appointment(Integer id,
                           Integer userId,
                           Integer contactId,
                           String contactName,
-                          String contactEmail) {
+                          String contactEmail) implements DataTransferObject {
 }

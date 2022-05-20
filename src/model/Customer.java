@@ -6,7 +6,7 @@ package model;
  * division and country are saved here for convenience and
  * must be obtained through table joins</p>
  * @author Joseph Curtis
- * @version 2022.05.17
+ * @version 2022.05.19
  */
 public record Customer(Integer id,
                        String name,
@@ -15,5 +15,5 @@ public record Customer(Integer id,
                        String phone,
                        Integer divisionId,
                        String division,
-                       String country) {
+                       String country) implements DataTransferObject {
 }
