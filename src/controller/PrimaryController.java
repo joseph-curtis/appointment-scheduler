@@ -15,27 +15,24 @@
 
 package controller;
 
+import DAO.AppointmentDaoImpl;
+import DAO.CustomerDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import model.Appointment;
 import model.Customer;
+import utility.GuiUtil;
 
+import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PrimaryController implements Initializable {
-
-    @FXML
-    private MenuItem aboutMenuItem;
-
-    @FXML
-    private MenuItem exitMenuItem;
-
-    @FXML
-    private MenuItem settingsMenuItem;
 
     @FXML
     private TableView<Appointment> appointmentsTable;
@@ -83,15 +80,6 @@ public class PrimaryController implements Initializable {
     private RadioButton radioViewWeek;
 
     @FXML
-    private Button addAppointmentBtn;
-
-    @FXML
-    private Button updateAppointmentBtn;
-
-    @FXML
-    private Button deleteAppointmentBtn;
-
-    @FXML
     private Label appDeleteConfirmLabel;
 
     @FXML
@@ -117,15 +105,6 @@ public class PrimaryController implements Initializable {
 
     @FXML
     private TableColumn<Customer, String> country_col;
-
-    @FXML
-    private Button addCustomerBtn;
-
-    @FXML
-    private Button updateCustomerBtn;
-
-    @FXML
-    private Button deleteCustomerBtn;
 
     @FXML
     private Label custDeleteConfirmLabel;
@@ -169,22 +148,6 @@ public class PrimaryController implements Initializable {
     }
 
     @FXML
-    void onAppointmentsTabChanged(ActionEvent event) {
-        if (appointmentsTab.isSelected()) {
-            System.out.println("Tab is Selected");
-            //Do stuff here
-        }
-    }
-
-    @FXML
-    void onCustomersTabChanged(ActionEvent event) {
-        if (customersTab.isSelected()) {
-            System.out.println("Tab is Selected");
-            //Do stuff here
-        }
-    }
-
-    @FXML
     void onActionViewAll(ActionEvent event) {
 
     }
@@ -199,34 +162,113 @@ public class PrimaryController implements Initializable {
 
     }
 
+    /**
+     * Opens the "Add New Customer" window.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionAddAppointment(ActionEvent event) {
-
+        String fxmlFile = "/view/editAppointment-view.fxml";
+        try {
+            GuiUtil.changeStage(event,
+                    fxmlFile,
+                    "Add Appointment",
+                    Modality.WINDOW_MODAL);
+        } catch (IOException e) {
+            System.out.println("Error finding file: " + fxmlFile);
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    void onActionUpdateAppointment(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onActionDeleteAppointment(ActionEvent event) {
-
-    }
-
+    /**
+     * Opens the "Add New Customer" window.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
+        String fxmlFile = "/view/editCustomer-view.fxml";
+        try {
+            GuiUtil.changeStage(event,
+                    fxmlFile,
+                    "Add Appointment",
+                    Modality.WINDOW_MODAL);
+        } catch (IOException e) {
+            System.out.println("Error finding file: " + fxmlFile);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Opens the "Edit Appointment" window.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
+    @FXML
+    void onActionUpdateAppointment(ActionEvent event) {
+        Appointment selectedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null)
+            return;     // if nothing is selected, do nothing
+
 
     }
 
+    /**
+     * Opens the "Edit Customer" window.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
-
     }
 
+    /**
+     * Removes selected Appointment from database.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
+    @FXML
+    void onActionDeleteAppointment(ActionEvent event) {
+        Appointment deletedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
+        if (deletedAppointment == null)
+            return;     // no selection means nothing to delete or confirm
+
+        AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
+        GuiUtil.confirmDeletion(
+                "Delete Customer Confirmation",
+                "Delete Selected Customer \"" + deletedAppointment.title() + "\" ?" ,
+                "Customer will be deleted.  This CANNOT be undone!" ,
+                ()-> {
+                    try {
+                        return dbAppointments.delete(deletedAppointment.id());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
+        );
+    }
+
+    /**
+     * Removes selected Customer from database.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionDeleteCustomer(ActionEvent event) {
+        Customer deletedCustomer = customersTable.getSelectionModel().getSelectedItem();
+        if (deletedCustomer == null)
+            return;     // no selection means nothing to delete or confirm
 
+        CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
+        GuiUtil.confirmDeletion(
+                "Delete Customer Confirmation",
+                "Delete Selected Customer \"" + deletedCustomer.name() + "\" ?" ,
+                "Customer will be deleted.  This CANNOT be undone!" ,
+                ()-> {
+                    try {
+                        return dbCustomers.delete(deletedCustomer.id());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
+        );
     }
 
 }

@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import utility.GuiUtil;
 
 import java.io.IOException;
@@ -118,14 +119,9 @@ public class LoginController implements Initializable {
 
         // TODO: implement username/password lookup and verification
 
-        GuiUtil.changeScene(event,
+        GuiUtil.changeStage(event,
                 "/view/primary-view.fxml",
-                "Appointment Scheduler - Calendar View");
-
-        // TODO cleanup commented out code
-//        Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-//        Parent scene = FXMLLoader.load(getClass().getResource("/view/primary-view.fxml"));
-//        stage.setScene(new Scene(scene));
-//        stage.show();
+                "Appointment Scheduler - Calendar View",
+                Modality.NONE);
     }
 }

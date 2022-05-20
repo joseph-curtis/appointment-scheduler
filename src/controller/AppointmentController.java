@@ -17,18 +17,44 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import model.Appointment;
+import model.DataTransferObject;
 
-public class EditAppointmentController {
+public class AppointmentController {
+    /**
+     * The Appointment in the database to modify
+     */
+    Appointment existingAppointment;
+
+    /**
+     * Sets all properties for edited item to populate to corresponding text fields.
+     * <p>The existing Appointment in DB is passed when changing the scene</p>
+     * @see utility.GuiUtil#changeStagePassObj(ActionEvent, DataTransferObject, String, String, Modality)
+     * @param passedObject existing appointment to be edited
+     */
+    public void modifyAppointment(DataTransferObject passedObject) {
+        existingAppointment = (Appointment) passedObject;
+
+        currentOperationLabel.setText("Edit Appointment");
+
+        idTxt.setText(String.valueOf(passedObject.id()));
+        titleTxt.setText(((Appointment) passedObject).title());
+        descriptionTxt.setText(((Appointment) passedObject).description());
+        locationTxt.setText(((Appointment) passedObject).location());
+        typeTxt.setText(((Appointment) passedObject).type());
+
+
+
+        // TODO:  set start/end times
+        // TODO:  set customer_ID combo box
+        // TODO:  set Contact_ID combo box
+    }
 
     @FXML
     private Label currentOperationLabel;
-
-    @FXML
-    private Button cancelBtn;
-
-    @FXML
-    private Button saveAppointmentBtn;
 
     @FXML
     private TextField descriptionTxt;
@@ -71,7 +97,7 @@ public class EditAppointmentController {
 
     @FXML
     void onActionCancel(ActionEvent event) {
-
+        ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
     @FXML
@@ -88,5 +114,4 @@ public class EditAppointmentController {
     void onActionListCustomers(ActionEvent event) {
 
     }
-
 }
