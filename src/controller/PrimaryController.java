@@ -17,13 +17,16 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import model.Appointment;
 import model.Customer;
 
+import java.net.URL;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class PrimaryController {
+public class PrimaryController implements Initializable {
 
     @FXML
     private MenuItem aboutMenuItem;
@@ -127,6 +130,17 @@ public class PrimaryController {
     @FXML
     private Label custDeleteConfirmLabel;
 
+    @FXML
+    private Tab appointmentsTab;
+
+    @FXML
+    private Tab customersTab;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
     /**
      * Quits the application.
      * <p>Displays a confirmation dialog before exiting.</p>
@@ -156,12 +170,18 @@ public class PrimaryController {
 
     @FXML
     void onAppointmentsTabChanged(ActionEvent event) {
-
+        if (appointmentsTab.isSelected()) {
+            System.out.println("Tab is Selected");
+            //Do stuff here
+        }
     }
 
     @FXML
     void onCustomersTabChanged(ActionEvent event) {
-
+        if (customersTab.isSelected()) {
+            System.out.println("Tab is Selected");
+            //Do stuff here
+        }
     }
 
     @FXML

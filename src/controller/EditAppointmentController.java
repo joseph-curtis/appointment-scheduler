@@ -25,15 +25,6 @@ public class EditAppointmentController {
     private Label currentOperationLabel;
 
     @FXML
-    private MenuItem exitMenuItem;
-
-    @FXML
-    private MenuItem aboutMenuItem;
-
-    @FXML
-    private MenuItem settingsMenuItem;
-
-    @FXML
     private Button cancelBtn;
 
     @FXML
@@ -77,21 +68,6 @@ public class EditAppointmentController {
 
     @FXML
     private ComboBox<?> customerIdComboBox;
-
-    @FXML
-    void onActionExitApplication(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onActionShowAbout(ActionEvent event) {
-
-    }
-
-    @FXML
-    void onActionOpenSettings(ActionEvent event) {
-
-    }
 
     @FXML
     void onActionCancel(ActionEvent event) {

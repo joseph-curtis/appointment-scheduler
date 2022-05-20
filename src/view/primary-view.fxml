@@ -50,7 +50,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
+<VBox prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -74,7 +74,7 @@
     </MenuBar>
       <TabPane tabMaxHeight="60.0" tabMinHeight="30.0" tabMinWidth="90.0" VBox.vgrow="ALWAYS">
          <tabs>
-            <Tab closable="false" onSelectionChanged="#onAppointmentsTabChanged" text="Appointments">
+            <Tab fx:id="appointmentsTab" closable="false" text="Appointments">
                <content>
                   <BorderPane>
                      <left>
@@ -144,7 +144,7 @@
                   </BorderPane>
                </content>
             </Tab>
-            <Tab closable="false" onSelectionChanged="#onCustomersTabChanged" text="Customers">
+            <Tab fx:id="customersTab" closable="false" text="Customers">
                <content>
                   <BorderPane prefHeight="600.0" prefWidth="800.0">
                      <center>

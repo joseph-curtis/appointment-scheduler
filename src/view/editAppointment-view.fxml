@@ -5,10 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
@@ -16,112 +12,87 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <MenuBar>
-         <menus>
-            <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="About Acme Scheduler" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
-      <BorderPane>
-         <center>
-            <GridPane hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
-               <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" />
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="100.0" prefWidth="200.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <GridPane hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="100.0" prefWidth="200.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TextField fx:id="idTxt" disable="true" editable="false" GridPane.columnIndex="1" />
+            <TextField fx:id="titleTxt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="descriptionTxt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="locationTxt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="typeTxt" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Appointment ID" />
+            <Label text="Title" GridPane.rowIndex="1" />
+            <Label text="Description" GridPane.rowIndex="2" />
+            <Label text="Location" GridPane.rowIndex="3" />
+            <Label text="Type" GridPane.rowIndex="4" />
+            <Label text="Start Date/Time" GridPane.rowIndex="5" />
+            <Label text="End Date/Time" GridPane.rowIndex="6" />
+            <Label text="Customer ID" GridPane.rowIndex="7" />
+            <Label text="Contact ID" GridPane.rowIndex="8" />
+            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <children>
-                  <TextField fx:id="idTxt" disable="true" editable="false" GridPane.columnIndex="1" />
-                  <TextField fx:id="titleTxt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField fx:id="descriptionTxt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField fx:id="locationTxt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField fx:id="typeTxt" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <Label text="Appointment ID" />
-                  <Label text="Title" GridPane.rowIndex="1" />
-                  <Label text="Description" GridPane.rowIndex="2" />
-                  <Label text="Location" GridPane.rowIndex="3" />
-                  <Label text="Type" GridPane.rowIndex="4" />
-                  <Label text="Start Date/Time" GridPane.rowIndex="5" />
-                  <Label text="End Date/Time" GridPane.rowIndex="6" />
-                  <Label text="Customer ID" GridPane.rowIndex="7" />
-                  <Label text="Contact ID" GridPane.rowIndex="8" />
-                  <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                     <children>
-                        <Spinner fx:id="startHourSpinner" accessibleHelp="Start Hour" accessibleText="Start Hour" />
-                        <Spinner fx:id="startMinuteSpinner" accessibleHelp="Start Minute" accessibleText="Start Minute" />
-                        <DatePicker fx:id="startDatePicker" accessibleHelp="Start Date" accessibleText="Start Date" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                     <children>
-                        <Spinner fx:id="endHourSpinner" accessibleHelp="End Hour" accessibleText="End Hour" />
-                        <Spinner fx:id="endMinuteSpinner" accessibleHelp="End Minute" accessibleText="End Minute" />
-                        <DatePicker fx:id="endDatePicker" accessibleHelp="End Date" accessibleText="End Date" />
-                     </children>
-                  </HBox>
-                  <ComboBox fx:id="customerIdComboBox" accessibleHelp="Customer" accessibleText="Customer" maxWidth="-Infinity" onAction="#onActionListCustomers" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                  <ComboBox fx:id="contactIdComboBox" maxWidth="-Infinity" onAction="#onActionListContacts" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Spinner fx:id="startHourSpinner" accessibleHelp="Start Hour" accessibleText="Start Hour" />
+                  <Spinner fx:id="startMinuteSpinner" accessibleHelp="Start Minute" accessibleText="Start Minute" />
+                  <DatePicker fx:id="startDatePicker" accessibleHelp="Start Date" accessibleText="Start Date" />
                </children>
-               <BorderPane.margin>
-                  <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-               </BorderPane.margin>
-            </GridPane>
-         </center>
-         <top>
-            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="currentOperationLabel" text="Add Appointment" textAlignment="CENTER">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-               <BorderPane.margin>
-                  <Insets />
-               </BorderPane.margin>
             </HBox>
-         </top>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
-      </BorderPane>
-      <HBox alignment="CENTER_RIGHT" spacing="25.0">
+            <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="6">
+               <children>
+                  <Spinner fx:id="endHourSpinner" accessibleHelp="End Hour" accessibleText="End Hour" />
+                  <Spinner fx:id="endMinuteSpinner" accessibleHelp="End Minute" accessibleText="End Minute" />
+                  <DatePicker fx:id="endDatePicker" accessibleHelp="End Date" accessibleText="End Date" />
+               </children>
+            </HBox>
+            <ComboBox fx:id="customerIdComboBox" accessibleHelp="Customer" accessibleText="Customer" maxWidth="-Infinity" onAction="#onActionListCustomers" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="contactIdComboBox" maxWidth="-Infinity" onAction="#onActionListContacts" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </center>
+   <top>
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="currentOperationLabel" text="Add Appointment" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets top="15.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="saveAppointmentBtn" mnemonicParsing="false" onAction="#onActionSaveAppointment" prefHeight="30.0" prefWidth="55.0" text="Save" />
             <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
          </children>
-         <VBox.margin>
-            <Insets bottom="15.0" left="15.0" right="15.0" />
-         </VBox.margin>
+         <BorderPane.margin>
+            <Insets bottom="15.0" right="15.0" />
+         </BorderPane.margin>
       </HBox>
-   </children>
-</VBox>
+   </bottom>
+</BorderPane>
