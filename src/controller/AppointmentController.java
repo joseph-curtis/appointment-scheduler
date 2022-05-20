@@ -15,6 +15,7 @@
 
 package controller;
 
+import DAO.AppointmentDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -35,7 +36,7 @@ public class AppointmentController {
      * @see utility.GuiUtil#changeStagePassObj(ActionEvent, DataTransferObject, String, String, Modality)
      * @param passedObject existing appointment to be edited
      */
-    public void modifyAppointment(DataTransferObject passedObject) {
+    public void passExistingAppointment(DataTransferObject passedObject) {
         existingAppointment = (Appointment) passedObject;
 
         currentOperationLabel.setText("Edit Appointment");
@@ -51,6 +52,19 @@ public class AppointmentController {
         // TODO:  set start/end times
         // TODO:  set customer_ID combo box
         // TODO:  set Contact_ID combo box
+    }
+
+    /**
+     * Get existing ID or new unique ID if Appointment is new
+     * @see DAO.AppointmentDaoImpl#acquireNewId()
+     * @return a unique appointment ID
+     */
+    protected int acquireId() {
+        if (existingAppointment != null) {
+            return existingAppointment.id();          // get ID of existing part to edit
+        } else {
+            return AppointmentDaoImpl.acquireNewId();  // get new ID for new part
+        }
     }
 
     @FXML

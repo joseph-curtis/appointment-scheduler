@@ -15,6 +15,7 @@
 
 package controller;
 
+import DAO.CustomerDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -24,10 +25,16 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import model.Customer;
 import model.DataTransferObject;
+import utility.BlankInputException;
+import utility.DataObjNotFoundException;
+import utility.GuiUtil;
+import utility.InvalidInputException;
+
+import java.sql.SQLException;
 
 public class CustomerController {
     /**
-     * The Appointment in the database to modify
+     * The Customer in the database to modify
      */
     Customer existingCustomer;
 
@@ -37,7 +44,7 @@ public class CustomerController {
      * @see utility.GuiUtil#changeStagePassObj(ActionEvent, DataTransferObject, String, String, Modality)
      * @param passedObject existing appointment to be edited
      */
-    public void modifyCustomer(DataTransferObject passedObject) {
+    public void passExistingCustomer(DataTransferObject passedObject) {
         existingCustomer = (Customer) passedObject;
 
         currentOperationLabel.setText("Edit Customer");
@@ -53,6 +60,19 @@ public class CustomerController {
 
         // TODO:  set division combo box
         // TODO:  set country combo box
+    }
+
+    /**
+     * Get existing ID or new unique ID if Appointment is new
+     * @see DAO.CustomerDaoImpl#acquireNewId()
+     * @return a unique customer ID
+     */
+    protected int acquireId() {
+        if (existingCustomer != null) {
+            return existingCustomer.id();          // get ID of existing part to edit
+        } else {
+            return CustomerDaoImpl.acquireNewId();  // get new ID for new part
+        }
     }
 
     @FXML
@@ -84,9 +104,81 @@ public class CustomerController {
         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     * Save this new or modified Customer.
+     * <p>Updates existing customer, or adds new customer to database.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionSaveCustomer(ActionEvent event) {
+        Customer savedCustomer;
 
+        try {
+            if (nameTxt.getText().isBlank()
+                    || addressTxt.getText().isBlank()
+                    || postCodeTxt.getText().isBlank()
+                    || phoneTxt.getText().isBlank()
+//                    || divisionComboBox.isBlank()
+//                    || countryComboBox.isBlank()
+                    // TODO check for blank combobox selection
+            )
+                throw new BlankInputException("Fields Cannot be Blank");
+
+            // Get input from fields:
+            int id = acquireId();
+            String name = nameTxt.getText();
+            String address = addressTxt.getText();
+            String postCode = postCodeTxt.getText();
+            String phone = phoneTxt.getText();
+
+            // TODO get combo box to display division names, but also get the ID ....
+            int divisionId = 0;
+
+            // validate input:
+            if (name.length() > 50)
+                GuiUtil.handleLogicalError("Name cannot exceed 50 characters");
+            if (address.length() > 100)
+                GuiUtil.handleLogicalError("Address cannot exceed 100 characters");
+            if (postCode.length() > 50)
+                GuiUtil.handleLogicalError("Postal code is too long!");
+            if (phone.length() > 50)
+                GuiUtil.handleLogicalError("Phone number is too long!");
+
+            // create Customer to save:
+            savedCustomer = new Customer(id, name, address, postCode, phone, divisionId, "", "");
+
+            // update database with Customer (add or modify):
+            CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
+            if (existingCustomer == null) {
+                // Save new added part:
+                dbCustomers.add(savedCustomer);
+            } else {
+                int index = dbCustomers.getAll().indexOf(existingCustomer);
+
+                if (index < 0)
+                    throw new DataObjNotFoundException("Existing Part to modify no longer exists in Inventory!");
+                else
+                    // (saves modified part)
+                    dbCustomers.update(savedCustomer);
+            }
+
+            // go back to the Main screen:
+            ((Node)(event.getSource())).getScene().getWindow().hide();
+        }
+        catch(DataObjNotFoundException exception) {
+            GuiUtil.handleDataObjNotFoundException(exception);
+        }
+        catch(BlankInputException exception) {
+            GuiUtil.handleBlankInputException(exception);
+        }
+        catch(InvalidInputException exception) {
+
+            // TODO use InvalidInputException for parsing DateTime fields
+
+        } catch (SQLException e) {
+            System.out.println("Database Error! Check connection and SQL");
+            e.printStackTrace();
+        }
     }
 
     @FXML

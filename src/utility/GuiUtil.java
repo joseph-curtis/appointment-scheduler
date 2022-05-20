@@ -83,10 +83,10 @@ public final class GuiUtil {
 
         if (passedObject instanceof Appointment) {
             AppointmentController appointmentController = loader.getController();
-            appointmentController.modifyAppointment(passedObject);
+            appointmentController.passExistingAppointment(passedObject);
         } else if (passedObject instanceof Customer) {
             CustomerController customerController = loader.getController();
-            customerController.modifyCustomer(passedObject);
+            customerController.passExistingCustomer(passedObject);
         }
     }
 
@@ -121,6 +121,43 @@ public final class GuiUtil {
             inventoryError.setContentText("Unable to delete selected item!");
             inventoryError.showAndWait();
         }
+    }
+
+    /**
+     * Gives user an Error dialog box to warn of a serious problem with the database object.
+     * This should appear when there is concurrent activity writing to the database.
+     * @param exception thrown exception indicating the problem
+     */
+    public static void handleDataObjNotFoundException(DataObjNotFoundException exception) {
+        Alert inventoryError = new Alert(Alert.AlertType.ERROR);
+        inventoryError.setHeaderText("Error in Inventory");
+        inventoryError.setContentText(exception.getMessage());
+        inventoryError.showAndWait();
+    }
+
+    /**
+     * Pops up dialog box warning user of black input fields.
+     * @param exception indicator of a blank field that needs user input
+     */
+    public static void handleBlankInputException(BlankInputException exception) {
+        Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
+        blankTextWarning.setHeaderText(exception.getMessage());
+        blankTextWarning.setContentText("Please enter data in each field.");
+        blankTextWarning.showAndWait();
+    }
+
+    /**
+     * Displays dialog box in response to a logical error (input validation).
+     * @param content details given to user about the logical error
+     * @throws InvalidInputException for controller to handle by halting its operation
+     */
+    public static void handleLogicalError(String content) throws InvalidInputException {
+        Alert deleteError = new Alert(Alert.AlertType.WARNING);
+        deleteError.setHeaderText("Input Validation");
+        deleteError.setContentText(content);
+        deleteError.showAndWait();
+
+        throw new InvalidInputException("Logical error check:\n" + content);
     }
 
 }
