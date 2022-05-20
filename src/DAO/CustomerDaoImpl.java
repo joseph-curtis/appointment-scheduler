@@ -148,4 +148,15 @@ public class CustomerDaoImpl extends DataAccessObject<Customer> {
                 resultSet.getString("Division"),
                 resultSet.getString("Country"));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int acquireNewId() {
+
+        // TODO:  implement method!
+
+        return 0;
+    }
 }

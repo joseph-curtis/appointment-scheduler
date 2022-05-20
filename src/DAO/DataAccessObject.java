@@ -85,4 +85,10 @@ public abstract class DataAccessObject <T extends DataTransferObject> {
      * @throws Exception
      */
     protected abstract T createDtoRecord(ResultSet resultSet) throws Exception;
+
+    /**
+     * Gets an ID for newly created DTOs, ensuring no conflicts.
+     * @return an ID unique to the appropriate table in database
+     */
+    protected abstract int acquireNewId();
 }
