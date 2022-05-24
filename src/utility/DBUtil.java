@@ -46,7 +46,7 @@ public abstract class DBUtil {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("src/Database.properties"));
+            properties.load(new FileInputStream("src/DbConnection.properties"));
 
             dataSource = new MysqlDataSource();
             dataSource.setUrl(properties.getProperty(DB_URL));
