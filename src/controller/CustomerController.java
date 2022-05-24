@@ -64,14 +64,14 @@ public class CustomerController {
 
     /**
      * Get existing ID or new unique ID if Appointment is new
-     * @see DAO.CustomerDaoImpl#acquireNewId()
+     * @see DAO.CustomerDaoImpl#getUniqueId()
      * @return a unique customer ID
      */
     protected int acquireId() {
         if (existingCustomer != null) {
             return existingCustomer.id();          // get ID of existing part to edit
         } else {
-            return CustomerDaoImpl.acquireNewId();  // get new ID for new part
+            return CustomerDaoImpl.getUniqueId();  // get new ID for new part
         }
     }
 
@@ -150,7 +150,7 @@ public class CustomerController {
             // update database with Customer (add or modify):
             CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
             if (existingCustomer == null) {
-                // Save new added part:
+                // add new customer:
                 dbCustomers.add(savedCustomer);
             } else {
                 int index = dbCustomers.getAll().indexOf(existingCustomer);
@@ -158,7 +158,7 @@ public class CustomerController {
                 if (index < 0)
                     throw new DataObjNotFoundException("Existing Part to modify no longer exists in Inventory!");
                 else
-                    // (saves modified part)
+                    // (saves modified customer)
                     dbCustomers.update(savedCustomer);
             }
 

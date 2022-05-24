@@ -56,14 +56,14 @@ public class AppointmentController {
 
     /**
      * Get existing ID or new unique ID if Appointment is new
-     * @see DAO.AppointmentDaoImpl#acquireNewId()
+     * @see DAO.AppointmentDaoImpl#getUniqueId()
      * @return a unique appointment ID
      */
     protected int acquireId() {
         if (existingAppointment != null) {
             return existingAppointment.id();          // get ID of existing part to edit
         } else {
-            return AppointmentDaoImpl.acquireNewId();  // get new ID for new part
+            return AppointmentDaoImpl.getUniqueId();  // get new ID for new part
         }
     }
 

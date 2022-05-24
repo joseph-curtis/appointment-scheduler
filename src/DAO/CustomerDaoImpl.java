@@ -33,9 +33,9 @@ public class CustomerDaoImpl extends DataAccessObject<Customer> {
 
     /**
      * Gets an ID for newly created Customer, ensuring no conflicts.
-     * @return an ID unique to the CUSTOMERS table in database
+     * @return a new ID unique to the CUSTOMERS table in database
      */
-    public static int acquireNewId() {
+    public static int getUniqueId() {
 
         // TODO:  implement method!
 

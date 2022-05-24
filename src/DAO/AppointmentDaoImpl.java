@@ -30,9 +30,9 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
 
     /**
      * Gets an ID for newly created Appointment, ensuring no conflicts.
-     * @return an ID unique to the APPOINTMENTS table in database
+     * @return a new ID unique to the APPOINTMENTS table in database
      */
-    public static int acquireNewId() {
+    public static int getUniqueId() {
 
         // TODO:  implement method!
 
