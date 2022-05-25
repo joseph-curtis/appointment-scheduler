@@ -16,6 +16,9 @@
 package utility;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import model.FirstLevelDivision;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
@@ -29,7 +32,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.05.19
+ * @version 2022.05.24
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -70,18 +73,15 @@ public abstract class DBUtil {
      * Open DB connection manually using DriverManager class.
      * <p>Only use if calling directly from this static class.</p>
      */
-    @Deprecated
     public static void openConnection() {
         try {
             Class.forName(MYSQL_JDBC_DRIVER); // Locate Driver
             connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
             System.out.println("Connection successful!");
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             System.out.println("MySql JDBC Driver not found!\n" + e.getMessage());
             e.printStackTrace();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error creating connection: " + e.getMessage());
             e.printStackTrace();
         }
@@ -91,15 +91,13 @@ public abstract class DBUtil {
      * Manual implementation to close DB connection.
      * <p>Only use if calling directly from this static class.</p>
      */
-    @Deprecated
     public static void closeConnection() {
         try {
             resultSet.close();
             statement.close();
             connection.close();
             System.out.println("Connection closed!");
-        }
-        catch(SQLException e) {
+        } catch(SQLException e) {
             System.out.println("Error closing connection: " + e.getMessage());
             e.printStackTrace();
         }
@@ -140,13 +138,13 @@ public abstract class DBUtil {
                 System.out.println("Executing DDL statement");
                 rowCount = statement.executeUpdate(query);
             }
-        }
-        catch(RuntimeException e) {
+        } catch(RuntimeException e) {
             System.out.println(e.getMessage());
-        }
-        catch(SQLException e) {
+        } catch(SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
         return rowCount;
     }
@@ -158,6 +156,68 @@ public abstract class DBUtil {
     @Deprecated
     public static ResultSet getResultSet() {
         return resultSet;
+    }
+
+    /**
+     * Obtain a list of all countries in the database
+     * @return list of FirstLevelDivision containers with only country data
+     */
+    public static ObservableList<FirstLevelDivision> getAllCountries() {
+        ObservableList<FirstLevelDivision> countriesList = FXCollections.observableArrayList();
+        try {
+            if (connection == null || connection.isClosed()) openConnection();
+            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
+            resultSet = statement.executeQuery(
+                """
+                        SELECT (Country_ID, Country) \s
+                        FROM client_schedule.countries
+                        """);
+
+            while (resultSet.next()) {
+                countriesList.add(new FirstLevelDivision(0, "",
+                        resultSet.getInt("Country_ID"),
+                        resultSet.getString("Country") ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return countriesList;
+    }
+
+    /**
+     * Get a list of all divisions
+     * @return
+     */
+    public static ObservableList<FirstLevelDivision> getDivisionsByCountry(FirstLevelDivision selectedCountry) {
+        ObservableList<FirstLevelDivision> divisionsList = FXCollections.observableArrayList();
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                """
+                        SELECT countries.Country_ID, Country, Division_ID, Division\s
+                        FROM client_schedule.countries\s
+                        INNER JOIN first_level_divisions\s
+                             ON countries.Country_ID = first_level_divisions.Country_ID\s
+                        WHERE countries.Country_ID = ?
+                        """)) {
+            preparedStatement.setInt(1, selectedCountry.countryId());
+            while (resultSet.next()) {
+                divisionsList.add(new FirstLevelDivision(
+                        resultSet.getInt("Division_ID"),
+                        resultSet.getString("Division"),
+                        resultSet.getInt("Country_ID"),
+                        resultSet.getString("Country") ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return divisionsList;
     }
 
 }
