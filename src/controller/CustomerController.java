@@ -25,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import model.Customer;
 import model.DataTransferObject;
+import model.User;
 import utility.BlankInputException;
 import utility.DataObjNotFoundException;
 import utility.GuiUtil;
@@ -32,10 +33,13 @@ import utility.InvalidInputException;
 
 import java.sql.SQLException;
 
+/**
+ * Controller for the add or modify Customer form.
+ * @author Joseph Curtis
+ * @version 2022.05.24
+ */
 public class CustomerController {
-    /**
-     * The Customer in the database to modify
-     */
+    //The Customer in the database to modify
     Customer existingCustomer;
 
     /**
@@ -151,7 +155,8 @@ public class CustomerController {
             CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
             if (existingCustomer == null) {
                 // add new customer:
-                dbCustomers.add(savedCustomer);
+                // TODO =====  change user to pass in logged in user as param
+                dbCustomers.add(savedCustomer, new User(99, "temp_user"));
             } else {
                 int index = dbCustomers.getAll().indexOf(existingCustomer);
 
@@ -159,7 +164,7 @@ public class CustomerController {
                     throw new DataObjNotFoundException("Existing Part to modify no longer exists in Inventory!");
                 else
                     // (saves modified customer)
-                    dbCustomers.update(savedCustomer);
+                    dbCustomers.update(savedCustomer, new User(99, "temp_user"));
             }
 
             // go back to the Main screen:

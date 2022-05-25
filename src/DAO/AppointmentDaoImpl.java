@@ -17,6 +17,7 @@ package DAO;
 
 import javafx.collections.ObservableList;
 import model.Appointment;
+import model.User;
 
 import java.sql.*;
 import java.util.Optional;
@@ -24,9 +25,9 @@ import java.util.Optional;
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.05.19
+ * @version 2022.05.24
  */
-public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
+public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
     /**
      * Gets an ID for newly created Appointment, ensuring no conflicts.
@@ -79,7 +80,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
      * {@inheritDoc}
      */
     @Override
-    public boolean add(Appointment appointment) throws SQLException {
+    public boolean add(Appointment appointment, User currentUser) throws SQLException {
         if (getById(appointment.id()).isPresent()) {
             return false;
         }
@@ -107,7 +108,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment> {
      * {@inheritDoc}
      */
     @Override
-    public boolean update(Appointment appointment) throws SQLException {
+    public boolean update(Appointment appointment, User currentUser) throws SQLException {
 
         //TODO:  insert Last_Update (TIMESTAMP) field
 

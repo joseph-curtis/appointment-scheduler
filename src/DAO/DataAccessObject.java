@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 /**
  * Data Access Object that interacts with Data Transfer Objects.
  * @author Joseph Curtis
- * @version 2022.05.19
+ * @version 2022.05.24
  */
-public abstract class DataAccessObject <T extends DataTransferObject> {
+public abstract class DataAccessObject <T extends DataTransferObject, U> {
 
     protected static final Logger log = Logger.getLogger("log.txt");
     protected final DataSource dataSource;
@@ -59,17 +59,19 @@ public abstract class DataAccessObject <T extends DataTransferObject> {
 
     /**
      * @param dto the DTO record to be added.
+     * @param user the currently logged-in user.
      * @return true if DTO record was added, false if record already exists.
      * @throws Exception if any error occurs.
      */
-    abstract boolean add(T dto) throws Exception;
+    abstract <user> boolean add(T dto, U user) throws Exception;
 
     /**
      * @param dto the DTO record to be updated.
+     * @param user the currently logged-in user.
      * @return true if DTO record exists and is updated, else false.
      * @throws Exception if any error occurs.
      */
-    abstract boolean update(T dto) throws Exception;
+    abstract boolean update(T dto, U user) throws Exception;
 
     /**
      * @param id the ID of the record to be deleted.
