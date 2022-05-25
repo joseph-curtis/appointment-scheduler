@@ -43,10 +43,12 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT * FROM client_schedule.customers\s
-                         JOIN first_level_divisions\s
+                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,\s
+                                customers.Division_ID, Division, Country\s
+                         FROM client_schedule.customers\s
+                         INNER JOIN first_level_divisions\s
                               ON customers.Division_ID = first_level_divisions.Division_ID\s
-                         JOIN countries\s
+                         INNER JOIN countries\s
                               ON first_level_divisions.Country_ID = countries.Country_ID
                          """)) {
             ResultSet resultSet = statement.executeQuery();
@@ -65,10 +67,12 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT * FROM client_schedule.customers\s
-                         JOIN first_level_divisions\s
+                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,\s
+                                customers.Division_ID, Division, Country\s
+                         FROM client_schedule.customers\s
+                         INNER JOIN first_level_divisions\s
                               ON customers.Division_ID = first_level_divisions.Division_ID\s
-                         JOIN countries\s
+                         INNER JOIN countries\s
                               ON first_level_divisions.Country_ID = countries.Country_ID\s
                          WHERE Customer_ID = ?
                          """)) {

@@ -40,10 +40,13 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT * FROM client_schedule.appointments\s
-                             JOIN customers\s
+                             SELECT Appointment_ID, Title, Description, Location, Type,\s
+                                    Start, End, appointments.Customer_ID, Customer_Name,\s
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email\s
+                             FROM client_schedule.appointments\s
+                             INNER JOIN customers\s
                                   ON customers.Customer_ID = appointments.Customer_ID\s
-                             JOIN contacts\s
+                             INNER JOIN contacts\s
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              """)) {
             ResultSet resultSet = statement.executeQuery();
@@ -62,10 +65,13 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT * FROM APPOINTMENTS\s
-                         JOIN customers\s
+                         SELECT Appointment_ID, Title, Description, Location, Type,\s
+                                    Start, End, appointments.Customer_ID, Customer_Name,\s
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email\s
+                         FROM client_schedule.appointments\s
+                         INNER JOIN customers\s
                               ON customers.Customer_ID = appointments.Customer_ID\s
-                         JOIN contacts\s
+                         INNER JOIN contacts\s
                               ON contacts.Contact_ID = appointments.Contact_ID
                          WHERE Appointment_ID = ?
                          """)) {
