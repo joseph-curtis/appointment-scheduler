@@ -41,7 +41,8 @@ public abstract class DBUtil {
     private static final String USERNAME = "db.username";
     private static final String PASSWORD = "db.password";
 
-    private static MysqlDataSource dataSource;
+    private static final MysqlDataSource dataSource = new MysqlDataSource();
+
     private static Connection connection = null;
     private static Statement statement;
     private static ResultSet resultSet;
@@ -51,7 +52,6 @@ public abstract class DBUtil {
             Properties properties = new Properties();
             properties.load(new FileInputStream("src/DbConnection.properties"));
 
-            dataSource = new MysqlDataSource();
             dataSource.setUrl(properties.getProperty(DB_URL));
             dataSource.setUser(properties.getProperty(USERNAME));
             dataSource.setPassword(properties.getProperty(PASSWORD));
@@ -73,6 +73,7 @@ public abstract class DBUtil {
      * Open DB connection manually using DriverManager class.
      * <p>Only use if calling directly from this static class.</p>
      */
+    @Deprecated
     public static void openConnection() {
         try {
             Class.forName(MYSQL_JDBC_DRIVER); // Locate Driver
@@ -91,6 +92,7 @@ public abstract class DBUtil {
      * Manual implementation to close DB connection.
      * <p>Only use if calling directly from this static class.</p>
      */
+    @Deprecated
     public static void closeConnection() {
         try {
             resultSet.close();
@@ -164,16 +166,13 @@ public abstract class DBUtil {
      */
     public static ObservableList<FirstLevelDivision> getAllCountries() {
         ObservableList<FirstLevelDivision> countriesList = FXCollections.observableArrayList();
-        try {
-            if (connection == null || connection.isClosed()) openConnection();
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-            resultSet = statement.executeQuery(
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
                 """
-                        SELECT (Country_ID, Country) \s
+                        SELECT Country_ID, Country \s
                         FROM client_schedule.countries
-                        """);
-
+                        """)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 countriesList.add(new FirstLevelDivision(0, "",
                         resultSet.getInt("Country_ID"),
@@ -182,15 +181,14 @@ public abstract class DBUtil {
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
         return countriesList;
     }
 
     /**
      * Get a list of all divisions
-     * @return
+     * @param selectedCountry DTO with country data
+     * @return all divisions per the specified country in selectedCountry
      */
     public static ObservableList<FirstLevelDivision> getDivisionsByCountry(FirstLevelDivision selectedCountry) {
         ObservableList<FirstLevelDivision> divisionsList = FXCollections.observableArrayList();
@@ -204,6 +202,7 @@ public abstract class DBUtil {
                         WHERE countries.Country_ID = ?
                         """)) {
             preparedStatement.setInt(1, selectedCountry.countryId());
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 divisionsList.add(new FirstLevelDivision(
                         resultSet.getInt("Division_ID"),
@@ -214,8 +213,6 @@ public abstract class DBUtil {
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
         return divisionsList;
     }
