@@ -114,16 +114,16 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
              PreparedStatement statement = conn.prepareStatement(
                  """
                          INSERT INTO client_schedule.customers
-                         (Customer_ID, Customer_Name, Address, Postal_Code, Phone, Division_ID,\s
-                         Last_Updated_By, Create_Date, Last_Update)\s
+                         (Customer_Name, Address, Postal_Code, Phone, Division_ID,\s
+                         Created_By, Last_Updated_By, Create_Date, Last_Update)\s
                          VALUES (?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
                          """)) {
-            statement.setInt(1, customer.id());
-            statement.setString(2, customer.name());
-            statement.setString(3, customer.address());
-            statement.setString(4, customer.postalCode());
-            statement.setString(5, customer.phone());
-            statement.setInt(6, customer.divisionId());
+            statement.setString(1, customer.name());
+            statement.setString(2, customer.address());
+            statement.setString(3, customer.postalCode());
+            statement.setString(4, customer.phone());
+            statement.setInt(5, customer.divisionId());
+            statement.setString(6, user.name());
             statement.setString(7, user.name());
             return statement.execute();
         }
