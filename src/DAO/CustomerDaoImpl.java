@@ -39,7 +39,7 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
     @Override
     public ObservableList<Customer> getAll() throws SQLException {
         ResultSet resultSet = null;
-        ObservableList<Customer> customerList = FXCollections.observableArrayList();
+        ObservableList<Customer> customersList = FXCollections.observableArrayList();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
@@ -52,10 +52,14 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
                          """)) {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                customerList.add(createRecordFromResultSet(resultSet));
+                customersList.add(createRecordFromResultSet(resultSet));
             }
         }
-        return customerList;
+        finally {
+            if (resultSet != null)
+                resultSet.close();
+        }
+        return customersList;
     }
 
     /**
@@ -84,9 +88,8 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
             }
         }
         finally {
-            if (resultSet != null) {
+            if (resultSet != null)
                 resultSet.close();
-            }
         }
     }
 
