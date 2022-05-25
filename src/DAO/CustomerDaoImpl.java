@@ -38,7 +38,6 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
      */
     @Override
     public ObservableList<Customer> getAll() throws SQLException {
-        ResultSet resultSet = null;
         ObservableList<Customer> customersList = FXCollections.observableArrayList();
 
         try (Connection conn = dataSource.getConnection();
@@ -50,14 +49,10 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
                          JOIN countries\s
                               ON first_level_divisions.Country_ID = countries.Country_ID
                          """)) {
-            resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 customersList.add(createRecordFromResultSet(resultSet));
             }
-        }
-        finally {
-            if (resultSet != null)
-                resultSet.close();
         }
         return customersList;
     }
@@ -67,8 +62,6 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
      */
     @Override
     public Optional<Customer> getById(int id) throws SQLException {
-        ResultSet resultSet = null;
-
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
@@ -80,16 +73,12 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
                          WHERE Customer_ID = ?
                          """)) {
             statement.setInt(1, id);
-            resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return Optional.of(createRecordFromResultSet(resultSet));
             } else {
                 return Optional.empty();
             }
-        }
-        finally {
-            if (resultSet != null)
-                resultSet.close();
         }
     }
 
