@@ -34,17 +34,6 @@ import java.util.Optional;
 public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
 
     /**
-     * Gets an ID for newly created Customer, ensuring no conflicts.
-     * @return a new ID unique to the CUSTOMERS table in database
-     */
-    public static int getUniqueId() {
-
-        // TODO:  implement method!
-
-        return 0;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -63,7 +52,7 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
                          """)) {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                customerList.add(createDtoRecord(resultSet));
+                customerList.add(createRecordFromResultSet(resultSet));
             }
         }
         return customerList;
@@ -89,7 +78,7 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(createDtoRecord(resultSet));
+                return Optional.of(createRecordFromResultSet(resultSet));
             } else {
                 return Optional.empty();
             }
@@ -134,9 +123,6 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
      */
     @Override
     public boolean update(Customer customer, User user) throws SQLException {
-
-        //TODO:  insert Last_Update (TIMESTAMP) field
-
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
@@ -178,7 +164,7 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
      * {@inheritDoc}
      */
     @Override
-    protected Customer createDtoRecord(ResultSet resultSet) throws SQLException {
+    protected Customer createRecordFromResultSet(ResultSet resultSet) throws SQLException {
         return new Customer(resultSet.getInt("Customer_ID"),
                 resultSet.getString("Customer_Name"),
                 resultSet.getString("Address"),

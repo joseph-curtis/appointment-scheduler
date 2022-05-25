@@ -30,17 +30,6 @@ import java.util.Optional;
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
     /**
-     * Gets an ID for newly created Appointment, ensuring no conflicts.
-     * @return a new ID unique to the APPOINTMENTS table in database
-     */
-    public static int getUniqueId() {
-
-        // TODO:  implement method!
-
-        return 0;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -64,7 +53,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Optional.of(createDtoRecord(resultSet));
+                return Optional.of(createRecordFromResultSet(resultSet));
             } else {
                 return Optional.empty();
             }
@@ -156,7 +145,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
      * {@inheritDoc}
      */
     @Override
-    protected Appointment createDtoRecord(ResultSet resultSet) throws SQLException {
+    protected Appointment createRecordFromResultSet(ResultSet resultSet) throws SQLException {
 
         // TODO:  get contact name and email from table JOIN
 

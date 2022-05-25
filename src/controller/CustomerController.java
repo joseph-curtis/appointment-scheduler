@@ -66,19 +66,6 @@ public class CustomerController {
         // TODO:  set country combo box
     }
 
-    /**
-     * Get existing ID or new unique ID if Appointment is new
-     * @see DAO.CustomerDaoImpl#getUniqueId()
-     * @return a unique customer ID
-     */
-    protected int acquireId() {
-        if (existingCustomer != null) {
-            return existingCustomer.id();          // get ID of existing part to edit
-        } else {
-            return CustomerDaoImpl.getUniqueId();  // get new ID for new part
-        }
-    }
-
     @FXML
     private Label currentOperationLabel;
 
@@ -103,6 +90,10 @@ public class CustomerController {
     @FXML
     private ComboBox<?> divisionComboBox;
 
+    /**
+     * Cancels add or modify operation and returns to the main menu.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionCancel(ActionEvent event) {
         ((Node)(event.getSource())).getScene().getWindow().hide();
@@ -128,8 +119,14 @@ public class CustomerController {
             )
                 throw new BlankInputException("Fields Cannot be Blank");
 
+            // Acquire ID:
+            int id;
+            if (existingCustomer != null)
+                id = existingCustomer.id();          // get ID of existing customer to edit
+            else
+                id = 0;  // inserting zero gets the next new ID
+
             // Get input from fields:
-            int id = acquireId();
             String name = nameTxt.getText();
             String address = addressTxt.getText();
             String postCode = postCodeTxt.getText();
@@ -156,15 +153,19 @@ public class CustomerController {
             if (existingCustomer == null) {
                 // add new customer:
                 // TODO =====  change user to pass in logged in user as param
-                dbCustomers.add(savedCustomer, new User(99, "temp_user"));
+                if (!dbCustomers.add(savedCustomer, new User(99, "temp_user")))
+                    throw new DataObjNotFoundException("Attempt to add Customer failed!", savedCustomer);
             } else {
-                int index = dbCustomers.getAll().indexOf(existingCustomer);
-
-                if (index < 0)
-                    throw new DataObjNotFoundException("Existing Part to modify no longer exists in Inventory!");
-                else
-                    // (saves modified customer)
-                    dbCustomers.update(savedCustomer, new User(99, "temp_user"));
+                // save modified customer:
+                // TODO =====  change user to pass in logged in user as param
+                if (!dbCustomers.update(savedCustomer, new User(99, "temp_user"))) {
+                    int index = dbCustomers.getAll().indexOf(existingCustomer);
+                    // check for record update fail:
+                    if (index < 0)
+                        throw new DataObjNotFoundException("Existing Customer to modify no longer exists!", savedCustomer);
+                    else
+                        throw new SQLException();
+                }
             }
 
             // go back to the Main screen:

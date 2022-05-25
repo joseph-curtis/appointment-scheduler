@@ -86,5 +86,5 @@ public abstract class DataAccessObject <T extends DataTransferObject, U> {
      * @return the Data Transfer Object
      * @throws Exception if any error occurs.
      */
-    protected abstract T createDtoRecord(ResultSet resultSet) throws Exception;
+    protected abstract T createRecordFromResultSet(ResultSet resultSet) throws Exception;
 }

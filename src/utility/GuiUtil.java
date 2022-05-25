@@ -130,7 +130,7 @@ public final class GuiUtil {
      */
     public static void handleDataObjNotFoundException(DataObjNotFoundException exception) {
         Alert inventoryError = new Alert(Alert.AlertType.ERROR);
-        inventoryError.setHeaderText("Error in Inventory");
+        inventoryError.setHeaderText("Database Error");
         inventoryError.setContentText(exception.getMessage());
         inventoryError.showAndWait();
     }
