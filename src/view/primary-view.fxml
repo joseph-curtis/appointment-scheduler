@@ -50,8 +50,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controller.PrimaryController">
+<VBox minWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -99,21 +98,22 @@
                         </VBox>
                      </left>
                      <center>
-                        <BorderPane style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
+                        <BorderPane maxWidth="1.7976931348623157E308" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                            <center>
                               <TableView fx:id="appointmentsTable">
                                 <columns>
-                                  <TableColumn fx:id="appointment_id_col" prefWidth="60.0" text="ID" />
+                                  <TableColumn fx:id="appointment_id_col" prefWidth="40.0" text="ID" />
                                   <TableColumn fx:id="title_col" prefWidth="90.0" text="Title" />
                                     <TableColumn fx:id="description_col" prefWidth="150.0" text="Description" />
-                                    <TableColumn fx:id="location_col" prefWidth="75.0" text="Location" />
+                                    <TableColumn fx:id="location_col" text="Location" />
                                     <TableColumn fx:id="contact_name_col" prefWidth="90.0" text="Contact" />
-                                    <TableColumn fx:id="contact_email_col" prefWidth="75.0" text="Email" />
-                                    <TableColumn fx:id="type_col" prefWidth="75.0" text="Type" />
-                                    <TableColumn fx:id="start_datetime_col" prefWidth="75.0" text="Start" />
-                                    <TableColumn fx:id="end_datetime_col" prefWidth="75.0" text="End" />
-                                    <TableColumn fx:id="appointment_cust_id_col" prefWidth="70.0" text="Customer" />
-                                    <TableColumn fx:id="user_id_col" prefWidth="60.0" text="User" />
+                                    <TableColumn fx:id="contact_email_col" prefWidth="140.0" text="Email" />
+                                    <TableColumn fx:id="type_col" text="Type" />
+                                    <TableColumn fx:id="start_datetime_col" prefWidth="100.0" text="Start" />
+                                    <TableColumn fx:id="end_datetime_col" prefWidth="100.0" text="End" />
+                                    <TableColumn fx:id="appointment_cust_id_col" prefWidth="50.0" text="Cust ID" />
+                                    <TableColumn fx:id="appointment_cust_name_col" prefWidth="110.0" text="Customer" />
+                                    <TableColumn fx:id="user_id_col" prefWidth="40.0" text="User" />
                                 </columns>
                               </TableView>
                            </center>

@@ -17,10 +17,13 @@ package controller;
 
 import DAO.AppointmentDaoImpl;
 import DAO.CustomerDaoImpl;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import model.Appointment;
 import model.Customer;
@@ -31,6 +34,9 @@ import utility.GuiUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -58,6 +64,49 @@ public class PrimaryController implements Initializable, AuthenticatedController
     @Override
     public void passExistingRecord(DataTransferObject passedObject) {
         // No object to pass in here.
+    }
+
+    /**
+     * Initializes the controller class, formatting the TableView columns
+     * <p>This uses Lambdas in order to make use of Java Records classes.</p>
+     * @param location The location used to resolve relative paths for the root object,
+     *            or null if the location is not known.
+     * @param resources The resources used to localize the root object,
+     *                       or null if the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
+        CustomerDaoImpl customersDb = new CustomerDaoImpl();
+        try {
+            appointmentsTable.setItems(appointmentsDb.getAll());
+            appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+            title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
+            description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
+            location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
+            type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
+
+            // TODO ====  set datetime for start and end values!
+//            start_datetime_col.setCellValueFactory(p -> LocalDateTime.of(p.getValue().start().toLocalDate(), p.getValue().start().toLocalTime());
+//            end_datetime_col.setCellValueFactory(a -> new Date(String.valueOf(a.getValue().end())).asObject());
+
+            appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
+            appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
+            contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
+            contact_email_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactEmail()));
+            user_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().userId()).asObject());
+
+            customersTable.setItems(customersDb.getAll());
+            customer_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+            name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().name()));
+            address_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().address()));
+            postalcode_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().postalCode()));
+            phone_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().phone()));
+            division_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().division()));
+            country_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().country()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -92,6 +141,9 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     @FXML
     private TableColumn<Appointment, Integer> appointment_cust_id_col;
+
+    @FXML
+    private TableColumn<Appointment, String> appointment_cust_name_col;
 
     @FXML
     private TableColumn<Appointment, Integer> user_id_col;
@@ -140,11 +192,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     @FXML
     private Tab customersTab;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-    }
 
     /**
      * Quits the application.
