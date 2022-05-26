@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
+import model.User;
 import utility.GuiUtil;
 
 import java.io.IOException;
@@ -117,9 +118,11 @@ public class LoginController implements Initializable {
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
 
+        User currentUser = new User(0, "TEST_USER");
         // TODO: implement username/password lookup and verification
 
-        GuiUtil.changeStage(event,
+        GuiUtil.newStage(event,
+                currentUser,
                 "/view/primary-view.fxml",
                 "Appointment Scheduler - Calendar View",
                 Modality.NONE);

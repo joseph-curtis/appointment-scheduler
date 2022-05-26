@@ -24,6 +24,8 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import model.Appointment;
 import model.Customer;
+import model.DataTransferObject;
+import model.User;
 import utility.GuiUtil;
 
 import java.io.IOException;
@@ -32,7 +34,31 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class PrimaryController implements Initializable {
+/**
+ * Controller for the main menu.
+ * @author Joseph Curtis
+ * @version 2022.05.25
+ */
+public class PrimaryController implements Initializable, AuthenticatedController {
+
+    User user;      // The currently logged-in user
+
+    /**
+     * Authenticates user that is signed in.
+     * @param user currently logged-in user
+     */
+    @Override
+    public void passCurrentUser(DataTransferObject user) {
+        this.user = (User) user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void passExistingRecord(DataTransferObject passedObject) {
+        // No object to pass in here.
+    }
 
     @FXML
     private TableView<Appointment> appointmentsTable;
@@ -170,7 +196,8 @@ public class PrimaryController implements Initializable {
     void onActionAddAppointment(ActionEvent event) {
         String fxmlFile = "/view/editAppointment-view.fxml";
         try {
-            GuiUtil.changeStage(event,
+            GuiUtil.newStage(event,
+                    user,
                     fxmlFile,
                     "Add Appointment",
                     Modality.WINDOW_MODAL);
@@ -188,7 +215,8 @@ public class PrimaryController implements Initializable {
     void onActionAddCustomer(ActionEvent event) {
         String fxmlFile = "/view/editCustomer-view.fxml";
         try {
-            GuiUtil.changeStage(event,
+            GuiUtil.newStage(event,
+                    user,
                     fxmlFile,
                     "Add Appointment",
                     Modality.WINDOW_MODAL);

@@ -16,6 +16,7 @@
 package utility;
 
 import controller.AppointmentController;
+import controller.AuthenticatedController;
 import controller.CustomerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -39,22 +40,44 @@ import java.util.function.BooleanSupplier;
  * <p>Use for easier maintenance of code
  * instead of code duplication</p>
  * @author Joseph Curtis
- * @version 2022.05.09
+ * @version 2022.05.25
  */
 public final class GuiUtil {
     /**
-     * Switches scene to Create New Part or Product form.
+     * Opens a new stage (window)
      * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param user the currently logged-in user
      * @param fxmlFileName the .fxml file holding the next scene
      * @param windowTitle the new window title to set
+     * @param modality mode for new window (NONE=unlocked, WINDOW_MODAL=locked to new window)
      * @return FXML Loader for use when getting the controller
      * @throws IOException if .fxml filename cannot be found
      */
-    public static FXMLLoader changeStage(ActionEvent event,
-                                         String fxmlFileName,
-                                         String windowTitle,
-                                         Modality modality) throws IOException {
+    public static void newStage(ActionEvent event,
+                                DataTransferObject user,
+                                String fxmlFileName,
+                                String windowTitle,
+                                Modality modality) throws IOException {
 
+        newStage(event, null, user, fxmlFileName, windowTitle, modality);
+    }
+
+    /**
+     * Opens a new window for add/modify appointments or customers
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param passedObject the existing database object to modify, or null
+     * @param user the currently logged-in user
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @param modality mode for new window (NONE=unlocked, WINDOW_MODAL=locked to new window)
+     * @throws IOException if .fxml filename cannot be found
+     */
+    public static void newStage(ActionEvent event,
+                                DataTransferObject passedObject,
+                                DataTransferObject user,
+                                String fxmlFileName,
+                                String windowTitle,
+                                Modality modality) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(GuiUtil.class.getResource(fxmlFileName));
         Parent root = loader.load();
@@ -65,29 +88,14 @@ public final class GuiUtil {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner( ((Node)event.getSource()).getScene().getWindow() );
 
-        if(modality.equals(Modality.NONE)) {
-            ((Node)(event.getSource())).getScene().getWindow().hide();
-        }
+        if(modality.equals(Modality.NONE))
+            ((Node)(event.getSource())).getScene().getWindow().hide();  // close parent window
 
         stage.show();
 
-        return loader;
-    }
-
-    public static void changeStagePassObj(ActionEvent event,
-                                          DataTransferObject passedObject,
-                                          String fxmlFileName,
-                                          String windowTitle,
-                                          Modality modality) throws IOException {
-        FXMLLoader loader = changeStage(event, fxmlFileName, windowTitle, modality);
-
-        if (passedObject instanceof Appointment) {
-            AppointmentController appointmentController = loader.getController();
-            appointmentController.passExistingAppointment(passedObject);
-        } else if (passedObject instanceof Customer) {
-            CustomerController customerController = loader.getController();
-            customerController.passExistingCustomer(passedObject);
-        }
+        AuthenticatedController controller = loader.getController();
+        controller.passCurrentUser(user);
+        controller.passExistingRecord(passedObject);
     }
 
     /**

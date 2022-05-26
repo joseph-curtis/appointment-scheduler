@@ -45,7 +45,7 @@ public class MainApplication extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"));
 
         primaryStage.setTitle("Appointment Scheduler - Login");
-        primaryStage.setScene(new Scene(root, 400, 315));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

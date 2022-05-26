@@ -36,19 +36,34 @@ import java.sql.SQLException;
 /**
  * Controller for the add or modify Customer form.
  * @author Joseph Curtis
- * @version 2022.05.24
+ * @version 2022.05.25
  */
-public class CustomerController {
-    //The Customer in the database to modify
-    Customer existingCustomer;
+public class CustomerController implements AuthenticatedController {
+
+    Customer existingCustomer;  // The Customer in the database to modify
+    User user;           // The currently logged-in user
+
+    /**
+     * Authenticates user that is signed in.
+     * @param user currently logged-in user
+     */
+    @Override
+    public void passCurrentUser(DataTransferObject user) {
+        this.user = (User) user;
+    }
 
     /**
      * Sets all properties for edited item to populate to corresponding text fields.
      * <p>The existing Customer in DB is passed when changing the scene</p>
-     * @see utility.GuiUtil#changeStagePassObj(ActionEvent, DataTransferObject, String, String, Modality)
-     * @param passedObject existing appointment to be edited
+     * @see utility.GuiUtil#newStage(ActionEvent, DataTransferObject, DataTransferObject, String, String, Modality)
+     * @param passedObject existing customer to be edited
      */
-    public void passExistingCustomer(DataTransferObject passedObject) {
+    @Override
+    public void passExistingRecord(DataTransferObject passedObject) {
+        if (passedObject == null) {
+            existingCustomer = null;
+            return;
+        }
         existingCustomer = (Customer) passedObject;
 
         currentOperationLabel.setText("Edit Customer");
@@ -152,13 +167,11 @@ public class CustomerController {
             CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
             if (existingCustomer == null) {
                 // add new customer:
-                // TODO =====  change user to pass in logged in user as param
-                if (!dbCustomers.add(savedCustomer, new User(99, "temp_user")))
+                if (!dbCustomers.add(savedCustomer, user))
                     throw new DataObjNotFoundException("Attempt to add Customer failed!", savedCustomer);
             } else {
                 // save modified customer:
-                // TODO =====  change user to pass in logged in user as param
-                if (!dbCustomers.update(savedCustomer, new User(99, "temp_user"))) {
+                if (!dbCustomers.update(savedCustomer, user)) {
                     int index = dbCustomers.getAll().indexOf(existingCustomer);
                     // check for record update fail:
                     if (index < 0)
@@ -190,11 +203,13 @@ public class CustomerController {
     @FXML
     void onActionListCountries(ActionEvent event) {
 
+        // TODO : implement on click method
     }
 
     @FXML
     void onActionListDivisions(ActionEvent event) {
 
+        // TODO : implement on click method
     }
 
 }
