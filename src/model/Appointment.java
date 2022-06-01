@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Represents a Transfer Object used as a data carrier for Appointments.
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * MySQL driver v8.0.x automatically converts to SystemDefault time
  * when extracting from ResultSet.</p>
  * @author Joseph Curtis
- * @version 2022.05.19
+ * @version 2022.06.01
  */
 public record Appointment(Integer id,
                           String title,
@@ -27,4 +28,22 @@ public record Appointment(Integer id,
                           Integer contactId,
                           String contactName,
                           String contactEmail) implements DataTransferObject {
+
+    /**
+     * Property used for Cell Value Factories
+     * @return formatted appointment start date & time
+     */
+    public String getStart() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return start.format(format);
+    }
+
+    /**
+     * Property used for Cell Value Factories
+     * @return formatted appointment start date & time
+     */
+    public String getEnd() {
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        return end.format(format);
+    }
 }

@@ -109,8 +109,8 @@
                                     <TableColumn fx:id="contact_name_col" prefWidth="90.0" text="Contact" />
                                     <TableColumn fx:id="contact_email_col" prefWidth="140.0" text="Email" />
                                     <TableColumn fx:id="type_col" text="Type" />
-                                    <TableColumn fx:id="start_datetime_col" prefWidth="100.0" text="Start" />
-                                    <TableColumn fx:id="end_datetime_col" prefWidth="100.0" text="End" />
+                                    <TableColumn fx:id="start_datetime_col" prefWidth="110.0" text="Start" />
+                                    <TableColumn fx:id="end_datetime_col" prefWidth="110.0" text="End" />
                                     <TableColumn fx:id="appointment_cust_id_col" prefWidth="50.0" text="Cust ID" />
                                     <TableColumn fx:id="appointment_cust_name_col" prefWidth="110.0" text="Customer" />
                                     <TableColumn fx:id="user_id_col" prefWidth="40.0" text="User" />
@@ -158,10 +158,10 @@
                                  <columns>
                                     <TableColumn fx:id="customer_id_col" prefWidth="75.0" text="ID" />
                                     <TableColumn fx:id="name_col" prefWidth="150.0" text="Name" />
-                                    <TableColumn fx:id="address_col" prefWidth="200.0" text="Address" />
+                                    <TableColumn fx:id="address_col" prefWidth="220.0" text="Address" />
                                     <TableColumn fx:id="postalcode_col" prefWidth="100.0" text="Post Code" />
                                     <TableColumn fx:id="phone_col" prefWidth="125.0" text="Phone" />
-                                    <TableColumn fx:id="division_col" prefWidth="125.0" text="Division" />
+                                    <TableColumn fx:id="division_col" prefWidth="140.0" text="Division" />
                                     <TableColumn fx:id="country_col" prefWidth="125.0" text="Country" />
                                  </columns>
                               </TableView>

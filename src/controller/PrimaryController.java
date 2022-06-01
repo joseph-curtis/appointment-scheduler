@@ -43,7 +43,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.05.25
+ * @version 2022.06.01
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -85,11 +85,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
             location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
             type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
-
-            // TODO ====  set datetime for start and end values!
-//            start_datetime_col.setCellValueFactory(p -> LocalDateTime.of(p.getValue().start().toLocalDate(), p.getValue().start().toLocalTime());
-//            end_datetime_col.setCellValueFactory(a -> new Date(String.valueOf(a.getValue().end())).asObject());
-
+            start_datetime_col.setCellValueFactory(new PropertyValueFactory<>("start"));
+            end_datetime_col.setCellValueFactory(new PropertyValueFactory<>("end"));
             appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
             appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
             contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
