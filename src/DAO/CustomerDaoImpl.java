@@ -91,14 +91,13 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
      */
     @Override
     public boolean add(Customer customer, User user) throws SQLException {
-        if (getById(customer.id()).isPresent()) {
+        if (getById(customer.id()).isPresent())
             return false;
-        }
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         INSERT INTO client_schedule.customers
+                         INSERT INTO client_schedule.customers\s
                          (Customer_Name, Address, Postal_Code, Phone, Division_ID,\s
                          Created_By, Last_Updated_By, Create_Date, Last_Update)\s
                          VALUES (?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)

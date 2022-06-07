@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.05.24
+ * @version 2022.06.06
  */
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
@@ -72,7 +72,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                          INNER JOIN customers\s
                               ON customers.Customer_ID = appointments.Customer_ID\s
                          INNER JOIN contacts\s
-                              ON contacts.Contact_ID = appointments.Contact_ID
+                              ON contacts.Contact_ID = appointments.Contact_ID\s
                          WHERE Appointment_ID = ?
                          """)) {
             statement.setInt(1, id);
@@ -90,11 +90,8 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
      */
     @Override
     public boolean add(Appointment appointment, User user) throws SQLException {
-        if (getById(appointment.id()).isPresent()) {
+        if (getById(appointment.id()).isPresent())
             return false;
-        }
-
-        // TODO:  insert Create_Date (DATETIME) field
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
@@ -191,4 +188,36 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                 resultSet.getString("Contact_Name"),
                 resultSet.getString("Email"));
     }
+
+    /**
+     * Get all Associated Appointments for a customer
+     * @param id Target customer's id
+     * @return list of all Appointments for customer
+     * @throws SQLException if an error occurs.
+     */
+    public ObservableList<Appointment> getAllByCustomerId(int id) throws SQLException {
+        ObservableList<Appointment> allAppointmentsByCustomer = FXCollections.observableArrayList();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Appointment_ID, Title, Description, Location, Type,\s
+                                        Start, End, appointments.Customer_ID, Customer_Name,\s
+                                        User_ID, appointments.Contact_ID, Contact_Name, Email\s
+                             FROM client_schedule.appointments\s
+                             INNER JOIN customers\s
+                                  ON customers.Customer_ID = appointments.Customer_ID\s
+                             INNER JOIN contacts\s
+                                  ON contacts.Contact_ID = appointments.Contact_ID\s
+                             WHERE appointments.Customer_ID = ?
+                             """)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allAppointmentsByCustomer.add(createRecordFromResultSet(resultSet));
+            }
+        }
+        return allAppointmentsByCustomer;
+    }
+
 }
