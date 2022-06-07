@@ -15,6 +15,7 @@
 
 package controller;
 
+import DAO.AppointmentDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -23,11 +24,17 @@ import javafx.stage.Modality;
 import model.Appointment;
 import model.DataTransferObject;
 import model.User;
+import utility.BlankInputException;
+import utility.DataObjNotFoundException;
+import utility.GuiUtil;
+import utility.InvalidInputException;
+
+import java.sql.SQLException;
 
 /**
  * Controller for the add or modify Appointment form.
  * @author Joseph Curtis
- * @version 2022.05.25
+ * @version 2022.06.06
  */
 public class AppointmentController implements AuthenticatedController {
 
@@ -121,16 +128,98 @@ public class AppointmentController implements AuthenticatedController {
 
     @FXML
     void onActionSaveAppointment(ActionEvent event) {
+        Appointment savedAppointment;
+
+        try {
+            if (titleTxt.getText().isBlank()
+                    || descriptionTxt.getText().isBlank()
+                    || locationTxt.getText().isBlank()
+                    || typeTxt.getText().isBlank()
+//                    || customerIdComboBox.isBlank()
+//                    || contactIdComboBox.isBlank()
+                // TODO check for blank combobox selection
+               //  TODO check for start & end date & time selection
+            )
+                throw new BlankInputException("Fields Cannot be Blank");
+
+            // Acquire ID:
+            int id;
+            if (existingAppointment != null)
+                id = existingAppointment.id();          // get ID of existing customer to edit
+            else
+                id = 0;  // inserting zero gets the next new ID
+
+            // Get input from fields:
+            String title = titleTxt.getText();
+            String description = descriptionTxt.getText();
+            String location = locationTxt.getText();
+            String type = typeTxt.getText();
+
+            // TODO get combo box to display customer and contact ids
+            //  TODO  also get the ID ....
+            int customerId = 1;
+            int contactId = 1;
+
+            // validate input:
+            if (title.length() > 50)
+                GuiUtil.handleLogicalError("Title cannot exceed 50 characters");
+            if (description.length() > 50)
+                GuiUtil.handleLogicalError("Description cannot exceed 50 characters");
+            if (location.length() > 50)
+                GuiUtil.handleLogicalError("Location cannot exceed 50 characters");
+            if (type.length() > 50)
+                GuiUtil.handleLogicalError("Type cannot exceed 50 characters");
+
+            // create Appointment to save:
+
+            // TODO:: parse start and end date and times
+
+            savedAppointment = new Appointment(id, title, description, location, type,
+                    null, null,
+                    customerId, "", user.id(), contactId, "", "");
+
+            // update database with Appointment (add or modify):
+            AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
+            if (existingAppointment == null) {
+                // add new appointment:
+                if (!dbAppointments.add(savedAppointment, user))
+                    throw new DataObjNotFoundException("Attempt to add Appointment failed!", savedAppointment);
+            } else {
+                // save modified appointment:
+                if (!dbAppointments.update(savedAppointment, user)) {
+                    int index = dbAppointments.getAll().indexOf(existingAppointment);
+                    // check for record update fail:
+                    if (index < 0)
+                        throw new DataObjNotFoundException("Existing Appointment to modify no longer exists!", savedAppointment);
+                    else
+                        throw new SQLException();
+                }
+            }
+            // go back to the Main screen:
+            ((Node)(event.getSource())).getScene().getWindow().hide();
+
+        } catch (DataObjNotFoundException e) {
+            GuiUtil.handleDataObjNotFoundException(e);
+        } catch (BlankInputException e) {
+            GuiUtil.handleBlankInputException(e);
+        } catch (InvalidInputException e) {
+            // Do nothing and return to add/modify appointment screen
+        } catch (SQLException e) {
+            System.out.println("Database Error! Check connection and SQL");
+            e.printStackTrace();
+        }
 
     }
 
     @FXML
     void onActionListContacts(ActionEvent event) {
 
+        // TODO : implement on click method
     }
 
     @FXML
     void onActionListCustomers(ActionEvent event) {
 
+        // TODO : implement on click method
     }
 }

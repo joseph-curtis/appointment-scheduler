@@ -19,6 +19,7 @@ import DAO.AppointmentDaoImpl;
 import DAO.CustomerDaoImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,16 +35,13 @@ import utility.GuiUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.01
+ * @version 2022.06.06
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -76,34 +74,37 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
-        CustomerDaoImpl customersDb = new CustomerDaoImpl();
-        try {
-            appointmentsTable.setItems(appointmentsDb.getAll());
-            appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
-            title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
-            description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
-            location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
-            type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
-            start_datetime_col.setCellValueFactory(new PropertyValueFactory<>("start"));
-            end_datetime_col.setCellValueFactory(new PropertyValueFactory<>("end"));
-            appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
-            appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
-            contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
-            contact_email_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactEmail()));
-            user_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().userId()).asObject());
+        initAppointmentsTable();
+        initCustomersTable();
 
-            customersTable.setItems(customersDb.getAll());
-            customer_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
-            name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().name()));
-            address_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().address()));
-            postalcode_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().postalCode()));
-            phone_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().phone()));
-            division_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().division()));
-            country_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().country()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+//        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
+//        CustomerDaoImpl customersDb = new CustomerDaoImpl();
+//        try {
+//            appointmentsTable.setItems(appointmentsDb.getAll());
+//            appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+//            title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
+//            description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
+//            location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
+//            type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
+//            start_datetime_col.setCellValueFactory(new PropertyValueFactory<>("start"));
+//            end_datetime_col.setCellValueFactory(new PropertyValueFactory<>("end"));
+//            appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
+//            appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
+//            contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
+//            contact_email_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactEmail()));
+//            user_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().userId()).asObject());
+//
+//            customersTable.setItems(customersDb.getAll());
+//            customer_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+//            name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().name()));
+//            address_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().address()));
+//            postalcode_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().postalCode()));
+//            phone_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().phone()));
+//            division_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().division()));
+//            country_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().country()));
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML
@@ -249,6 +250,9 @@ public class PrimaryController implements Initializable, AuthenticatedController
             System.out.println("Error finding file: " + fxmlFile);
             e.printStackTrace();
         }
+        // refresh the tableview to reflect possible changes
+        initAppointmentsTable();
+        appointmentsTable.refresh();
     }
 
     /**
@@ -262,12 +266,15 @@ public class PrimaryController implements Initializable, AuthenticatedController
             GuiUtil.newStage(event,
                     user,
                     fxmlFile,
-                    "Add Appointment",
+                    "Add Customer",
                     Modality.WINDOW_MODAL);
         } catch (IOException e) {
             System.out.println("Error finding file: " + fxmlFile);
             e.printStackTrace();
         }
+        // refresh the tableview to reflect possible changes
+        initCustomersTable();
+        customersTable.refresh();
     }
 
     /**
@@ -280,7 +287,21 @@ public class PrimaryController implements Initializable, AuthenticatedController
         if (selectedAppointment == null)
             return;     // if nothing is selected, do nothing
 
-
+        String fxmlFile = "/view/editAppointment-view.fxml";
+        try {
+            GuiUtil.newStage(event,
+                    selectedAppointment,
+                    user,
+                    fxmlFile,
+                    "Update Appointment",
+                    Modality.WINDOW_MODAL);
+        } catch (IOException e) {
+            System.out.println("Error finding file: " + fxmlFile);
+            e.printStackTrace();
+        }
+        // refresh the tableview to reflect possible changes
+        initAppointmentsTable();
+        appointmentsTable.refresh();
     }
 
     /**
@@ -289,6 +310,25 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
+        Customer selectedCustomer = customersTable.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null)
+            return;     // if nothing is selected, do nothing
+
+        String fxmlFile = "/view/editCustomer-view.fxml";
+        try {
+            GuiUtil.newStage(event,
+                    selectedCustomer,
+                    user,
+                    fxmlFile,
+                    "Update Customer",
+                    Modality.WINDOW_MODAL);
+        } catch (IOException e) {
+            System.out.println("Error finding file: " + fxmlFile);
+            e.printStackTrace();
+        }
+        // refresh the tableview to reflect possible changes
+        initCustomersTable();
+        customersTable.refresh();
     }
 
     /**
@@ -303,9 +343,9 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
         AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
         GuiUtil.confirmDeletion(
-                "Delete Customer Confirmation",
-                "Delete Selected Customer \"" + deletedAppointment.title() + "\" ?" ,
-                "Customer will be deleted.  This CANNOT be undone!" ,
+                "Delete Appointment Confirmation",
+                "Delete Selected Appointment \"" + deletedAppointment.title() + "\" ?" ,
+                "Appointment will be deleted.  This CANNOT be undone!" ,
                 ()-> {
                     try {
                         return dbAppointments.delete(deletedAppointment.id());
@@ -315,6 +355,9 @@ public class PrimaryController implements Initializable, AuthenticatedController
                     return false;
                 }
         );
+        // refresh the tableview to reflect possible changes
+        initAppointmentsTable();
+        appointmentsTable.refresh();
     }
 
     /**
@@ -327,20 +370,77 @@ public class PrimaryController implements Initializable, AuthenticatedController
         if (deletedCustomer == null)
             return;     // no selection means nothing to delete or confirm
 
-        CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
-        GuiUtil.confirmDeletion(
-                "Delete Customer Confirmation",
-                "Delete Selected Customer \"" + deletedCustomer.name() + "\" ?" ,
-                "Customer will be deleted.  This CANNOT be undone!" ,
-                ()-> {
-                    try {
-                        return dbCustomers.delete(deletedCustomer.id());
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-        );
+        AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
+        try {
+            ObservableList<Appointment> appointmentsList = dbAppointments.getAllByCustomerId(deletedCustomer.id());
+
+            if (appointmentsList.isEmpty()) {
+                CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
+                GuiUtil.confirmDeletion(
+                        "Delete Customer Confirmation",
+                        "Delete Selected Customer \"" + deletedCustomer.name() + "\" ?" ,
+                        "Customer will be deleted.  This CANNOT be undone!" ,
+                        ()-> {
+                            try {
+                                return dbCustomers.delete(deletedCustomer.id());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            return false;
+                        }
+                );
+            }
+            else {
+                // customer with associated appointments cannot be deleted
+                Alert warningDelete = new Alert(Alert.AlertType.WARNING);
+                warningDelete.setHeaderText("Unable to Delete \"" + deletedCustomer.name() + "\"");
+                warningDelete.setContentText("This Customer has " + appointmentsList.size()
+                        + " associated Appointments.\nPlease remove all associated Appointments first.");
+                warningDelete.showAndWait();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // refresh the tableview to reflect possible changes
+        initCustomersTable();
+        customersTable.refresh();
+    }
+
+    private void initAppointmentsTable() {
+        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
+        try {
+            appointmentsTable.setItems(appointmentsDb.getAll());
+            appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+            title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
+            description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
+            location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
+            type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
+            start_datetime_col.setCellValueFactory(new PropertyValueFactory<>("start"));
+            end_datetime_col.setCellValueFactory(new PropertyValueFactory<>("end"));
+            appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
+            appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
+            contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
+            contact_email_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactEmail()));
+            user_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().userId()).asObject());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initCustomersTable() {
+        CustomerDaoImpl customersDb = new CustomerDaoImpl();
+        try {
+            customersTable.setItems(customersDb.getAll());
+            customer_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
+            name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().name()));
+            address_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().address()));
+            postalcode_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().postalCode()));
+            phone_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().phone()));
+            division_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().division()));
+            country_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().country()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }

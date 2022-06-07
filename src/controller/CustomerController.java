@@ -36,7 +36,7 @@ import java.sql.SQLException;
 /**
  * Controller for the add or modify Customer form.
  * @author Joseph Curtis
- * @version 2022.05.25
+ * @version 2022.06.06
  */
 public class CustomerController implements AuthenticatedController {
 
@@ -148,7 +148,7 @@ public class CustomerController implements AuthenticatedController {
             String phone = phoneTxt.getText();
 
             // TODO get combo box to display division names, but also get the ID ....
-            int divisionId = 0;
+            int divisionId = 1;     // TODO change this line
 
             // validate input:
             if (name.length() > 50)
@@ -159,6 +159,9 @@ public class CustomerController implements AuthenticatedController {
                 GuiUtil.handleLogicalError("Postal code is too long!");
             if (phone.length() > 50)
                 GuiUtil.handleLogicalError("Phone number is too long!");
+
+            // TODO validate division ID
+            // todo use GuiUtil.handleLogicalError("");
 
             // create Customer to save:
             savedCustomer = new Customer(id, name, address, postCode, phone, divisionId, "", "");
@@ -180,20 +183,15 @@ public class CustomerController implements AuthenticatedController {
                         throw new SQLException();
                 }
             }
-
             // go back to the Main screen:
             ((Node)(event.getSource())).getScene().getWindow().hide();
-        }
-        catch(DataObjNotFoundException exception) {
-            GuiUtil.handleDataObjNotFoundException(exception);
-        }
-        catch(BlankInputException exception) {
-            GuiUtil.handleBlankInputException(exception);
-        }
-        catch(InvalidInputException exception) {
 
-            // TODO use InvalidInputException for parsing DateTime fields
-
+        } catch(DataObjNotFoundException e) {
+            GuiUtil.handleDataObjNotFoundException(e);
+        } catch(BlankInputException e) {
+            GuiUtil.handleBlankInputException(e);
+        } catch(InvalidInputException e) {
+            // Do nothing and return to add/modify customer screen
         } catch (SQLException e) {
             System.out.println("Database Error! Check connection and SQL");
             e.printStackTrace();
