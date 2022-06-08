@@ -60,10 +60,10 @@ public abstract class DataAccessObject <T extends DataTransferObject, U> {
     /**
      * @param dto the DTO record to be added.
      * @param user the currently logged-in user.
-     * @return true if DTO record was added, false if record already exists.
+     * @return true if DTO record was added, false if record already exists or if add failed.
      * @throws Exception if any error occurs.
      */
-    abstract <user> boolean add(T dto, U user) throws Exception;
+    abstract boolean add(T dto, U user) throws Exception;
 
     /**
      * @param dto the DTO record to be updated.

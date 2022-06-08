@@ -18,6 +18,7 @@ package controller;
 import DAO.AppointmentDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -29,14 +30,18 @@ import utility.DataObjNotFoundException;
 import utility.GuiUtil;
 import utility.InvalidInputException;
 
+import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ResourceBundle;
 
 /**
  * Controller for the add or modify Appointment form.
  * @author Joseph Curtis
- * @version 2022.06.06
+ * @version 2022.06.07
  */
-public class AppointmentController implements AuthenticatedController {
+public class AppointmentController implements AuthenticatedController, Initializable {
 
     Appointment existingAppointment;    // The Appointment in the database to modify
     User user;                          // The currently logged-in user
@@ -79,6 +84,30 @@ public class AppointmentController implements AuthenticatedController {
         // TODO:  set Contact_ID combo box
     }
 
+    /**
+     * Initializes the controller class, formatting the start and end spinners.
+     * @param location The location used to resolve relative paths for the root object,
+     *            or null if the location is not known.
+     * @param resources The resources used to localize the root object,
+     *                       or null if the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        SpinnerValueFactory<Integer> startHourSvf = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,23);
+        startHourSvf.setWrapAround(true);
+        SpinnerValueFactory<Integer> startMinSvf = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,59);
+        startMinSvf.setWrapAround(true);
+        SpinnerValueFactory<Integer> endHourSvf = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,23);
+        endHourSvf.setWrapAround(true);
+        SpinnerValueFactory<Integer> endMinSvf = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,59);
+        endMinSvf.setWrapAround(true);
+
+        startHourSpinner.setValueFactory(startHourSvf);
+        startMinuteSpinner.setValueFactory(startMinSvf);
+        endHourSpinner.setValueFactory(endHourSvf);
+        endMinuteSpinner.setValueFactory(endMinSvf);
+    }
+
     @FXML
     private Label currentOperationLabel;
 
@@ -101,19 +130,19 @@ public class AppointmentController implements AuthenticatedController {
     private DatePicker startDatePicker;
 
     @FXML
-    private Spinner<?> startHourSpinner;
+    private Spinner<Integer> startHourSpinner;
 
     @FXML
-    private Spinner<?> startMinuteSpinner;
+    private Spinner<Integer> startMinuteSpinner;
 
     @FXML
     private DatePicker endDatePicker;
 
     @FXML
-    private Spinner<?> endHourSpinner;
+    private Spinner<Integer> endHourSpinner;
 
     @FXML
-    private Spinner<?> endMinuteSpinner;
+    private Spinner<Integer> endMinuteSpinner;
 
     @FXML
     private ComboBox<?> contactIdComboBox;
@@ -130,6 +159,7 @@ public class AppointmentController implements AuthenticatedController {
     void onActionSaveAppointment(ActionEvent event) {
         Appointment savedAppointment;
 
+        // validate all inputs are not blank:
         try {
             if (titleTxt.getText().isBlank()
                     || descriptionTxt.getText().isBlank()
@@ -141,6 +171,13 @@ public class AppointmentController implements AuthenticatedController {
                //  TODO check for start & end date & time selection
             )
                 throw new BlankInputException("Fields Cannot be Blank");
+            if (startDatePicker.getValue() == null || endDatePicker.getValue() == null)
+                throw new BlankInputException("Please choose a start and end date");
+            if (startHourSpinner.getValue() == null
+                    || startMinuteSpinner.getValue() == null
+                    || endHourSpinner.getValue() == null
+                    || endMinuteSpinner.getValue() == null)
+                throw new BlankInputException("Please enter hour & minute for start and end times");
 
             // Acquire ID:
             int id;
@@ -154,6 +191,14 @@ public class AppointmentController implements AuthenticatedController {
             String description = descriptionTxt.getText();
             String location = locationTxt.getText();
             String type = typeTxt.getText();
+
+            // get LocalDate from date pickers, and convert to LocalDateTime
+            // using Integers from spinners as hour and minute
+            LocalDateTime startLdt = startDatePicker.getValue().atTime(
+                    startHourSpinner.getValue(), startMinuteSpinner.getValue());
+            LocalDateTime endLdt = endDatePicker.getValue().atTime(
+                    endHourSpinner.getValue(), endMinuteSpinner.getValue());
+
 
             // TODO get combo box to display customer and contact ids
             //  TODO  also get the ID ....
@@ -171,11 +216,8 @@ public class AppointmentController implements AuthenticatedController {
                 GuiUtil.handleLogicalError("Type cannot exceed 50 characters");
 
             // create Appointment to save:
-
-            // TODO:: parse start and end date and times
-
             savedAppointment = new Appointment(id, title, description, location, type,
-                    null, null,
+                    startLdt, endLdt,
                     customerId, "", user.id(), contactId, "", "");
 
             // update database with Appointment (add or modify):
@@ -222,4 +264,5 @@ public class AppointmentController implements AuthenticatedController {
 
         // TODO : implement on click method
     }
+
 }

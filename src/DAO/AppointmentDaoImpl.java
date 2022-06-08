@@ -114,7 +114,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
             statement.setString(10, user.name());
             statement.setString(11, user.name());
 
-            return statement.execute();
+            return statement.executeUpdate() > 0;
         }
     }
 
@@ -136,8 +136,8 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                          Customer_ID = ?,\s
                          User_ID = ?,\s
                          Contact_ID = ?,\s
-                         Last_Updated_By = ?\s
-                         Last_Update = CURRENT_TIMESTAMP,\s
+                         Last_Updated_By = ?,\s
+                         Last_Update = CURRENT_TIMESTAMP\s
                          WHERE Appointment_ID = ?
                          """)) {
             statement.setString(1, appointment.title());

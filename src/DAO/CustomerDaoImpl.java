@@ -109,7 +109,7 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
             statement.setInt(5, customer.divisionId());
             statement.setString(6, user.name());
             statement.setString(7, user.name());
-            return statement.execute();
+            return statement.executeUpdate() > 0;
         }
     }
 

@@ -14,8 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.AppointmentController">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentController">
    <center>
       <GridPane hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
          <columnConstraints>
@@ -50,15 +49,15 @@
             <Label text="Contact ID" GridPane.rowIndex="8" />
             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <children>
-                  <Spinner fx:id="startHourSpinner" accessibleHelp="Start Hour" accessibleText="Start Hour" />
-                  <Spinner fx:id="startMinuteSpinner" accessibleHelp="Start Minute" accessibleText="Start Minute" />
+                  <Spinner fx:id="startHourSpinner" accessibleHelp="Start Hour" accessibleText="Start Hour" editable="true" />
+                  <Spinner fx:id="startMinuteSpinner" accessibleHelp="Start Minute" accessibleText="Start Minute" editable="true" />
                   <DatePicker fx:id="startDatePicker" accessibleHelp="Start Date" accessibleText="Start Date" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <children>
-                  <Spinner fx:id="endHourSpinner" accessibleHelp="End Hour" accessibleText="End Hour" />
-                  <Spinner fx:id="endMinuteSpinner" accessibleHelp="End Minute" accessibleText="End Minute" />
+                  <Spinner fx:id="endHourSpinner" accessibleHelp="End Hour" accessibleText="End Hour" editable="true" />
+                  <Spinner fx:id="endMinuteSpinner" accessibleHelp="End Minute" accessibleText="End Minute" editable="true" />
                   <DatePicker fx:id="endDatePicker" accessibleHelp="End Date" accessibleText="End Date" />
                </children>
             </HBox>

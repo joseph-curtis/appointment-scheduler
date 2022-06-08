@@ -118,7 +118,7 @@ public class LoginController implements Initializable {
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
 
-        User currentUser = new User(0, "TEST_USER");
+        User currentUser = new User(1, "TEST_USER");
         // TODO: implement username/password lookup and verification
 
         GuiUtil.newStage(event,

@@ -76,35 +76,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
     public void initialize(URL location, ResourceBundle resources) {
         initAppointmentsTable();
         initCustomersTable();
-
-//        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
-//        CustomerDaoImpl customersDb = new CustomerDaoImpl();
-//        try {
-//            appointmentsTable.setItems(appointmentsDb.getAll());
-//            appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
-//            title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
-//            description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
-//            location_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().location()));
-//            type_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().type()));
-//            start_datetime_col.setCellValueFactory(new PropertyValueFactory<>("start"));
-//            end_datetime_col.setCellValueFactory(new PropertyValueFactory<>("end"));
-//            appointment_cust_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().customerId()).asObject());
-//            appointment_cust_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().customerName()));
-//            contact_name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactName()));
-//            contact_email_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().contactEmail()));
-//            user_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().userId()).asObject());
-//
-//            customersTable.setItems(customersDb.getAll());
-//            customer_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
-//            name_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().name()));
-//            address_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().address()));
-//            postalcode_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().postalCode()));
-//            phone_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().phone()));
-//            division_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().division()));
-//            country_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().country()));
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @FXML
