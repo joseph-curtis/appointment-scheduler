@@ -19,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import model.User;
 import utility.BlankInputException;
@@ -46,7 +47,8 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("LoginController initialized");
+        // pressing enter or return fires the login button!
+        loginButton.setDefaultButton(true);
     }
 
     @FXML
