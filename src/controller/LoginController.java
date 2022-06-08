@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.03.05
+ * @version 2022.06.07
  */
 
 public class LoginController implements Initializable {
@@ -130,14 +130,15 @@ public class LoginController implements Initializable {
 
             if (user.isPresent()) {
                 currentUserLogin = user.get();
-                // TODO: implement username/password lookup and verification
 
+                // Go to primary stage
                 GuiUtil.newStage(event,
                         currentUserLogin,
                         "/view/primary-view.fxml",
                         "Appointment Scheduler - Calendar View",
                         Modality.NONE);
             } else {
+                // Show alert for login failure
                 Alert loginFail = new Alert(Alert.AlertType.WARNING);
                 loginFail.setHeaderText("Login Failure");
                 loginFail.setContentText("Please enter a correct Username and Password");

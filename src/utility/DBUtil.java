@@ -34,7 +34,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.05.24
+ * @version 2022.06.07
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -246,13 +246,13 @@ public abstract class DBUtil {
                         resultSet.getInt("User_ID"),
                         resultSet.getString("User_Name")
                 );
-                return Optional.of(currentUser);
+                return Optional.of(currentUser);      // authentication success! return user that logged in
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
         }
-        return Optional.empty();
-
+        return Optional.empty();    // authentication fail, return empty container
     }
+
 }
