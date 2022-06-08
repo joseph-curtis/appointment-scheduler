@@ -18,6 +18,7 @@ package utility;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.Country;
 import model.FirstLevelDivision;
 import model.User;
 
@@ -34,7 +35,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.06.07
+ * @version 2022.06.08
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -165,11 +166,10 @@ public abstract class DBUtil {
 
     /**
      * Obtain a list of all countries in the database
-     *
      * @return list of FirstLevelDivision containers with only country data
      */
-    public static ObservableList<FirstLevelDivision> getAllCountries() {
-        ObservableList<FirstLevelDivision> countriesList = FXCollections.observableArrayList();
+    public static ObservableList<Country> getAllCountries() {
+        ObservableList<Country> countriesList = FXCollections.observableArrayList();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
@@ -178,7 +178,7 @@ public abstract class DBUtil {
                              """)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                countriesList.add(new FirstLevelDivision(0, "",
+                countriesList.add(new Country(
                         resultSet.getInt("Country_ID"),
                         resultSet.getString("Country")));
             }
@@ -190,11 +190,73 @@ public abstract class DBUtil {
     }
 
     /**
+     * Trade a first-level division id for the country that it is located in.
+     * @param id the selected first-level division id
+     * @return the country associated with the first-level-division
+     */
+    public static Optional<Country> getCountryByDivisionId(int id) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT countries.Country_ID, Country\s
+                             FROM client_schedule.countries\s
+                             INNER JOIN first_level_divisions\s
+                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             WHERE first_level_divisions.Division_ID = ?
+                             """)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                // search successful, return associated country:
+                return Optional.of(new Country(
+                        resultSet.getInt("Country_ID"),
+                        resultSet.getString("Country")
+                ));
+            } else {
+                System.out.println("Orphaned Division! No associated country!");
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return Optional.empty();    // empty container means division id did not find related country
+    }
+
+    public static Optional<FirstLevelDivision> getDivisionById(int id) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Division_ID, Division, first_level_divisions.Country_ID, Country\s
+                             FROM client_schedule.first_level_divisions\s
+                             INNER JOIN countries\s
+                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             WHERE first_level_divisions.Division_ID = ?
+                             """)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // division found, return it:
+                return Optional.of(new FirstLevelDivision(
+                        resultSet.getInt("Division_ID"),
+                        resultSet.getString("Division"),
+                        resultSet.getInt("Country_ID"),
+                        resultSet.getString("Country")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return Optional.empty();    // division id does not exist!
+    }
+
+    /**
      * Get a list of all divisions
-     * @param selectedCountry DTO with country data
+     * @param country selected DTO with country data
      * @return all divisions per the specified country in selectedCountry
      */
-    public static ObservableList<FirstLevelDivision> getDivisionsByCountry(FirstLevelDivision selectedCountry) {
+    public static ObservableList<FirstLevelDivision> getDivisionsByCountry(Country country) {
         ObservableList<FirstLevelDivision> divisionsList = FXCollections.observableArrayList();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -205,7 +267,7 @@ public abstract class DBUtil {
                                   ON countries.Country_ID = first_level_divisions.Country_ID\s
                              WHERE countries.Country_ID = ?
                              """)) {
-            preparedStatement.setInt(1, selectedCountry.countryId());
+            preparedStatement.setInt(1, country.id());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 divisionsList.add(new FirstLevelDivision(
@@ -228,8 +290,6 @@ public abstract class DBUtil {
      * @return the authenticated user, or an empty optional if lookup failed.
      */
     public static Optional<User> authenticateUser(String username, String password) {
-        User currentUser = null;
-
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
@@ -242,11 +302,11 @@ public abstract class DBUtil {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                currentUser = new User(
+                // authentication success! return user that logged in
+                return Optional.of(new User(
                         resultSet.getInt("User_ID"),
                         resultSet.getString("User_Name")
-                );
-                return Optional.of(currentUser);      // authentication success! return user that logged in
+                ));
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());

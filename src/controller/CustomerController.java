@@ -16,29 +16,28 @@
 package controller;
 
 import DAO.CustomerDaoImpl;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
-import model.Customer;
-import model.DataTransferObject;
-import model.User;
-import utility.BlankInputException;
-import utility.DataObjNotFoundException;
-import utility.GuiUtil;
-import utility.InvalidInputException;
+import model.*;
+import utility.*;
 
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 /**
  * Controller for the add or modify Customer form.
  * @author Joseph Curtis
- * @version 2022.06.06
+ * @version 2022.06.08
  */
-public class CustomerController implements AuthenticatedController {
+public class CustomerController implements AuthenticatedController, Initializable {
 
     Customer existingCustomer;  // The Customer in the database to modify
     User user;           // The currently logged-in user
@@ -68,17 +67,31 @@ public class CustomerController implements AuthenticatedController {
 
         currentOperationLabel.setText("Edit Customer");
 
-        idTxt.setText(String.valueOf(passedObject.id()));
-        nameTxt.setText(((Customer) passedObject).name());
-        addressTxt.setText(((Customer) passedObject).address());
-        postCodeTxt.setText(((Customer) passedObject).postalCode());
-        phoneTxt.setText(((Customer) passedObject).phone());
+        idTxt.setText(String.valueOf(existingCustomer.id()));
+        nameTxt.setText(existingCustomer.name());
+        addressTxt.setText(existingCustomer.address());
+        postCodeTxt.setText(existingCustomer.postalCode());
+        phoneTxt.setText(existingCustomer.phone());
 
+        countryComboBox.setValue(DBUtil.getCountryByDivisionId(existingCustomer.divisionId()).get());
+        setDivisionComboBox();
+        divisionComboBox.setValue(DBUtil.getDivisionById(existingCustomer.divisionId()).get());
+    }
 
+    /**
+     * Initializes the controller class, setting the combo-box properties
+     * @param location The location used to resolve relative paths for the root object,
+     *            or null if the location is not known.
+     * @param resources The resources used to localize the root object,
+     *                       or null if the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<Country> allCountriesList = DBUtil.getAllCountries();
 
-
-        // TODO:  set division combo box
-        // TODO:  set country combo box
+        for (Country country: allCountriesList) {
+            countryComboBox.getItems().add(country);
+        }
     }
 
     @FXML
@@ -100,10 +113,10 @@ public class CustomerController implements AuthenticatedController {
     private TextField postCodeTxt;
 
     @FXML
-    private ComboBox<?> countryComboBox;
+    private ComboBox<Country> countryComboBox;
 
     @FXML
-    private ComboBox<?> divisionComboBox;
+    private ComboBox<FirstLevelDivision> divisionComboBox;
 
     /**
      * Cancels add or modify operation and returns to the main menu.
@@ -128,9 +141,8 @@ public class CustomerController implements AuthenticatedController {
                     || addressTxt.getText().isBlank()
                     || postCodeTxt.getText().isBlank()
                     || phoneTxt.getText().isBlank()
-//                    || divisionComboBox.isBlank()
-//                    || countryComboBox.isBlank()
-                    // TODO check for blank combobox selection
+                    || countryComboBox.getValue() == null
+                    || divisionComboBox.getValue() == null
             )
                 throw new BlankInputException("Fields Cannot be Blank");
 
@@ -146,9 +158,7 @@ public class CustomerController implements AuthenticatedController {
             String address = addressTxt.getText();
             String postCode = postCodeTxt.getText();
             String phone = phoneTxt.getText();
-
-            // TODO get combo box to display division names, but also get the ID ....
-            int divisionId = 1;     // TODO change this line
+            int divisionId = divisionComboBox.getValue().id();
 
             // validate input:
             if (name.length() > 50)
@@ -159,9 +169,6 @@ public class CustomerController implements AuthenticatedController {
                 GuiUtil.handleLogicalError("Postal code is too long!");
             if (phone.length() > 50)
                 GuiUtil.handleLogicalError("Phone number is too long!");
-
-            // TODO validate division ID
-            // todo use GuiUtil.handleLogicalError("");
 
             // create Customer to save:
             savedCustomer = new Customer(id, name, address, postCode, phone, divisionId, "", "");
@@ -198,16 +205,24 @@ public class CustomerController implements AuthenticatedController {
         }
     }
 
+    /**
+     * Populates the divisions in divisionComboBox for the selected country
+     * @param event the user generated event (a selection made from countryComboBox)
+     *              that caused this to execute
+     */
     @FXML
     void onActionListCountries(ActionEvent event) {
-
-        // TODO : implement on click method
+        setDivisionComboBox();
     }
 
-    @FXML
-    void onActionListDivisions(ActionEvent event) {
+    private void setDivisionComboBox() {
+        Country selectedCountry = countryComboBox.getValue();
+        ObservableList<FirstLevelDivision> divisionList = DBUtil.getDivisionsByCountry(selectedCountry);
+        divisionComboBox.getItems().clear();
 
-        // TODO : implement on click method
+        for (FirstLevelDivision division: divisionList) {
+            divisionComboBox.getItems().add(division);
+        }
     }
 
 }

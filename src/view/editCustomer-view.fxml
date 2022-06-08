@@ -41,7 +41,7 @@
             <Label text="Phone Number" GridPane.rowIndex="4" />
             <Label text="First-Level Division" GridPane.rowIndex="6" />
             <Label text="Country" GridPane.rowIndex="5" />
-            <ComboBox fx:id="divisionComboBox" maxWidth="-Infinity" onAction="#onActionListDivisions" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <ComboBox fx:id="divisionComboBox" maxWidth="-Infinity" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <TextField fx:id="idTxt" disable="true" editable="false" GridPane.columnIndex="1" />
          </children>
          <BorderPane.margin>
