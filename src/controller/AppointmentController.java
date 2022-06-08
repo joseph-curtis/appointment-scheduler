@@ -32,7 +32,6 @@ import utility.InvalidInputException;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
@@ -71,15 +70,21 @@ public class AppointmentController implements AuthenticatedController, Initializ
 
         currentOperationLabel.setText("Edit Appointment");
 
-        idTxt.setText(String.valueOf(passedObject.id()));
-        titleTxt.setText(((Appointment) passedObject).title());
-        descriptionTxt.setText(((Appointment) passedObject).description());
-        locationTxt.setText(((Appointment) passedObject).location());
-        typeTxt.setText(((Appointment) passedObject).type());
+        idTxt.setText(String.valueOf(existingAppointment.id()));
+        titleTxt.setText(existingAppointment.title());
+        descriptionTxt.setText(existingAppointment.description());
+        locationTxt.setText(existingAppointment.location());
+        typeTxt.setText(existingAppointment.type());
+
+        startHourSpinner.getValueFactory().setValue(existingAppointment.start().getHour());
+        startMinuteSpinner.getValueFactory().setValue(existingAppointment.start().getMinute());
+        endHourSpinner.getValueFactory().setValue(existingAppointment.end().getHour());
+        endMinuteSpinner.getValueFactory().setValue(existingAppointment.end().getMinute());
+
+        startDatePicker.setValue(existingAppointment.start().toLocalDate());
+        endDatePicker.setValue(existingAppointment.end().toLocalDate());
 
 
-
-        // TODO:  set start/end times
         // TODO:  set customer_ID combo box
         // TODO:  set Contact_ID combo box
     }
