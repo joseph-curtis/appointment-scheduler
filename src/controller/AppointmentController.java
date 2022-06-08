@@ -192,10 +192,8 @@ public class AppointmentController implements AuthenticatedController, Initializ
                     || descriptionTxt.getText().isBlank()
                     || locationTxt.getText().isBlank()
                     || typeTxt.getText().isBlank()
-//                    || customerComboBox.isBlank()
-//                    || contactComboBox.isBlank()
-                // TODO check for blank combobox selection
-               //  TODO check for start & end date & time selection
+                    || customerComboBox.getValue() == null
+                    || contactComboBox.getValue() == null
             )
                 throw new BlankInputException("Fields Cannot be Blank");
             if (startDatePicker.getValue() == null || endDatePicker.getValue() == null)
@@ -218,6 +216,8 @@ public class AppointmentController implements AuthenticatedController, Initializ
             String description = descriptionTxt.getText();
             String location = locationTxt.getText();
             String type = typeTxt.getText();
+            int customerId = customerComboBox.getValue().id();
+            int contactId = contactComboBox.getValue().id();
 
             // get LocalDate from date pickers, and convert to LocalDateTime
             // using Integers from spinners as hour and minute
@@ -225,12 +225,6 @@ public class AppointmentController implements AuthenticatedController, Initializ
                     startHourSpinner.getValue(), startMinuteSpinner.getValue());
             LocalDateTime endLdt = endDatePicker.getValue().atTime(
                     endHourSpinner.getValue(), endMinuteSpinner.getValue());
-
-
-            // TODO get combo box to display customer and contact ids
-            //  TODO  also get the ID ....
-            int customerId = 1;
-            int contactId = 1;
 
             // validate input:
             if (title.length() > 50)
@@ -278,18 +272,6 @@ public class AppointmentController implements AuthenticatedController, Initializ
             e.printStackTrace();
         }
 
-    }
-
-    @FXML
-    void onActionListContacts(ActionEvent event) {
-
-        // TODO : implement on click method
-    }
-
-    @FXML
-    void onActionListCustomers(ActionEvent event) {
-
-        // TODO : implement on click method
     }
 
 }
