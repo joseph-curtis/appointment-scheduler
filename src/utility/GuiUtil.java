@@ -15,9 +15,7 @@
 
 package utility;
 
-import controller.AppointmentController;
 import controller.AuthenticatedController;
-import controller.CustomerController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -27,8 +25,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Appointment;
-import model.Customer;
 import model.DataTransferObject;
 
 import java.io.IOException;
@@ -40,7 +36,7 @@ import java.util.function.BooleanSupplier;
  * <p>Use for easier maintenance of code
  * instead of code duplication</p>
  * @author Joseph Curtis
- * @version 2022.05.25
+ * @version 2022.06.07
  */
 public final class GuiUtil {
     /**
@@ -124,10 +120,10 @@ public final class GuiUtil {
             success = lambda.getAsBoolean();
 
         if (!success) {
-            Alert inventoryError = new Alert(Alert.AlertType.ERROR);
-            inventoryError.setHeaderText("Database Error");
-            inventoryError.setContentText("Unable to delete selected item!");
-            inventoryError.showAndWait();
+            Alert deletionError = new Alert(Alert.AlertType.ERROR);
+            deletionError.setHeaderText("Database Error");
+            deletionError.setContentText("Unable to delete selected item!");
+            deletionError.showAndWait();
         }
     }
 
@@ -137,10 +133,10 @@ public final class GuiUtil {
      * @param exception thrown exception indicating the problem
      */
     public static void handleDataObjNotFoundException(DataObjNotFoundException exception) {
-        Alert inventoryError = new Alert(Alert.AlertType.ERROR);
-        inventoryError.setHeaderText("Database Error");
-        inventoryError.setContentText(exception.getMessage());
-        inventoryError.showAndWait();
+        Alert dbError = new Alert(Alert.AlertType.ERROR);
+        dbError.setHeaderText("Database Error");
+        dbError.setContentText(exception.getMessage());
+        dbError.showAndWait();
     }
 
     /**
@@ -148,10 +144,10 @@ public final class GuiUtil {
      * @param exception indicator of a blank field that needs user input
      */
     public static void handleBlankInputException(BlankInputException exception) {
-        Alert blankTextWarning = new Alert(Alert.AlertType.WARNING);
-        blankTextWarning.setHeaderText(exception.getMessage());
-        blankTextWarning.setContentText("Please enter data in each field.");
-        blankTextWarning.showAndWait();
+        Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION);
+        blankTextInfo.setHeaderText(exception.getMessage());
+        blankTextInfo.setContentText("Please enter data in each field.");
+        blankTextInfo.showAndWait();
     }
 
     /**
@@ -160,10 +156,10 @@ public final class GuiUtil {
      * @throws InvalidInputException for controller to handle by halting its operation
      */
     public static void handleLogicalError(String content) throws InvalidInputException {
-        Alert deleteError = new Alert(Alert.AlertType.WARNING);
-        deleteError.setHeaderText("Input Validation");
-        deleteError.setContentText(content);
-        deleteError.showAndWait();
+        Alert inputWarning = new Alert(Alert.AlertType.WARNING);
+        inputWarning.setHeaderText("Input Validation Failed");
+        inputWarning.setContentText(content);
+        inputWarning.showAndWait();
 
         throw new InvalidInputException("Logical error check:\n" + content);
     }
