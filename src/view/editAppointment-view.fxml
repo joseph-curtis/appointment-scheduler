@@ -61,8 +61,8 @@
                   <DatePicker fx:id="endDatePicker" accessibleHelp="End Date" accessibleText="End Date" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <ComboBox fx:id="customerIdComboBox" accessibleHelp="Customer" accessibleText="Customer" maxWidth="1.7976931348623157E308" onAction="#onActionListCustomers" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <ComboBox fx:id="contactIdComboBox" maxWidth="1.7976931348623157E308" onAction="#onActionListContacts" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <ComboBox fx:id="customerComboBox" accessibleHelp="Customer" accessibleText="Customer" maxWidth="1.7976931348623157E308" onAction="#onActionListCustomers" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <ComboBox fx:id="contactComboBox" maxWidth="1.7976931348623157E308" onAction="#onActionListContacts" GridPane.columnIndex="1" GridPane.rowIndex="8" />
          </children>
          <BorderPane.margin>
             <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />

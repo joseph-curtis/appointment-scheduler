@@ -18,6 +18,7 @@ package utility;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import model.Contact;
 import model.Country;
 import model.FirstLevelDivision;
 import model.User;
@@ -166,7 +167,7 @@ public abstract class DBUtil {
 
     /**
      * Obtain a list of all countries in the database
-     * @return list of FirstLevelDivision containers with only country data
+     * @return list of all countries
      */
     public static ObservableList<Country> getAllCountries() {
         ObservableList<Country> countriesList = FXCollections.observableArrayList();
@@ -180,7 +181,8 @@ public abstract class DBUtil {
             while (resultSet.next()) {
                 countriesList.add(new Country(
                         resultSet.getInt("Country_ID"),
-                        resultSet.getString("Country")));
+                        resultSet.getString("Country")
+                ));
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
@@ -222,6 +224,11 @@ public abstract class DBUtil {
         return Optional.empty();    // empty container means division id did not find related country
     }
 
+    /**
+     * get Fist Level Division Data Transfer Object with id
+     * @param id Division id
+     * @return FirstLevelDivision with selected id, empty container otherwise
+     */
     public static Optional<FirstLevelDivision> getDivisionById(int id) {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
@@ -281,6 +288,64 @@ public abstract class DBUtil {
             e.printStackTrace();
         }
         return divisionsList;
+    }
+
+    /**
+     * Get all contacts from database
+     * @return a list of all contacts
+     */
+    public static ObservableList<Contact> getAllContacts() {
+        ObservableList<Contact> contactsList = FXCollections.observableArrayList();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     """
+                             SELECT Contact_ID, Contact_Name, Email \s
+                             FROM client_schedule.contacts
+                             """)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                contactsList.add(new Contact(
+                        resultSet.getInt("Contact_ID"),
+                        resultSet.getString("Contact_Name"),
+                        resultSet.getString("Email")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return contactsList;
+    }
+
+    /**
+     * Obtain contact with associated id
+     * @param id of contact to fetch
+     * @return contact with same id, empty optional otherwise
+     */
+    public static Optional<Contact> getContactById(int id) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Contact_ID, Contact_Name, Email \s
+                             FROM client_schedule.contacts \s
+                             WHERE Contact_ID = ?
+                             """)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // division found, return it:
+                return Optional.of(new Contact(
+                        resultSet.getInt("Contact_ID"),
+                        resultSet.getString("Contact_Name"),
+                        resultSet.getString("Email")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return Optional.empty();    // division id does not exist!
     }
 
     /**

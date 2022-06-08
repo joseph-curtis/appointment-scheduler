@@ -16,19 +16,16 @@
 package controller;
 
 import DAO.AppointmentDaoImpl;
+import DAO.CustomerDaoImpl;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
-import model.Appointment;
-import model.DataTransferObject;
-import model.User;
-import utility.BlankInputException;
-import utility.DataObjNotFoundException;
-import utility.GuiUtil;
-import utility.InvalidInputException;
+import model.*;
+import utility.*;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -84,9 +81,15 @@ public class AppointmentController implements AuthenticatedController, Initializ
         startDatePicker.setValue(existingAppointment.start().toLocalDate());
         endDatePicker.setValue(existingAppointment.end().toLocalDate());
 
-
-        // TODO:  set customer_ID combo box
-        // TODO:  set Contact_ID combo box
+        // set customer combo box:
+        CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
+        try {
+            customerComboBox.setValue(dbCustomers.getById(existingAppointment.customerId()).get());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // set contact combo box:
+        contactComboBox.setValue(DBUtil.getContactById(existingAppointment.contactId()).get());
     }
 
     /**
@@ -111,6 +114,25 @@ public class AppointmentController implements AuthenticatedController, Initializ
         startMinuteSpinner.setValueFactory(startMinSvf);
         endHourSpinner.setValueFactory(endHourSvf);
         endMinuteSpinner.setValueFactory(endMinSvf);
+
+        // set customer combo-box:
+        CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
+        try {
+            ObservableList<Customer> allCustomersList = dbCustomers.getAll();
+
+            for (Customer customer: allCustomersList) {
+                customerComboBox.getItems().add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // set contact combo-box:
+        ObservableList<Contact> allContactsList = DBUtil.getAllContacts();
+
+        for (Contact contact: allContactsList) {
+            contactComboBox.getItems().add(contact);
+        }
     }
 
     @FXML
@@ -150,10 +172,10 @@ public class AppointmentController implements AuthenticatedController, Initializ
     private Spinner<Integer> endMinuteSpinner;
 
     @FXML
-    private ComboBox<?> contactIdComboBox;
+    private ComboBox<Contact> contactComboBox;
 
     @FXML
-    private ComboBox<?> customerIdComboBox;
+    private ComboBox<Customer> customerComboBox;
 
     @FXML
     void onActionCancel(ActionEvent event) {
@@ -170,8 +192,8 @@ public class AppointmentController implements AuthenticatedController, Initializ
                     || descriptionTxt.getText().isBlank()
                     || locationTxt.getText().isBlank()
                     || typeTxt.getText().isBlank()
-//                    || customerIdComboBox.isBlank()
-//                    || contactIdComboBox.isBlank()
+//                    || customerComboBox.isBlank()
+//                    || contactComboBox.isBlank()
                 // TODO check for blank combobox selection
                //  TODO check for start & end date & time selection
             )
