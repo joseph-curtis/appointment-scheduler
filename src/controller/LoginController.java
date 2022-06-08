@@ -21,6 +21,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import model.User;
+import utility.BlankInputException;
+import utility.DBUtil;
 import utility.GuiUtil;
 
 import java.io.IOException;
@@ -117,14 +119,30 @@ public class LoginController implements Initializable {
      */
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
+        User currentUserLogin;
 
-        User currentUser = new User(1, "TEST_USER");
-        // TODO: implement username/password lookup and verification
+        // check for blank/empty input fields:
+        if (usernameTxt.getText().isBlank() || passwordTxt.getText().isEmpty()) {
+            GuiUtil.handleBlankInputException(new BlankInputException("Enter Username and Password"));
+        } else {
+            // Check database for user authentication:
+            Optional<User> user = DBUtil.authenticateUser(usernameTxt.getText(), passwordTxt.getText());
 
-        GuiUtil.newStage(event,
-                currentUser,
-                "/view/primary-view.fxml",
-                "Appointment Scheduler - Calendar View",
-                Modality.NONE);
+            if (user.isPresent()) {
+                currentUserLogin = user.get();
+                // TODO: implement username/password lookup and verification
+
+                GuiUtil.newStage(event,
+                        currentUserLogin,
+                        "/view/primary-view.fxml",
+                        "Appointment Scheduler - Calendar View",
+                        Modality.NONE);
+            } else {
+                Alert loginFail = new Alert(Alert.AlertType.WARNING);
+                loginFail.setHeaderText("Login Failure");
+                loginFail.setContentText("Please enter a correct Username and Password");
+                loginFail.showAndWait();
+            }
+        }
     }
 }

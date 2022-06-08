@@ -19,11 +19,13 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.FirstLevelDivision;
+import model.User;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -55,14 +57,14 @@ public abstract class DBUtil {
             dataSource.setUrl(properties.getProperty(DB_URL));
             dataSource.setUser(properties.getProperty(USERNAME));
             dataSource.setPassword(properties.getProperty(PASSWORD));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Get DataSource object (MysqlDataSource)
+     *
      * @return JDBC DataSource object used to get connections to database
      */
     public static DataSource getDataSource() {
@@ -99,7 +101,7 @@ public abstract class DBUtil {
             statement.close();
             connection.close();
             System.out.println("Connection closed!");
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error closing connection: " + e.getMessage());
             e.printStackTrace();
         }
@@ -109,6 +111,7 @@ public abstract class DBUtil {
      * Executes statement from given string.
      * <p>Only use if calling directly from this static class.</p>
      * <p>For better security using Prepared statements, get DataSource instead.</p>
+     *
      * @param query SQL string (query, DML or DDL) to execute
      * @return number of rows added/updated
      */
@@ -116,11 +119,11 @@ public abstract class DBUtil {
     public static int executeSqlString(String query) {
         int rowCount = -1;
         try {
-            if(connection == null || connection.isClosed()) openConnection();
+            if (connection == null || connection.isClosed()) openConnection();
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
-            if(query.toUpperCase().startsWith("SELECT")) {
+            if (query.toUpperCase().startsWith("SELECT")) {
                 System.out.println("Executing SELECT statement");
                 resultSet = statement.executeQuery(query);
                 if (resultSet != null) {
@@ -131,18 +134,18 @@ public abstract class DBUtil {
                         throw new RuntimeException("WARNING: SELECT statement returned zero records.\n" +
                                 "Check if record(s) exist, or check query syntax.");
                 }
-            } else if(query.toUpperCase().startsWith("INSERT")
-                    ||query.toUpperCase().startsWith("UPDATE")
-                    ||query.toUpperCase().startsWith("DELETE")) {
+            } else if (query.toUpperCase().startsWith("INSERT")
+                    || query.toUpperCase().startsWith("UPDATE")
+                    || query.toUpperCase().startsWith("DELETE")) {
                 System.out.println("Executing DML statement");
                 rowCount = statement.executeUpdate(query);
             } else {
                 System.out.println("Executing DDL statement");
                 rowCount = statement.executeUpdate(query);
             }
-        } catch(RuntimeException e) {
+        } catch (RuntimeException e) {
             System.out.println(e.getMessage());
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
         } finally {
@@ -162,21 +165,22 @@ public abstract class DBUtil {
 
     /**
      * Obtain a list of all countries in the database
+     *
      * @return list of FirstLevelDivision containers with only country data
      */
     public static ObservableList<FirstLevelDivision> getAllCountries() {
         ObservableList<FirstLevelDivision> countriesList = FXCollections.observableArrayList();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                """
-                        SELECT Country_ID, Country \s
-                        FROM client_schedule.countries
-                        """)) {
+                     """
+                             SELECT Country_ID, Country \s
+                             FROM client_schedule.countries
+                             """)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 countriesList.add(new FirstLevelDivision(0, "",
                         resultSet.getInt("Country_ID"),
-                        resultSet.getString("Country") ));
+                        resultSet.getString("Country")));
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
@@ -193,14 +197,14 @@ public abstract class DBUtil {
     public static ObservableList<FirstLevelDivision> getDivisionsByCountry(FirstLevelDivision selectedCountry) {
         ObservableList<FirstLevelDivision> divisionsList = FXCollections.observableArrayList();
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(
-                """
-                        SELECT countries.Country_ID, Country, Division_ID, Division\s
-                        FROM client_schedule.countries\s
-                        INNER JOIN first_level_divisions\s
-                             ON countries.Country_ID = first_level_divisions.Country_ID\s
-                        WHERE countries.Country_ID = ?
-                        """)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     """
+                             SELECT countries.Country_ID, Country, Division_ID, Division\s
+                             FROM client_schedule.countries\s
+                             INNER JOIN first_level_divisions\s
+                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             WHERE countries.Country_ID = ?
+                             """)) {
             preparedStatement.setInt(1, selectedCountry.countryId());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -208,7 +212,7 @@ public abstract class DBUtil {
                         resultSet.getInt("Division_ID"),
                         resultSet.getString("Division"),
                         resultSet.getInt("Country_ID"),
-                        resultSet.getString("Country") ));
+                        resultSet.getString("Country")));
             }
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
@@ -217,4 +221,38 @@ public abstract class DBUtil {
         return divisionsList;
     }
 
+    /**
+     * Checks database to authenticate valid username and password combination
+     * @param username
+     * @param password
+     * @return the authenticated user, or an empty optional if lookup failed.
+     */
+    public static Optional<User> authenticateUser(String username, String password) {
+        User currentUser = null;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     """
+                             SELECT User_ID, User_Name\s
+                             FROM client_schedule.users\s
+                             WHERE User_Name = ? AND Password = ?
+                             """)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                currentUser = new User(
+                        resultSet.getInt("User_ID"),
+                        resultSet.getString("User_Name")
+                );
+                return Optional.of(currentUser);
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return Optional.empty();
+
+    }
 }
