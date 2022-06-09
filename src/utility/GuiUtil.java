@@ -103,12 +103,12 @@ public final class GuiUtil {
      * @param header Dialog box header text
      * @param content details within confirmation dialog box
      * @param lambda the operation to execute when the user clicks "OK"
+     * @return whether the deletion was successful or not (dependent on return state of lambda)
      */
-    public static void confirmDeletion(String title,
+    public static boolean confirmDeletion(String title,
                                        String header,
                                        String content,
                                        BooleanSupplier lambda) {
-        boolean success = true;
 
         Alert confirmRemove = new Alert(Alert.AlertType.CONFIRMATION);
         confirmRemove.setTitle(title);
@@ -116,15 +116,20 @@ public final class GuiUtil {
         confirmRemove.setContentText(content);
 
         Optional<ButtonType> result = confirmRemove.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK)
-            success = lambda.getAsBoolean();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // user confirmed delete operation
+            boolean success = lambda.getAsBoolean();
 
-        if (!success) {
-            Alert deletionError = new Alert(Alert.AlertType.ERROR);
-            deletionError.setHeaderText("Database Error");
-            deletionError.setContentText("Unable to delete selected item!");
-            deletionError.showAndWait();
+            if (!success) {
+                Alert deletionError = new Alert(Alert.AlertType.ERROR);
+                deletionError.setHeaderText("Database Error");
+                deletionError.setContentText("Unable to delete selected item!");
+                deletionError.showAndWait();
+                return false;   // an error occurred when trying to delete
+            }
+            return true;    // delete successful!
         }
+        return false;   // user canceled delete operation
     }
 
     /**

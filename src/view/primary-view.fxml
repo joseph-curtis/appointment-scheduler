@@ -72,7 +72,7 @@
         </Menu>
       </menus>
     </MenuBar>
-      <TabPane tabMaxHeight="60.0" tabMinHeight="30.0" tabMinWidth="90.0" VBox.vgrow="ALWAYS">
+      <TabPane fx:id="userOperationTabPane" tabMaxHeight="60.0" tabMinHeight="30.0" tabMinWidth="90.0" VBox.vgrow="ALWAYS">
          <tabs>
             <Tab fx:id="appointmentsTab" closable="false" text="Appointments">
                <content>

@@ -19,12 +19,15 @@ import DAO.AppointmentDaoImpl;
 import DAO.CustomerDaoImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import model.Appointment;
 import model.Customer;
@@ -76,6 +79,14 @@ public class PrimaryController implements Initializable, AuthenticatedController
     public void initialize(URL location, ResourceBundle resources) {
         initAppointmentsTable();
         initCustomersTable();
+
+        // set listener for tab selection change:
+        userOperationTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if(newTab == appointmentsTab)
+                appDeleteConfirmLabel.setText("");
+            if(newTab == customersTab)
+                custDeleteConfirmLabel.setText("");
+        });
     }
 
     @FXML
@@ -127,9 +138,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
     private RadioButton radioViewWeek;
 
     @FXML
-    private Label appDeleteConfirmLabel;
-
-    @FXML
     private TableView<Customer> customersTable;
 
     @FXML
@@ -154,7 +162,13 @@ public class PrimaryController implements Initializable, AuthenticatedController
     private TableColumn<Customer, String> country_col;
 
     @FXML
+    private Label appDeleteConfirmLabel;
+
+    @FXML
     private Label custDeleteConfirmLabel;
+
+    @FXML
+    private TabPane userOperationTabPane;
 
     @FXML
     private Tab appointmentsTab;
@@ -210,6 +224,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionAddAppointment(ActionEvent event) {
+        appDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         String fxmlFile = "/view/editAppointment-view.fxml";
         try {
             GuiUtil.newStage(event,
@@ -232,6 +247,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
+        custDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         String fxmlFile = "/view/editCustomer-view.fxml";
         try {
             GuiUtil.newStage(event,
@@ -254,6 +270,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionUpdateAppointment(ActionEvent event) {
+        appDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         Appointment selectedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null)
             return;     // if nothing is selected, do nothing
@@ -281,6 +298,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
+        custDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         Customer selectedCustomer = customersTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer == null)
             return;     // if nothing is selected, do nothing
@@ -313,7 +331,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             return;     // no selection means nothing to delete or confirm
 
         AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
-        GuiUtil.confirmDeletion(
+        if (GuiUtil.confirmDeletion(
                 "Delete Appointment Confirmation",
                 "Delete Selected Appointment \"" + deletedAppointment.title() + "\" ?" ,
                 "Appointment will be deleted.  This CANNOT be undone!" ,
@@ -325,7 +343,13 @@ public class PrimaryController implements Initializable, AuthenticatedController
                     }
                     return false;
                 }
-        );
+        )) {
+            appDeleteConfirmLabel.setTextFill(Paint.valueOf("RED"));
+            appDeleteConfirmLabel.setText("Appointment: \"" + deletedAppointment.title() + "\" was deleted.");
+        } else {
+            appDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
+            appDeleteConfirmLabel.setText("Canceled delete appointment.");
+        }
         // refresh the tableview to reflect possible changes
         initAppointmentsTable();
         appointmentsTable.refresh();
@@ -347,7 +371,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
             if (appointmentsList.isEmpty()) {
                 CustomerDaoImpl dbCustomers = new CustomerDaoImpl();
-                GuiUtil.confirmDeletion(
+                if (GuiUtil.confirmDeletion(
                         "Delete Customer Confirmation",
                         "Delete Selected Customer \"" + deletedCustomer.name() + "\" ?" ,
                         "Customer will be deleted.  This CANNOT be undone!" ,
@@ -359,7 +383,13 @@ public class PrimaryController implements Initializable, AuthenticatedController
                             }
                             return false;
                         }
-                );
+                )) {
+                    custDeleteConfirmLabel.setTextFill(Paint.valueOf("RED"));
+                    custDeleteConfirmLabel.setText("Customer: \"" + deletedCustomer.name() + "\" was deleted.");
+                } else {
+                    custDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
+                    custDeleteConfirmLabel.setText("Canceled delete customer.");
+                }
             }
             else {
                 // customer with associated appointments cannot be deleted
