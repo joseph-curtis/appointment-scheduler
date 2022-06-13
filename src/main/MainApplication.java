@@ -22,6 +22,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * The main class for the Appointment Scheduler Desktop Application.
@@ -30,7 +32,7 @@ import java.io.IOException;
  * <br>
  * <h1>JavaDocs folder is located within the root folder, ie: acme-ims\javadocs\</h1>
  * @author Joseph Curtis
- * @version 2022.03.02
+ * @version 2022.06.11
  */
 
 public class MainApplication extends Application {
@@ -42,9 +44,10 @@ public class MainApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"));
+        ResourceBundle languageRb = ResourceBundle.getBundle("Localization", Locale.getDefault());
+        Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), languageRb);
 
-        primaryStage.setTitle("Appointment Scheduler - Login");
+        primaryStage.setTitle(languageRb.getString("loginStage.title"));
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

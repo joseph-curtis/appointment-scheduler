@@ -22,7 +22,7 @@
               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
           </padding>
       
-          <Label fx:id="loginText" focusTraversable="false" text="Login">
+          <Label fx:id="titleLabel" focusTraversable="false" text="%titleLabel">
             <font>
                <Font name="System Bold" size="24.0" />
             </font>
@@ -37,16 +37,16 @@
              <RowConstraints vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label fx:id="usernameLabel" alignment="CENTER" focusTraversable="false" text="Username" />
-               <Label fx:id="passwordLabel" focusTraversable="false" text="Password" GridPane.columnIndex="1" />
-               <TextField fx:id="usernameTxt" minWidth="150.0" promptText="my login id" GridPane.rowIndex="1" />
-               <PasswordField fx:id="passwordTxt" alignment="CENTER_RIGHT" minWidth="150.0" promptText="my password" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <Label fx:id="usernameLabel" alignment="CENTER" focusTraversable="false" text="%usernameLabel" />
+               <Label fx:id="passwordLabel" focusTraversable="false" text="%passwordLabel" GridPane.columnIndex="1" />
+               <TextField fx:id="usernameTxt" minWidth="150.0" promptText="%usernameTxtPrompt" GridPane.rowIndex="1" />
+               <PasswordField fx:id="passwordTxt" alignment="CENTER_RIGHT" minWidth="150.0" promptText="%passwordTxtPrompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
             <padding>
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding>
          </GridPane>
-          <Button fx:id="loginButton" alignment="CENTER_RIGHT" onAction="#onActionLogin" text="Login">
+          <Button fx:id="loginButton" alignment="CENTER_RIGHT" onAction="#onActionLogin" text="%loginButton">
             <VBox.margin>
                <Insets left="250.0" />
             </VBox.margin>
@@ -56,7 +56,8 @@
                <Font name="System Bold Italic" size="14.0" />
             </font>
          </Label>
-         <Label fx:id="locationLabel" text="ZoneId">
+         <Label fx:id="languageLabel" text="%languageLabel" />
+         <Label fx:id="locationLabel" text="%locationLabel">
             <font>
                <Font size="14.0" />
             </font>
@@ -66,19 +67,19 @@
    <top>
       <MenuBar fx:id="loginMenuBar" BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu fx:id="fileMenu" mnemonicParsing="false" text="%fileMenu">
             <items>
-              <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
+              <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="%exitMenuItem" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+          <Menu fx:id="editMenu" mnemonicParsing="false" text="%editMenu">
             <items>
-              <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
+              <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="%settingsMenuItem" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu fx:id="helpMenu" mnemonicParsing="false" text="%helpMenu">
             <items>
-              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="About Acme Scheduler" />
+              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="%aboutMenuItem" />
             </items>
           </Menu>
         </menus>

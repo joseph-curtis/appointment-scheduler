@@ -17,26 +17,33 @@ package controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.User;
-import utility.BlankInputException;
 import utility.DBUtil;
 import utility.GuiUtil;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.06.07
+ * @version 2022.06.11
  */
 
 public class LoginController implements Initializable {
+    private static ResourceBundle languageRb = ResourceBundle.getBundle("Localization", Locale.getDefault());
+
     /**
      * Initializes the controller class
      * @param location The location used to resolve relative paths for the root object,
@@ -52,37 +59,26 @@ public class LoginController implements Initializable {
 
     @FXML
     private MenuItem aboutMenuItem;
-
     @FXML
     private Label errorLabel;
-
     @FXML
     private MenuItem exitMenuItem;
-
     @FXML
     private Label locationLabel;
-
     @FXML
     private Button loginButton;
-
     @FXML
     private MenuBar loginMenuBar;
-
     @FXML
-    private Label loginText;
-
+    private Label titleLabel;
     @FXML
     private Label passwordLabel;
-
     @FXML
     private PasswordField passwordTxt;
-
     @FXML
     private MenuItem settingsMenuItem;
-
     @FXML
     private Label usernameLabel;
-
     @FXML
     private TextField usernameTxt;
 
@@ -94,9 +90,9 @@ public class LoginController implements Initializable {
     @FXML
     void onActionExitApplication(ActionEvent event) {
         Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmExit.setTitle("Confirm Exit");
-        confirmExit.setHeaderText("Exit Application?");
-        confirmExit.setContentText("Are you sure you want to quit?");
+        confirmExit.setTitle(languageRb.getString("confirmExit.title"));
+        confirmExit.setHeaderText(languageRb.getString("confirmExit.header"));
+        confirmExit.setContentText(languageRb.getString("confirmExit.content"));
 
         Optional<ButtonType> result = confirmExit.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK)
@@ -104,8 +100,47 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    void onActionOpenSettings(ActionEvent event) {
+    void onActionOpenSettings(ActionEvent event) throws IOException {
+        Locale newLocale;
 
+        ChoiceDialog<String> changeLangDialog = new ChoiceDialog<>(
+                languageRb.getString("lang.choiceLabel"),
+                languageRb.getString("lang.en"),
+                languageRb.getString("lang.fr"),
+                languageRb.getString("lang.de"),
+                languageRb.getString("lang.jp")
+        );
+        changeLangDialog.setTitle(languageRb.getString("changeLangDialog.title"));
+        changeLangDialog.setHeaderText(languageRb.getString("changeLangDialog.header"));
+        changeLangDialog.setContentText(languageRb.getString("changeLangDialog.content"));
+        Optional<String> result = changeLangDialog.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get().equals(languageRb.getString("lang.en"))) {
+                newLocale = new Locale("en");
+                System.out.println("English selected.");
+            } else if (result.get().equals(languageRb.getString("lang.fr"))) {
+                newLocale = new Locale("fr");
+                System.out.println("French selected.");
+            } else if (result.get().equals(languageRb.getString("lang.de"))) {
+                newLocale = new Locale("de");
+                System.out.println("German selected.");
+            } else if (result.get().equals(languageRb.getString("lang.jp"))) {
+                newLocale = new Locale("jp");
+                System.out.println("Japanese selected.");
+            } else {
+                newLocale = Locale.getDefault();
+                System.out.println("DEFAULT was selected?");
+            }
+            languageRb = ResourceBundle.getBundle("Localization", newLocale);
+
+            // reload stage: //
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), languageRb);
+            Stage stage = (Stage)(loginMenuBar.getScene().getWindow());
+            stage.setTitle(languageRb.getString("loginStage.title"));
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
     }
 
     @FXML
@@ -124,7 +159,12 @@ public class LoginController implements Initializable {
 
         // check for blank/empty input fields:
         if (usernameTxt.getText().isBlank() || passwordTxt.getText().isEmpty()) {
-            GuiUtil.handleBlankInputException(new BlankInputException("Enter Username and Password"));
+            Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION);
+            blankTextInfo.setTitle(languageRb.getString("blankTextInfo.title"));
+            blankTextInfo.setHeaderText(languageRb.getString("blankTextInfo.header"));
+            blankTextInfo.setContentText(languageRb.getString("blankTextInfo.content"));
+            blankTextInfo.showAndWait();
+            errorLabel.setText(languageRb.getString("errorLabel.blankInput"));
         } else {
             // Check database for user authentication:
             Optional<User> user = DBUtil.authenticateUser(usernameTxt.getText(), passwordTxt.getText());
@@ -141,9 +181,11 @@ public class LoginController implements Initializable {
             } else {
                 // Show alert for login failure
                 Alert loginFail = new Alert(Alert.AlertType.WARNING);
-                loginFail.setHeaderText("Login Failure");
-                loginFail.setContentText("Please enter a correct Username and Password");
+                loginFail.setTitle(languageRb.getString("loginFail.title"));
+                loginFail.setHeaderText(languageRb.getString("loginFail.header"));
+                loginFail.setContentText(languageRb.getString("loginFail.content"));
                 loginFail.showAndWait();
+                errorLabel.setText(languageRb.getString("errorLabel.loginFail"));
             }
         }
     }
