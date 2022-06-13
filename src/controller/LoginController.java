@@ -22,6 +22,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.User;
@@ -31,13 +34,14 @@ import utility.GuiUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.06.11
+ * @version 2022.06.12
  */
 
 public class LoginController implements Initializable {
@@ -102,6 +106,11 @@ public class LoginController implements Initializable {
                 .ifPresent(response -> System.exit(0));
     }
 
+    /**
+     * Show the change language settings dialog. This allows the user to override the system default language.
+     * @param event the user generated event (a menu being selected) that caused this to execute
+     * @throws IOException if a Localization properties file cannot be found
+     */
     @FXML
     void onActionOpenSettings(ActionEvent event) throws IOException {
         Locale newLocale;
@@ -149,9 +158,24 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Show the About this Application dialog box
+     * @param event the user generated event (a menu being selected) that caused this to execute
+     */
     @FXML
     void onActionShowAbout(ActionEvent event) {
-
+        Alert aboutDialog = new Alert(Alert.AlertType.NONE,
+                languageRb.getString("aboutDialog.content"),
+                new ButtonType(languageRb.getString("closeButton"), ButtonBar.ButtonData.CANCEL_CLOSE));
+        aboutDialog.setTitle(languageRb.getString("aboutDialog.title"));
+        aboutDialog.setHeaderText(languageRb.getString("aboutDialog.header"));
+        // add a graphic to dialog box:
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/ACME_Catalog.png")).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        aboutDialog.setGraphic(imageView);
+        // set size to preferred height for content to show fully
+        aboutDialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        aboutDialog.showAndWait();
     }
 
     /**
