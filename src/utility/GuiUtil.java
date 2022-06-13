@@ -28,7 +28,9 @@ import javafx.stage.Stage;
 import model.DataTransferObject;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -36,17 +38,16 @@ import java.util.function.BooleanSupplier;
  * <p>Use for easier maintenance of code
  * instead of code duplication</p>
  * @author Joseph Curtis
- * @version 2022.06.07
+ * @version 2022.06.13
  */
 public final class GuiUtil {
     /**
-     * Opens a new stage (window)
+     * Opens a new window for add appointments or customers
      * @param event the user generated event (a button being clicked) that caused this to execute
      * @param user the currently logged-in user
      * @param fxmlFileName the .fxml file holding the next scene
      * @param windowTitle the new window title to set
      * @param modality mode for new window (NONE=unlocked, WINDOW_MODAL=locked to new window)
-     * @return FXML Loader for use when getting the controller
      * @throws IOException if .fxml filename cannot be found
      */
     public static void newStage(ActionEvent event,
@@ -54,12 +55,32 @@ public final class GuiUtil {
                                 String fxmlFileName,
                                 String windowTitle,
                                 Modality modality) throws IOException {
-
-        newStage(event, null, user, fxmlFileName, windowTitle, modality);
+        newStage(event, null, user, fxmlFileName, windowTitle, modality,
+                ResourceBundle.getBundle("Localization", Locale.getDefault()));
     }
 
     /**
-     * Opens a new window for add/modify appointments or customers
+     * Opens a new stage (window). This is used to get the primary window.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param user the currently logged-in user
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @param modality mode for new window (NONE=unlocked, WINDOW_MODAL=locked to new window)
+     * @param resources the resource bundle (like language pack) that goes with the stage
+     * @throws IOException if .fxml filename cannot be found
+     */
+    public static void newStage(ActionEvent event,
+                                DataTransferObject user,
+                                String fxmlFileName,
+                                String windowTitle,
+                                Modality modality,
+                                ResourceBundle resources) throws IOException {
+
+        newStage(event, null, user, fxmlFileName, windowTitle, modality, resources);
+    }
+
+    /**
+     * Opens a new window for modify appointments or customers
      * @param event the user generated event (a button being clicked) that caused this to execute
      * @param passedObject the existing database object to modify, or null
      * @param user the currently logged-in user
@@ -74,8 +95,31 @@ public final class GuiUtil {
                                 String fxmlFileName,
                                 String windowTitle,
                                 Modality modality) throws IOException {
+        newStage(event, passedObject, user, fxmlFileName, windowTitle, modality,
+                ResourceBundle.getBundle("Localization", Locale.getDefault()));
+    }
+
+    /**
+     * Opens a new stage (window).
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param passedObject the existing database object to modify, or null
+     * @param user the currently logged-in user
+     * @param fxmlFileName the .fxml file holding the next scene
+     * @param windowTitle the new window title to set
+     * @param modality mode for new window (NONE=unlocked, WINDOW_MODAL=locked to new window)
+     * @param resources the resource bundle (like language pack) that goes with the stage
+     * @throws IOException if .fxml filename cannot be found
+     */
+    public static void newStage(ActionEvent event,
+                                DataTransferObject passedObject,
+                                DataTransferObject user,
+                                String fxmlFileName,
+                                String windowTitle,
+                                Modality modality,
+                                ResourceBundle resources) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(GuiUtil.class.getResource(fxmlFileName));
+        loader.setResources(resources);
         Parent root = loader.load();
 
         Stage stage = new Stage();
