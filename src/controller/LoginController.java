@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,19 +34,18 @@ import utility.GuiUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.06.12
+ * @version 2022.06.13
  */
 
 public class LoginController implements Initializable {
-    private static ResourceBundle languageRb = ResourceBundle.getBundle("Localization", Locale.getDefault());
+    private static Locale locale = Locale.getDefault();
+    private static ResourceBundle languageRb = ResourceBundle.getBundle("Localization", locale);
 
     /**
      * Initializes the controller class
@@ -58,6 +58,8 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // pressing enter or return fires the login button!
         loginButton.setDefaultButton(true);
+        // set label to show current time zone (system time)
+        timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(locale));
     }
 
     @FXML
@@ -68,6 +70,8 @@ public class LoginController implements Initializable {
     private MenuItem exitMenuItem;
     @FXML
     private Label locationLabel;
+    @FXML
+    private Label timeZoneLabel;
     @FXML
     private Button loginButton;
     @FXML
@@ -113,8 +117,6 @@ public class LoginController implements Initializable {
      */
     @FXML
     void onActionOpenSettings(ActionEvent event) throws IOException {
-        Locale newLocale;
-
         ChoiceDialog<String> changeLangDialog = new ChoiceDialog<>(
                 languageRb.getString("lang.choiceLabel"),
                 languageRb.getString("lang.en"),
@@ -132,22 +134,17 @@ public class LoginController implements Initializable {
 
         if (result.isPresent()) {
             if (result.get().equals(languageRb.getString("lang.en"))) {
-                newLocale = new Locale("en");
-                System.out.println("English selected.");
+                locale = new Locale("en");
             } else if (result.get().equals(languageRb.getString("lang.fr"))) {
-                newLocale = new Locale("fr");
-                System.out.println("French selected.");
+                locale = new Locale("fr");
             } else if (result.get().equals(languageRb.getString("lang.de"))) {
-                newLocale = new Locale("de");
-                System.out.println("German selected.");
+                locale = new Locale("de");
             } else if (result.get().equals(languageRb.getString("lang.jp"))) {
-                newLocale = new Locale("jp");
-                System.out.println("Japanese selected.");
+                locale = new Locale("jp");
             } else {
-                newLocale = Locale.getDefault();
-                System.out.println("System Language selected");
+                locale = Locale.getDefault();
             }
-            languageRb = ResourceBundle.getBundle("Localization", newLocale);
+            languageRb = ResourceBundle.getBundle("Localization", locale);
 
             // reload stage: //
             Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), languageRb);
@@ -176,6 +173,11 @@ public class LoginController implements Initializable {
         // set size to preferred height for content to show fully
         aboutDialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         aboutDialog.showAndWait();
+    }
+
+    @FXML
+    void imageOnMouse(MouseEvent event) {
+        System.out.println(languageRb.getString("easterEgg"));
     }
 
     /**

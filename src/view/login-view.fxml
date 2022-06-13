@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -8,11 +9,18 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.SepiaTone?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
@@ -57,11 +65,20 @@
             </font>
          </Label>
          <Label fx:id="languageLabel" text="%languageLabel" />
-         <Label fx:id="locationLabel" text="%locationLabel">
-            <font>
-               <Font size="14.0" />
-            </font>
-         </Label>
+         <HBox alignment="TOP_CENTER" spacing="15.0">
+            <children>
+               <Label fx:id="locationLabel" text="%locationLabel">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+               <Label fx:id="timeZoneLabel">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+            </children>
+         </HBox>
       </VBox>
    </center>
    <top>
@@ -85,4 +102,29 @@
         </menus>
       </MenuBar>
    </top>
+   <left>
+      <AnchorPane prefWidth="225.0" style="-fx-background-color: #af2828;" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView accessibleText="ACME logo" fitHeight="131.0" fitWidth="175.0" layoutX="25.0" layoutY="98.0" onMouseClicked="#imageOnMouse" pickOnBounds="true" preserveRatio="true" rotate="-12.0">
+               <image>
+                  <Image url="@../resources/acme.jpg" />
+               </image>
+               <effect>
+                  <SepiaTone level="0.2">
+                     <input>
+                        <DropShadow height="30.0" offsetX="-4.0" offsetY="4.0" radius="14.5" width="30.0">
+                           <color>
+                              <Color red="0.06315789371728897" />
+                           </color>
+                        </DropShadow>
+                     </input>
+                  </SepiaTone>
+               </effect>
+               <cursor>
+                  <Cursor fx:constant="OPEN_HAND" />
+               </cursor>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </left>
 </BorderPane>
