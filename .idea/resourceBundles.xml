@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ResourceBundleManager">
-    <file url="file://$PROJECT_DIR$/src/Localization.properties" />
-    <file url="file://$PROJECT_DIR$/src/Localization_fr.properties" />
-    <file url="file://$PROJECT_DIR$/src/Localization_de.properties" />
-    <file url="file://$PROJECT_DIR$/src/Localization_jp.properties" />
+    <file url="file://$PROJECT_DIR$/src/resources/Localization.properties" />
+    <file url="file://$PROJECT_DIR$/src/resources/Localization_de.properties" />
+    <file url="file://$PROJECT_DIR$/src/resources/Localization_fr.properties" />
+    <file url="file://$PROJECT_DIR$/src/resources/Localization_jp.properties" />
     <custom-resource-bundle>
-      <file value="file://$PROJECT_DIR$/src/Localization.properties" />
-      <file value="file://$PROJECT_DIR$/src/Localization_fr.properties" />
-      <file value="file://$PROJECT_DIR$/src/Localization_de.properties" />
-      <file value="file://$PROJECT_DIR$/src/Localization_jp.properties" />
+      <file value="file://$PROJECT_DIR$/src/resources/Localization.properties" />
+      <file value="file://$PROJECT_DIR$/src/resources/Localization_de.properties" />
+      <file value="file://$PROJECT_DIR$/src/resources/Localization_fr.properties" />
+      <file value="file://$PROJECT_DIR$/src/resources/Localization_jp.properties" />
       <base-name>Localization</base-name>
     </custom-resource-bundle>
   </component>

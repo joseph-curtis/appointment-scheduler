@@ -36,7 +36,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.06.08
+ * @version 2022.06.12
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -54,7 +54,7 @@ public abstract class DBUtil {
     static {
         try {
             Properties properties = new Properties();
-            properties.load(new FileInputStream("src/DbConnection.properties"));
+            properties.load(new FileInputStream("src/resources/DbConnection.properties"));
 
             dataSource.setUrl(properties.getProperty(DB_URL));
             dataSource.setUser(properties.getProperty(USERNAME));
