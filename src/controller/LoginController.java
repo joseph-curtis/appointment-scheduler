@@ -19,7 +19,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -89,14 +88,18 @@ public class LoginController implements Initializable {
      */
     @FXML
     void onActionExitApplication(ActionEvent event) {
-        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION);
+        ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType(languageRb.getString("cancelButton"), ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION,
+                languageRb.getString("confirmExit.content"),
+                okButton, cancelButton);
         confirmExit.setTitle(languageRb.getString("confirmExit.title"));
         confirmExit.setHeaderText(languageRb.getString("confirmExit.header"));
-        confirmExit.setContentText(languageRb.getString("confirmExit.content"));
 
-        Optional<ButtonType> result = confirmExit.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK)
-            System.exit(0);
+        // Fully lambda approach to showing confirmation dialog:
+        confirmExit.showAndWait()
+                .filter(response -> response == okButton)
+                .ifPresent(response -> System.exit(0));
     }
 
     @FXML
@@ -113,6 +116,9 @@ public class LoginController implements Initializable {
         changeLangDialog.setTitle(languageRb.getString("changeLangDialog.title"));
         changeLangDialog.setHeaderText(languageRb.getString("changeLangDialog.header"));
         changeLangDialog.setContentText(languageRb.getString("changeLangDialog.content"));
+        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.OK)).setText(languageRb.getString("okButton"));
+        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setText(languageRb.getString("cancelButton"));
+
         Optional<String> result = changeLangDialog.showAndWait();
 
         if (result.isPresent()) {
@@ -130,7 +136,7 @@ public class LoginController implements Initializable {
                 System.out.println("Japanese selected.");
             } else {
                 newLocale = Locale.getDefault();
-                System.out.println("DEFAULT was selected?");
+                System.out.println("System Language selected");
             }
             languageRb = ResourceBundle.getBundle("Localization", newLocale);
 
@@ -156,13 +162,15 @@ public class LoginController implements Initializable {
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
         User currentUserLogin;
+        ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
 
         // check for blank/empty input fields:
         if (usernameTxt.getText().isBlank() || passwordTxt.getText().isEmpty()) {
-            Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION);
+            Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION,
+                    languageRb.getString("blankTextInfo.content"),
+                    okButton);
             blankTextInfo.setTitle(languageRb.getString("blankTextInfo.title"));
             blankTextInfo.setHeaderText(languageRb.getString("blankTextInfo.header"));
-            blankTextInfo.setContentText(languageRb.getString("blankTextInfo.content"));
             blankTextInfo.showAndWait();
             errorLabel.setText(languageRb.getString("errorLabel.blankInput"));
         } else {
@@ -180,10 +188,11 @@ public class LoginController implements Initializable {
                         Modality.NONE);
             } else {
                 // Show alert for login failure
-                Alert loginFail = new Alert(Alert.AlertType.WARNING);
+                Alert loginFail = new Alert(Alert.AlertType.WARNING,
+                        languageRb.getString("loginFail.content"),
+                        okButton);
                 loginFail.setTitle(languageRb.getString("loginFail.title"));
                 loginFail.setHeaderText(languageRb.getString("loginFail.header"));
-                loginFail.setContentText(languageRb.getString("loginFail.content"));
                 loginFail.showAndWait();
                 errorLabel.setText(languageRb.getString("errorLabel.loginFail"));
             }
