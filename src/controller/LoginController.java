@@ -208,8 +208,9 @@ public class LoginController implements Initializable {
                 GuiUtil.newStage(event,
                         currentUserLogin,
                         "/view/primary-view.fxml",
-                        "Appointment Scheduler - Calendar View",
-                        Modality.NONE);
+                        "ACME Appointment Scheduler - Calendar view",
+                        Modality.NONE,
+                        languageRb);
             } else {
                 // Show alert for login failure
                 Alert loginFail = new Alert(Alert.AlertType.WARNING,
