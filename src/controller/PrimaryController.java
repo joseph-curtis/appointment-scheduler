@@ -91,88 +91,60 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     @FXML
     private TableView<Appointment> appointmentsTable;
-
     @FXML
     private TableColumn<Appointment, Integer> appointment_id_col;
-
     @FXML
     private TableColumn<Appointment, String> title_col;
-
     @FXML
     private TableColumn<Appointment, String> description_col;
-
     @FXML
     private TableColumn<Appointment, String> location_col;
-
     @FXML
     private TableColumn<Appointment, String> contact_name_col;
-
     @FXML
     private TableColumn<Appointment, String> contact_email_col;
-
     @FXML
     private TableColumn<Appointment, String> type_col;
-
     @FXML
     private TableColumn<Appointment, ?> start_datetime_col;
-
     @FXML
     private TableColumn<Appointment, ?> end_datetime_col;
-
     @FXML
     private TableColumn<Appointment, Integer> appointment_cust_id_col;
-
     @FXML
     private TableColumn<Appointment, String> appointment_cust_name_col;
-
     @FXML
     private TableColumn<Appointment, Integer> user_id_col;
-
     @FXML
     private RadioButton radioViewAll;
-
     @FXML
     private RadioButton radioViewMonth;
-
     @FXML
     private RadioButton radioViewWeek;
-
     @FXML
     private TableView<Customer> customersTable;
-
     @FXML
     private TableColumn<Customer, Integer> customer_id_col;
-
     @FXML
     private TableColumn<Customer, String> name_col;
-
     @FXML
     private TableColumn<Customer, String> address_col;
-
     @FXML
     private TableColumn<Customer, String> postalcode_col;
-
     @FXML
     private TableColumn<Customer, String> phone_col;
-
     @FXML
     private TableColumn<Customer, String> division_col;
-
     @FXML
     private TableColumn<Customer, String> country_col;
-
     @FXML
     private Label appDeleteConfirmLabel;
-
     @FXML
     private Label custDeleteConfirmLabel;
-
     @FXML
     private TabPane userOperationTabPane;
-
     @FXML
     private Tab appointmentsTab;
-
     @FXML
     private Tab customersTab;
 
@@ -237,6 +209,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
+        appointmentsTable.getColumns().get(0).setVisible(false);
+        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
         appointmentsTable.refresh();
     }
@@ -260,6 +234,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
+        customersTable.getColumns().get(0).setVisible(false);
+        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
         customersTable.refresh();
     }
@@ -288,6 +264,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
+        appointmentsTable.getColumns().get(0).setVisible(false);
+        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
         appointmentsTable.refresh();
     }
@@ -316,6 +294,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
+        customersTable.getColumns().get(0).setVisible(false);
+        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
         customersTable.refresh();
     }
@@ -351,6 +331,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             appDeleteConfirmLabel.setText("Canceled delete appointment.");
         }
         // refresh the tableview to reflect possible changes
+        appointmentsTable.getColumns().get(0).setVisible(false);
+        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
         appointmentsTable.refresh();
     }
@@ -403,6 +385,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
+        customersTable.getColumns().get(0).setVisible(false);
+        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
         customersTable.refresh();
     }

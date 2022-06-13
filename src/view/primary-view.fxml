@@ -54,20 +54,15 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="%fileMenu">
           <items>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#onActionExitApplication" text="Exit" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionExitApplication" text="%exitMenuItem" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onActionOpenSettings" text="Settings" />
-               </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu mnemonicParsing="false" text="%helpMenu">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#onActionShowAbout" text="About Acme Scheduler" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionShowAbout" text="%aboutMenuItem" />
           </items>
         </Menu>
       </menus>
