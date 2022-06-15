@@ -158,8 +158,12 @@ public final class GuiUtil {
         confirmRemove.setTitle(title);
         confirmRemove.setHeaderText(header);
         confirmRemove.setContentText(content);
+        // set css theme
+        confirmRemove.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
 
         Optional<ButtonType> result = confirmRemove.showAndWait();
+
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // user confirmed delete operation
             boolean success = lambda.getAsBoolean();
@@ -168,6 +172,10 @@ public final class GuiUtil {
                 Alert deletionError = new Alert(Alert.AlertType.ERROR);
                 deletionError.setHeaderText("Database Error");
                 deletionError.setContentText("Unable to delete selected item!");
+                // set css theme
+                deletionError.getDialogPane().getStylesheets().add(
+                        GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
                 deletionError.showAndWait();
                 return false;   // an error occurred when trying to delete
             }
@@ -185,6 +193,10 @@ public final class GuiUtil {
         Alert dbError = new Alert(Alert.AlertType.ERROR);
         dbError.setHeaderText("Database Error");
         dbError.setContentText(exception.getMessage());
+        // set css theme
+        dbError.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
         dbError.showAndWait();
     }
 
@@ -196,6 +208,10 @@ public final class GuiUtil {
         Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION);
         blankTextInfo.setHeaderText(exception.getMessage());
         blankTextInfo.setContentText("Please enter data in each field.");
+        // set css theme
+        blankTextInfo.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
         blankTextInfo.showAndWait();
     }
 
@@ -208,6 +224,10 @@ public final class GuiUtil {
         Alert inputWarning = new Alert(Alert.AlertType.WARNING);
         inputWarning.setHeaderText("Input Validation Failed");
         inputWarning.setContentText(content);
+        // set css theme
+        inputWarning.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
         inputWarning.showAndWait();
 
         throw new InvalidInputException("Logical error check:\n" + content);

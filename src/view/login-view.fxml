@@ -23,12 +23,9 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
+<BorderPane stylesheets="@modena-red.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
    <center>
       <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
-          <padding>
-              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-          </padding>
       
           <Label fx:id="titleLabel" focusTraversable="false" text="%titleLabel">
             <font>
@@ -54,11 +51,17 @@
                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
             </padding>
          </GridPane>
-          <Button fx:id="loginButton" alignment="CENTER_RIGHT" onAction="#onActionLogin" text="%loginButton">
+         <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308">
             <VBox.margin>
-               <Insets left="250.0" />
+               <Insets />
             </VBox.margin>
-         </Button>
+            <children>
+                <Button fx:id="loginButton" alignment="CENTER" defaultButton="true" onAction="#onActionLogin" prefHeight="40.0" prefWidth="330.0" style="-fx-background-radius: 15;" text="%loginButton">
+                  <font>
+                     <Font name="System Bold" size="15.0" />
+                  </font></Button>
+            </children>
+         </HBox>
          <Label fx:id="errorLabel" focusTraversable="false" textFill="RED" wrapText="true">
             <font>
                <Font name="System Bold Italic" size="14.0" />
@@ -79,6 +82,12 @@
                </Label>
             </children>
          </HBox>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
       </VBox>
    </center>
    <top>

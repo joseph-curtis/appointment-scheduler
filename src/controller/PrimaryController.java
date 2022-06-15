@@ -19,8 +19,6 @@ import DAO.AppointmentDaoImpl;
 import DAO.CustomerDaoImpl;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,7 +42,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.06
+ * @version 2022.06.14
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -79,6 +77,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
     public void initialize(URL location, ResourceBundle resources) {
         initAppointmentsTable();
         initCustomersTable();
+        System.out.println("Initialized now.");
 
         // set listener for tab selection change:
         userOperationTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
@@ -209,10 +208,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        appointmentsTable.getColumns().get(0).setVisible(false);
-        appointmentsTable.getColumns().get(0).setVisible(true);
+//        appointmentsTable.getColumns().get(0).setVisible(false);
+//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-        appointmentsTable.refresh();
+//        appointmentsTable.refresh();
     }
 
     /**
@@ -234,10 +233,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        customersTable.getColumns().get(0).setVisible(false);
-        customersTable.getColumns().get(0).setVisible(true);
+//        customersTable.getColumns().get(0).setVisible(false);
+//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-        customersTable.refresh();
+//        customersTable.refresh();
     }
 
     /**
@@ -264,10 +263,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        appointmentsTable.getColumns().get(0).setVisible(false);
-        appointmentsTable.getColumns().get(0).setVisible(true);
+//        appointmentsTable.getColumns().get(0).setVisible(false);
+//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-        appointmentsTable.refresh();
+//        appointmentsTable.refresh();
     }
 
     /**
@@ -294,10 +293,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        customersTable.getColumns().get(0).setVisible(false);
-        customersTable.getColumns().get(0).setVisible(true);
+//        customersTable.getColumns().get(0).setVisible(false);
+//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-        customersTable.refresh();
+//        customersTable.refresh();
     }
 
     /**
@@ -331,10 +330,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             appDeleteConfirmLabel.setText("Canceled delete appointment.");
         }
         // refresh the tableview to reflect possible changes
-        appointmentsTable.getColumns().get(0).setVisible(false);
-        appointmentsTable.getColumns().get(0).setVisible(true);
+//        appointmentsTable.getColumns().get(0).setVisible(false);
+//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-        appointmentsTable.refresh();
+//        appointmentsTable.refresh();
     }
 
     /**
@@ -376,6 +375,9 @@ public class PrimaryController implements Initializable, AuthenticatedController
             else {
                 // customer with associated appointments cannot be deleted
                 Alert warningDelete = new Alert(Alert.AlertType.WARNING);
+                // set css theme
+                warningDelete.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/view/modena-red.css").toExternalForm());
                 warningDelete.setHeaderText("Unable to Delete \"" + deletedCustomer.name() + "\"");
                 warningDelete.setContentText("This Customer has " + appointmentsList.size()
                         + " associated Appointments.\nPlease remove all associated Appointments first.");
@@ -385,10 +387,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        customersTable.getColumns().get(0).setVisible(false);
-        customersTable.getColumns().get(0).setVisible(true);
+//        customersTable.getColumns().get(0).setVisible(false);
+//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-        customersTable.refresh();
+//        customersTable.refresh();
     }
 
     private void initAppointmentsTable() {

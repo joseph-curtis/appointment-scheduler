@@ -34,7 +34,6 @@ import utility.GuiUtil;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -56,8 +55,8 @@ public class LoginController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // pressing enter or return fires the login button!
-        loginButton.setDefaultButton(true);
+        // pressing enter or return fires the login button (also can be set in Scene Builder):
+//        loginButton.setDefaultButton(true);
         // set label to show current time zone (system time)
         timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(locale));
     }
@@ -103,6 +102,9 @@ public class LoginController implements Initializable {
                 okButton, cancelButton);
         confirmExit.setTitle(languageRb.getString("confirmExit.title"));
         confirmExit.setHeaderText(languageRb.getString("confirmExit.header"));
+        // set css theme
+        confirmExit.getDialogPane().getStylesheets().add(
+                getClass().getResource("/view/modena-red.css").toExternalForm());
 
         // Fully lambda approach to showing confirmation dialog:
         confirmExit.showAndWait()
@@ -129,6 +131,9 @@ public class LoginController implements Initializable {
         changeLangDialog.setContentText(languageRb.getString("changeLangDialog.content"));
         ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.OK)).setText(languageRb.getString("okButton"));
         ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setText(languageRb.getString("cancelButton"));
+        // set css theme
+        changeLangDialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/view/modena-red.css").toExternalForm());
 
         Optional<String> result = changeLangDialog.showAndWait();
 
@@ -172,6 +177,10 @@ public class LoginController implements Initializable {
         aboutDialog.setGraphic(imageView);
         // set size to preferred height for content to show fully
         aboutDialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        // set css theme
+        aboutDialog.getDialogPane().getStylesheets().add(
+                getClass().getResource("/view/modena-red.css").toExternalForm());
+
         aboutDialog.showAndWait();
     }
 
@@ -197,6 +206,10 @@ public class LoginController implements Initializable {
                     okButton);
             blankTextInfo.setTitle(languageRb.getString("blankTextInfo.title"));
             blankTextInfo.setHeaderText(languageRb.getString("blankTextInfo.header"));
+            // set css theme
+            blankTextInfo.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/view/modena-red.css").toExternalForm());
+
             blankTextInfo.showAndWait();
             errorLabel.setText(languageRb.getString("errorLabel.blankInput"));
         } else {
@@ -220,6 +233,10 @@ public class LoginController implements Initializable {
                         okButton);
                 loginFail.setTitle(languageRb.getString("loginFail.title"));
                 loginFail.setHeaderText(languageRb.getString("loginFail.header"));
+                // set css theme
+                loginFail.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/view/modena-red.css").toExternalForm());
+
                 loginFail.showAndWait();
                 errorLabel.setText(languageRb.getString("errorLabel.loginFail"));
             }
