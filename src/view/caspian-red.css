@@ -4253,17 +4253,17 @@ to the top and bottom -fx-padding values of the parent toolbar. */
 .alert.confirmation.dialog-pane,
 .text-input-dialog.dialog-pane,
 .choice-dialog.dialog-pane {
-    -fx-graphic: url("dialog-confirm.png");
+    -fx-graphic: url("/resources/images/dialog-confirm.png");
 }
 
 .alert.information.dialog-pane {
-    -fx-graphic: url("dialog-information.png");
+    -fx-graphic: url("/resources/images/dialog-information.png");
 }
 
 .alert.error.dialog-pane {
-    -fx-graphic: url("dialog-error.png");
+    -fx-graphic: url("/resources/images/dialog-error.png");
 }
 
 .alert.warning.dialog-pane {
-    -fx-graphic: url("dialog-warning.png");
+    -fx-graphic: url("/resources/images/dialog-warning.png");
 }

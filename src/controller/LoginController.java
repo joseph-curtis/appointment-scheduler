@@ -172,7 +172,7 @@ public class LoginController implements Initializable {
         aboutDialog.setTitle(languageRb.getString("aboutDialog.title"));
         aboutDialog.setHeaderText(languageRb.getString("aboutDialog.header"));
         // add a graphic to dialog box:
-        Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/ACME_Catalog.png")).toExternalForm());
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("/images/ACME_Catalog.png")).toExternalForm());
         ImageView imageView = new ImageView(image);
         aboutDialog.setGraphic(imageView);
         // set size to preferred height for content to show fully
