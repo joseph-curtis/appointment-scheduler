@@ -91,21 +91,21 @@
       </VBox>
    </center>
    <top>
-      <MenuBar fx:id="loginMenuBar" BorderPane.alignment="CENTER">
+      <MenuBar fx:id="topMenuBar" BorderPane.alignment="CENTER">
         <menus>
-          <Menu fx:id="fileMenu" mnemonicParsing="false" text="%fileMenu">
+          <Menu mnemonicParsing="false" text="%fileMenu">
             <items>
-              <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#onActionExitApplication" text="%exitMenuItem" />
+              <MenuItem mnemonicParsing="false" onAction="#onActionExit" text="%exitMenuItem" />
             </items>
           </Menu>
-          <Menu fx:id="editMenu" mnemonicParsing="false" text="%editMenu">
+          <Menu mnemonicParsing="false" text="%editMenu">
             <items>
-              <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#onActionOpenSettings" text="%settingsMenuItem" />
+              <MenuItem mnemonicParsing="false" onAction="#onActionSettings" text="%settingsMenuItem" />
             </items>
           </Menu>
-          <Menu fx:id="helpMenu" mnemonicParsing="false" text="%helpMenu">
+          <Menu mnemonicParsing="false" text="%helpMenu">
             <items>
-              <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#onActionShowAbout" text="%aboutMenuItem" />
+              <MenuItem mnemonicParsing="false" onAction="#onActionAbout" text="%aboutMenuItem" />
             </items>
           </Menu>
         </menus>

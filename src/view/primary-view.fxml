@@ -39,7 +39,6 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -50,19 +49,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox stylesheets="@modena-red.css" minWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
+<VBox minWidth="1200.0" stylesheets="@modena-red.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrimaryController">
   <children>
-    <MenuBar VBox.vgrow="NEVER">
+    <MenuBar fx:id="topMenuBar" VBox.vgrow="NEVER">
       <menus>
         <Menu mnemonicParsing="false" text="%fileMenu">
           <items>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#onActionExitApplication" text="%exitMenuItem" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionExit" text="%exitMenuItem" />
           </items>
         </Menu>
+          <Menu mnemonicParsing="false" text="%editMenu">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onActionSettings" text="%settingsMenuItem" />
+              </items>
+          </Menu>
         <Menu mnemonicParsing="false" text="%helpMenu">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#onActionShowAbout" text="%aboutMenuItem" />
+            <MenuItem mnemonicParsing="false" onAction="#onActionAbout" text="%aboutMenuItem" />
           </items>
         </Menu>
       </menus>

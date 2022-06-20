@@ -22,11 +22,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.Appointment;
 import model.Customer;
 import model.DataTransferObject;
@@ -36,13 +40,12 @@ import utility.GuiUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.14
+ * @version 2022.06.19
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -77,7 +80,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
     public void initialize(URL location, ResourceBundle resources) {
         initAppointmentsTable();
         initCustomersTable();
-        System.out.println("Initialized now.");
 
         // set listener for tab selection change:
         userOperationTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
@@ -88,6 +90,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
         });
     }
 
+    @FXML
+    private MenuBar topMenuBar;
     @FXML
     private TableView<Appointment> appointmentsTable;
     @FXML
@@ -153,25 +157,25 @@ public class PrimaryController implements Initializable, AuthenticatedController
      * @param event the user generated event (a button being clicked) that caused this to execute
      */
     @FXML
-    void onActionExitApplication(ActionEvent event) {
-        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmExit.setTitle("Confirm Exit");
-        confirmExit.setHeaderText("Exit Application?");
-        confirmExit.setContentText("Are you sure you want to quit?");
-
-        Optional<ButtonType> result = confirmExit.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK)
-            System.exit(0);
+    void onActionExit(ActionEvent event) {
+        GuiUtil.confirmExitApplication();
     }
 
     @FXML
-    void onActionOpenSettings(ActionEvent event) {
-
+    void onActionSettings(ActionEvent event) throws IOException {
+        if (GuiUtil.showSettings()) {
+            // reload stage: //
+            Parent root = FXMLLoader.load(getClass().getResource("/view/primary-view.fxml"), GuiUtil.languageRb);
+            Stage stage = (Stage)(topMenuBar.getScene().getWindow());
+            stage.setTitle(GuiUtil.languageRb.getString("primaryStage.title"));
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
     }
 
     @FXML
-    void onActionShowAbout(ActionEvent event) {
-
+    void onActionAbout(ActionEvent event) {
+        GuiUtil.showAbout();
     }
 
     @FXML

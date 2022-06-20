@@ -21,14 +21,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.DataTransferObject;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BooleanSupplier;
@@ -38,9 +41,12 @@ import java.util.function.BooleanSupplier;
  * <p>Use for easier maintenance of code
  * instead of code duplication</p>
  * @author Joseph Curtis
- * @version 2022.06.13
+ * @version 2022.06.19
  */
 public final class GuiUtil {
+    public static Locale locale = Locale.getDefault();
+    public static ResourceBundle languageRb = ResourceBundle.getBundle("Localization", locale);
+
     /**
      * Opens a new window for add appointments or customers
      * @param event the user generated event (a button being clicked) that caused this to execute
@@ -136,6 +142,92 @@ public final class GuiUtil {
         AuthenticatedController controller = loader.getController();
         controller.passCurrentUser(user);
         controller.passExistingRecord(passedObject);
+    }
+
+    /**
+     * Quits the application.
+     * <p>Displays a confirmation dialog before exiting.</p>
+     */
+    public static void confirmExitApplication() {
+        ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType(languageRb.getString("cancelButton"), ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION,
+                languageRb.getString("confirmExit.content"),
+                okButton, cancelButton);
+        confirmExit.setTitle(languageRb.getString("confirmExit.title"));
+        confirmExit.setHeaderText(languageRb.getString("confirmExit.header"));
+        // set css theme
+        confirmExit.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
+        // Fully lambda approach to showing confirmation dialog:
+        confirmExit.showAndWait()
+                .filter(response -> response == okButton)
+                .ifPresent(response -> System.exit(0));
+    }
+
+    /**
+     * Show the change language settings dialog. This allows the user to override the system default language.
+     * @throws IOException if a Localization properties file cannot be found
+     * @return
+     */
+    public static boolean showSettings() throws IOException {
+        ChoiceDialog<String> changeLangDialog = new ChoiceDialog<>(
+                languageRb.getString("lang.choiceLabel"),
+                languageRb.getString("lang.en"),
+                languageRb.getString("lang.fr"),
+                languageRb.getString("lang.de"),
+                languageRb.getString("lang.jp")
+        );
+        changeLangDialog.setTitle(languageRb.getString("changeLangDialog.title"));
+        changeLangDialog.setHeaderText(languageRb.getString("changeLangDialog.header"));
+        changeLangDialog.setContentText(languageRb.getString("changeLangDialog.content"));
+        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.OK)).setText(languageRb.getString("okButton"));
+        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setText(languageRb.getString("cancelButton"));
+        // set css theme
+        changeLangDialog.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
+        Optional<String> result = changeLangDialog.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get().equals(languageRb.getString("lang.en"))) {
+                locale = new Locale("en");
+            } else if (result.get().equals(languageRb.getString("lang.fr"))) {
+                locale = new Locale("fr");
+            } else if (result.get().equals(languageRb.getString("lang.de"))) {
+                locale = new Locale("de");
+            } else if (result.get().equals(languageRb.getString("lang.jp"))) {
+                locale = new Locale("jp");
+            } else {
+                locale = Locale.getDefault();
+            }
+            languageRb = ResourceBundle.getBundle("Localization", locale);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Show the About this Application dialog box
+     */
+    public static void showAbout() {
+        Alert aboutDialog = new Alert(Alert.AlertType.NONE,
+                languageRb.getString("aboutDialog.content"),
+                new ButtonType(languageRb.getString("closeButton"), ButtonBar.ButtonData.CANCEL_CLOSE));
+        aboutDialog.setTitle(languageRb.getString("aboutDialog.title"));
+        aboutDialog.setHeaderText(languageRb.getString("aboutDialog.header"));
+        // add a graphic to dialog box:
+        Image image = new Image(Objects.requireNonNull(GuiUtil.class.getResource("/images/ACME_Catalog.png")).toExternalForm());
+        ImageView imageView = new ImageView(image);
+        aboutDialog.setGraphic(imageView);
+        // set size to preferred height for content to show fully
+        aboutDialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        // set css theme
+        aboutDialog.getDialogPane().getStylesheets().add(
+                GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
+        aboutDialog.showAndWait();
     }
 
     /**

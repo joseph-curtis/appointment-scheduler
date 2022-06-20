@@ -22,10 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.User;
@@ -39,13 +36,10 @@ import java.util.*;
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.06.13
+ * @version 2022.06.19
  */
 
 public class LoginController implements Initializable {
-    private static Locale locale = Locale.getDefault();
-    private static ResourceBundle languageRb = ResourceBundle.getBundle("Localization", locale);
-
     /**
      * Initializes the controller class
      * @param location The location used to resolve relative paths for the root object,
@@ -58,15 +52,13 @@ public class LoginController implements Initializable {
         // pressing enter or return fires the login button (also can be set in Scene Builder):
 //        loginButton.setDefaultButton(true);
         // set label to show current time zone (system time)
-        timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(locale));
+        timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(GuiUtil.locale));
     }
 
     @FXML
-    private MenuItem aboutMenuItem;
+    private MenuBar topMenuBar;
     @FXML
     private Label errorLabel;
-    @FXML
-    private MenuItem exitMenuItem;
     @FXML
     private Label locationLabel;
     @FXML
@@ -74,15 +66,11 @@ public class LoginController implements Initializable {
     @FXML
     private Button loginButton;
     @FXML
-    private MenuBar loginMenuBar;
-    @FXML
     private Label titleLabel;
     @FXML
     private Label passwordLabel;
     @FXML
     private PasswordField passwordTxt;
-    @FXML
-    private MenuItem settingsMenuItem;
     @FXML
     private Label usernameLabel;
     @FXML
@@ -94,22 +82,8 @@ public class LoginController implements Initializable {
      * @param event the user generated event (a button being clicked) that caused this to execute
      */
     @FXML
-    void onActionExitApplication(ActionEvent event) {
-        ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelButton = new ButtonType(languageRb.getString("cancelButton"), ButtonBar.ButtonData.CANCEL_CLOSE);
-        Alert confirmExit = new Alert(Alert.AlertType.CONFIRMATION,
-                languageRb.getString("confirmExit.content"),
-                okButton, cancelButton);
-        confirmExit.setTitle(languageRb.getString("confirmExit.title"));
-        confirmExit.setHeaderText(languageRb.getString("confirmExit.header"));
-        // set css theme
-        confirmExit.getDialogPane().getStylesheets().add(
-                getClass().getResource("/view/modena-red.css").toExternalForm());
-
-        // Fully lambda approach to showing confirmation dialog:
-        confirmExit.showAndWait()
-                .filter(response -> response == okButton)
-                .ifPresent(response -> System.exit(0));
+    void onActionExit(ActionEvent event) {
+        GuiUtil.confirmExitApplication();
     }
 
     /**
@@ -118,43 +92,12 @@ public class LoginController implements Initializable {
      * @throws IOException if a Localization properties file cannot be found
      */
     @FXML
-    void onActionOpenSettings(ActionEvent event) throws IOException {
-        ChoiceDialog<String> changeLangDialog = new ChoiceDialog<>(
-                languageRb.getString("lang.choiceLabel"),
-                languageRb.getString("lang.en"),
-                languageRb.getString("lang.fr"),
-                languageRb.getString("lang.de"),
-                languageRb.getString("lang.jp")
-        );
-        changeLangDialog.setTitle(languageRb.getString("changeLangDialog.title"));
-        changeLangDialog.setHeaderText(languageRb.getString("changeLangDialog.header"));
-        changeLangDialog.setContentText(languageRb.getString("changeLangDialog.content"));
-        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.OK)).setText(languageRb.getString("okButton"));
-        ((Button) changeLangDialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setText(languageRb.getString("cancelButton"));
-        // set css theme
-        changeLangDialog.getDialogPane().getStylesheets().add(
-                getClass().getResource("/view/modena-red.css").toExternalForm());
-
-        Optional<String> result = changeLangDialog.showAndWait();
-
-        if (result.isPresent()) {
-            if (result.get().equals(languageRb.getString("lang.en"))) {
-                locale = new Locale("en");
-            } else if (result.get().equals(languageRb.getString("lang.fr"))) {
-                locale = new Locale("fr");
-            } else if (result.get().equals(languageRb.getString("lang.de"))) {
-                locale = new Locale("de");
-            } else if (result.get().equals(languageRb.getString("lang.jp"))) {
-                locale = new Locale("jp");
-            } else {
-                locale = Locale.getDefault();
-            }
-            languageRb = ResourceBundle.getBundle("Localization", locale);
-
+    void onActionSettings(ActionEvent event) throws IOException {
+        if (GuiUtil.showSettings()) {
             // reload stage: //
-            Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), languageRb);
-            Stage stage = (Stage)(loginMenuBar.getScene().getWindow());
-            stage.setTitle(languageRb.getString("loginStage.title"));
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), GuiUtil.languageRb);
+            Stage stage = (Stage) (topMenuBar.getScene().getWindow());
+            stage.setTitle(GuiUtil.languageRb.getString("loginStage.title"));
             stage.setScene(new Scene(root));
             stage.show();
         }
@@ -165,28 +108,13 @@ public class LoginController implements Initializable {
      * @param event the user generated event (a menu being selected) that caused this to execute
      */
     @FXML
-    void onActionShowAbout(ActionEvent event) {
-        Alert aboutDialog = new Alert(Alert.AlertType.NONE,
-                languageRb.getString("aboutDialog.content"),
-                new ButtonType(languageRb.getString("closeButton"), ButtonBar.ButtonData.CANCEL_CLOSE));
-        aboutDialog.setTitle(languageRb.getString("aboutDialog.title"));
-        aboutDialog.setHeaderText(languageRb.getString("aboutDialog.header"));
-        // add a graphic to dialog box:
-        Image image = new Image(Objects.requireNonNull(getClass().getResource("/images/ACME_Catalog.png")).toExternalForm());
-        ImageView imageView = new ImageView(image);
-        aboutDialog.setGraphic(imageView);
-        // set size to preferred height for content to show fully
-        aboutDialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        // set css theme
-        aboutDialog.getDialogPane().getStylesheets().add(
-                getClass().getResource("/view/modena-red.css").toExternalForm());
-
-        aboutDialog.showAndWait();
+    void onActionAbout(ActionEvent event) {
+        GuiUtil.showAbout();
     }
 
     @FXML
     void imageOnMouse(MouseEvent event) {
-        System.out.println(languageRb.getString("easterEgg"));
+        System.out.println(GuiUtil.languageRb.getString("easterEgg"));
     }
 
     /**
@@ -197,21 +125,21 @@ public class LoginController implements Initializable {
     @FXML
     void onActionLogin(ActionEvent event) throws IOException {
         User currentUserLogin;
-        ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType okButton = new ButtonType(GuiUtil.languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
 
         // check for blank/empty input fields:
         if (usernameTxt.getText().isBlank() || passwordTxt.getText().isEmpty()) {
             Alert blankTextInfo = new Alert(Alert.AlertType.INFORMATION,
-                    languageRb.getString("blankTextInfo.content"),
+                    GuiUtil.languageRb.getString("blankTextInfo.content"),
                     okButton);
-            blankTextInfo.setTitle(languageRb.getString("blankTextInfo.title"));
-            blankTextInfo.setHeaderText(languageRb.getString("blankTextInfo.header"));
+            blankTextInfo.setTitle(GuiUtil.languageRb.getString("blankTextInfo.title"));
+            blankTextInfo.setHeaderText(GuiUtil.languageRb.getString("blankTextInfo.header"));
             // set css theme
             blankTextInfo.getDialogPane().getStylesheets().add(
                     getClass().getResource("/view/modena-red.css").toExternalForm());
 
             blankTextInfo.showAndWait();
-            errorLabel.setText(languageRb.getString("errorLabel.blankInput"));
+            errorLabel.setText(GuiUtil.languageRb.getString("errorLabel.blankInput"));
         } else {
             // Check database for user authentication:
             Optional<User> user = DBUtil.authenticateUser(usernameTxt.getText(), passwordTxt.getText());
@@ -223,22 +151,22 @@ public class LoginController implements Initializable {
                 GuiUtil.newStage(event,
                         currentUserLogin,
                         "/view/primary-view.fxml",
-                        "ACME Appointment Scheduler - Calendar view",
+                        GuiUtil.languageRb.getString("primaryStage.title"),
                         Modality.NONE,
-                        languageRb);
+                        GuiUtil.languageRb);
             } else {
                 // Show alert for login failure
                 Alert loginFail = new Alert(Alert.AlertType.WARNING,
-                        languageRb.getString("loginFail.content"),
+                        GuiUtil.languageRb.getString("loginFail.content"),
                         okButton);
-                loginFail.setTitle(languageRb.getString("loginFail.title"));
-                loginFail.setHeaderText(languageRb.getString("loginFail.header"));
+                loginFail.setTitle(GuiUtil.languageRb.getString("loginFail.title"));
+                loginFail.setHeaderText(GuiUtil.languageRb.getString("loginFail.header"));
                 // set css theme
                 loginFail.getDialogPane().getStylesheets().add(
                         getClass().getResource("/view/modena-red.css").toExternalForm());
 
                 loginFail.showAndWait();
-                errorLabel.setText(languageRb.getString("errorLabel.loginFail"));
+                errorLabel.setText(GuiUtil.languageRb.getString("errorLabel.loginFail"));
             }
         }
     }
