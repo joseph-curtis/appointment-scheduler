@@ -36,7 +36,7 @@ import java.util.Properties;
  * <p>This is the generalized datasource object.</p>
  * <p>ResultSet is stored as static variable, retrieve by calling getResultSet</p>
  * @author Joseph Curtis
- * @version 2022.06.12
+ * @version 2022.06.21
  */
 public abstract class DBUtil {
     // connection string parameters
@@ -122,6 +122,8 @@ public abstract class DBUtil {
         int rowCount = -1;
         try {
             if (connection == null || connection.isClosed()) openConnection();
+
+            connection.setAutoCommit(false);    // start transaction
             statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 
@@ -145,11 +147,20 @@ public abstract class DBUtil {
                 System.out.println("Executing DDL statement");
                 rowCount = statement.executeUpdate(query);
             }
+            // commit the transaction
+            connection.commit();
+
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
             e.printStackTrace();
+            // rollback (cancel) the transaction
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         } finally {
             closeConnection();
         }
