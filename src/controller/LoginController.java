@@ -96,10 +96,10 @@ public class LoginController implements Initializable {
         if (GuiUtil.showSettings()) {
             // reload stage: //
             Parent root = FXMLLoader.load(getClass().getResource("/view/login-view.fxml"), GuiUtil.languageRb);
-            Stage stage = (Stage) (topMenuBar.getScene().getWindow());
-            stage.setTitle(GuiUtil.languageRb.getString("loginStage.title"));
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage loginStage = (Stage) (topMenuBar.getScene().getWindow());
+            loginStage.setTitle(GuiUtil.languageRb.getString("loginStage.title"));
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
         }
     }
 
