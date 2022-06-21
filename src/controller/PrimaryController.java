@@ -166,10 +166,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
         if (GuiUtil.showSettings()) {
             // reload stage: //
             Parent root = FXMLLoader.load(getClass().getResource("/view/primary-view.fxml"), GuiUtil.languageRb);
-            Stage stage = (Stage)(topMenuBar.getScene().getWindow());
-            stage.setTitle(GuiUtil.languageRb.getString("primaryStage.title"));
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage primaryStage = (Stage)(topMenuBar.getScene().getWindow());
+            primaryStage.setTitle(GuiUtil.languageRb.getString("primaryStage.title"));
+            primaryStage.setScene(new Scene(root));
+            primaryStage.show();
         }
     }
 
@@ -212,10 +212,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-//        appointmentsTable.getColumns().get(0).setVisible(false);
-//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-//        appointmentsTable.refresh();
     }
 
     /**
@@ -237,10 +234,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-//        customersTable.getColumns().get(0).setVisible(false);
-//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-//        customersTable.refresh();
     }
 
     /**
@@ -267,10 +261,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-//        appointmentsTable.getColumns().get(0).setVisible(false);
-//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-//        appointmentsTable.refresh();
     }
 
     /**
@@ -297,10 +288,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-//        customersTable.getColumns().get(0).setVisible(false);
-//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-//        customersTable.refresh();
     }
 
     /**
@@ -334,10 +322,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             appDeleteConfirmLabel.setText("Canceled delete appointment.");
         }
         // refresh the tableview to reflect possible changes
-//        appointmentsTable.getColumns().get(0).setVisible(false);
-//        appointmentsTable.getColumns().get(0).setVisible(true);
         initAppointmentsTable();
-//        appointmentsTable.refresh();
     }
 
     /**
@@ -391,10 +376,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-//        customersTable.getColumns().get(0).setVisible(false);
-//        customersTable.getColumns().get(0).setVisible(true);
         initCustomersTable();
-//        customersTable.refresh();
     }
 
     private void initAppointmentsTable() {

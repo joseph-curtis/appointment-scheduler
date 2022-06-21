@@ -137,11 +137,11 @@ public final class GuiUtil {
         if(modality.equals(Modality.NONE))
             ((Node)(event.getSource())).getScene().getWindow().hide();  // close parent window
 
-        stage.show();
-
         AuthenticatedController controller = loader.getController();
         controller.passCurrentUser(user);
         controller.passExistingRecord(passedObject);
+
+        stage.showAndWait();
     }
 
     /**
