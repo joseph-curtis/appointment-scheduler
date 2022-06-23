@@ -40,12 +40,14 @@ import utility.GuiUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.19
+ * @version 2022.06.23
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -78,9 +80,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initAppointmentsTable();
-        initCustomersTable();
-
         // set listener for tab selection change:
         userOperationTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if(newTab == appointmentsTab)
@@ -88,6 +87,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
             if(newTab == customersTab)
                 custDeleteConfirmLabel.setText("");
         });
+
+        // initialize Appointments and Customers table
+        setAppointmentsTable();
+        setCustomersTable();
     }
 
     @FXML
@@ -178,19 +181,31 @@ public class PrimaryController implements Initializable, AuthenticatedController
         GuiUtil.showAbout();
     }
 
+    /**
+     * Changes the Appointment table to show all appointments
+     * @param event the user generated event (a radio button being clicked) that caused this to execute
+     */
     @FXML
     void onActionViewAll(ActionEvent event) {
-
+        setAppointmentsTable();
     }
 
+    /**
+     * Changes the Appointment table to show appointments for the following week
+     * @param event the user generated event (a radio button being clicked) that caused this to execute
+     */
     @FXML
     void onActionViewByMonth(ActionEvent event) {
-
+        setAppointmentsTable();
     }
 
+    /**
+     * Changes the Appointment table to show appointments for the following month
+     * @param event the user generated event (a radio button being clicked) that caused this to execute
+     */
     @FXML
     void onActionViewByWeek(ActionEvent event) {
-
+        setAppointmentsTable();
     }
 
     /**
@@ -212,7 +227,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        initAppointmentsTable();
+        setAppointmentsTable();
     }
 
     /**
@@ -234,7 +249,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        initCustomersTable();
+        setCustomersTable();
     }
 
     /**
@@ -261,7 +276,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        initAppointmentsTable();
+        setAppointmentsTable();
     }
 
     /**
@@ -288,7 +303,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        initCustomersTable();
+        setCustomersTable();
     }
 
     /**
@@ -322,7 +337,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
             appDeleteConfirmLabel.setText("Canceled delete appointment.");
         }
         // refresh the tableview to reflect possible changes
-        initAppointmentsTable();
+        setAppointmentsTable();
     }
 
     /**
@@ -376,13 +391,28 @@ public class PrimaryController implements Initializable, AuthenticatedController
             e.printStackTrace();
         }
         // refresh the tableview to reflect possible changes
-        initCustomersTable();
+        setCustomersTable();
     }
 
-    private void initAppointmentsTable() {
+    /**
+     * Initializes or updates the Appointments table.
+     */
+    private void setAppointmentsTable() {
         AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
         try {
-            appointmentsTable.setItems(appointmentsDb.getAll());
+            if (radioViewMonth.isSelected()) {
+
+                appointmentsTable.setItems(appointmentsDb.getAllBetweenDates(
+                        LocalDate.now(), LocalDate.now().plusMonths(1)
+                ));
+            }
+            else if (radioViewWeek.isSelected()) {
+                appointmentsTable.setItems(appointmentsDb.getAllBetweenDates(
+                        LocalDate.now(), LocalDate.now().plusWeeks(1)
+                ));
+            }
+            else appointmentsTable.setItems(appointmentsDb.getAll());
+
             appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
             title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
             description_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().description()));
@@ -400,7 +430,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
     }
 
-    private void initCustomersTable() {
+    /**
+     * Initializes or updates the Customers table.
+     */
+    private void setCustomersTable() {
         CustomerDaoImpl customersDb = new CustomerDaoImpl();
         try {
             customersTable.setItems(customersDb.getAll());

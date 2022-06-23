@@ -21,12 +21,15 @@ import model.Appointment;
 import model.User;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.06.06
+ * @version 2022.06.23
  */
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
@@ -40,15 +43,54 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT Appointment_ID, Title, Description, Location, Type,\s
-                                    Start, End, appointments.Customer_ID, Customer_Name,\s
-                                    User_ID, appointments.Contact_ID, Contact_Name, Email\s
-                             FROM client_schedule.appointments\s
-                             INNER JOIN customers\s
-                                  ON customers.Customer_ID = appointments.Customer_ID\s
-                             INNER JOIN contacts\s
+                             SELECT Appointment_ID, Title, Description, Location, Type,
+                                    Start, End, appointments.Customer_ID, Customer_Name,
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email
+                             FROM client_schedule.appointments
+                             INNER JOIN customers
+                                  ON customers.Customer_ID = appointments.Customer_ID
+                             INNER JOIN contacts
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              """)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                appointmentsList.add(createRecordFromResultSet(resultSet));
+            }
+        }
+        return appointmentsList;
+    }
+
+    /**
+     * Gets all DTO records that fall between the start and end dates (inclusive)
+     * @param startDate beginning of date range
+     * @param endDate end of date range
+     * @return list of appointments between date range
+     * @throws SQLException if any error occurs.
+     */
+    public ObservableList<Appointment> getAllBetweenDates(LocalDate startDate, LocalDate endDate) throws SQLException {
+        ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startDateTime = startDate.atTime(0, 0, 0);
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Appointment_ID, Title, Description, Location, Type,
+                                    Start, End, appointments.Customer_ID, Customer_Name,
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email
+                             FROM client_schedule.appointments
+                             INNER JOIN customers
+                                  ON customers.Customer_ID = appointments.Customer_ID
+                             INNER JOIN contacts
+                                  ON contacts.Contact_ID = appointments.Contact_ID
+                             WHERE Start BETWEEN ? AND ?
+                             OR End BETWEEN ? AND ?;
+                             """)) {
+            statement.setTimestamp(1, Timestamp.valueOf(startDateTime.format(formatter)));
+            statement.setTimestamp(2, Timestamp.valueOf(endDateTime.format(formatter)));
+            statement.setTimestamp(3, Timestamp.valueOf(startDateTime.format(formatter)));
+            statement.setTimestamp(4, Timestamp.valueOf(endDateTime.format(formatter)));
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 appointmentsList.add(createRecordFromResultSet(resultSet));
@@ -65,14 +107,14 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT Appointment_ID, Title, Description, Location, Type,\s
-                                    Start, End, appointments.Customer_ID, Customer_Name,\s
-                                    User_ID, appointments.Contact_ID, Contact_Name, Email\s
-                         FROM client_schedule.appointments\s
-                         INNER JOIN customers\s
-                              ON customers.Customer_ID = appointments.Customer_ID\s
-                         INNER JOIN contacts\s
-                              ON contacts.Contact_ID = appointments.Contact_ID\s
+                         SELECT Appointment_ID, Title, Description, Location, Type,
+                                    Start, End, appointments.Customer_ID, Customer_Name,
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email
+                         FROM client_schedule.appointments
+                         INNER JOIN customers
+                              ON customers.Customer_ID = appointments.Customer_ID
+                         INNER JOIN contacts
+                              ON contacts.Contact_ID = appointments.Contact_ID
                          WHERE Appointment_ID = ?
                          """)) {
             statement.setInt(1, id);
@@ -96,10 +138,10 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         INSERT INTO client_schedule.appointments\s
-                         (Title, Description, Location, Type, Start, End,\s
-                         Customer_ID, User_ID, Contact_ID,\s
-                         Created_By, Last_Updated_By, Create_Date, Last_Update)\s
+                         INSERT INTO client_schedule.appointments
+                         (Title, Description, Location, Type, Start, End,
+                         Customer_ID, User_ID, Contact_ID,
+                         Created_By, Last_Updated_By, Create_Date, Last_Update)
                          VALUES (?,?,?,?,?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
                          """)) {
             statement.setString(1, appointment.title());
@@ -126,18 +168,18 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         UPDATE client_schedule.appointments SET\s
-                         Title = ?,\s
-                         Description = ?,\s
-                         Location = ?,\s
-                         Type = ?,\s
-                         Start = ?,\s
-                         End = ?,\s
-                         Customer_ID = ?,\s
-                         User_ID = ?,\s
-                         Contact_ID = ?,\s
-                         Last_Updated_By = ?,\s
-                         Last_Update = CURRENT_TIMESTAMP\s
+                         UPDATE client_schedule.appointments SET
+                         Title = ?,
+                         Description = ?,
+                         Location = ?,
+                         Type = ?,
+                         Start = ?,
+                         End = ?,
+                         Customer_ID = ?,
+                         User_ID = ?,
+                         Contact_ID = ?,
+                         Last_Updated_By = ?,
+                         Last_Update = CURRENT_TIMESTAMP
                          WHERE Appointment_ID = ?
                          """)) {
             statement.setString(1, appointment.title());
@@ -201,14 +243,14 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT Appointment_ID, Title, Description, Location, Type,\s
-                                        Start, End, appointments.Customer_ID, Customer_Name,\s
-                                        User_ID, appointments.Contact_ID, Contact_Name, Email\s
-                             FROM client_schedule.appointments\s
-                             INNER JOIN customers\s
-                                  ON customers.Customer_ID = appointments.Customer_ID\s
-                             INNER JOIN contacts\s
-                                  ON contacts.Contact_ID = appointments.Contact_ID\s
+                             SELECT Appointment_ID, Title, Description, Location, Type,
+                                        Start, End, appointments.Customer_ID, Customer_Name,
+                                        User_ID, appointments.Contact_ID, Contact_Name, Email
+                             FROM client_schedule.appointments
+                             INNER JOIN customers
+                                  ON customers.Customer_ID = appointments.Customer_ID
+                             INNER JOIN contacts
+                                  ON contacts.Contact_ID = appointments.Contact_ID
                              WHERE appointments.Customer_ID = ?
                              """)) {
             statement.setInt(1, id);
