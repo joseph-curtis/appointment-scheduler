@@ -169,7 +169,7 @@ public final class GuiUtil {
     /**
      * Show the change language settings dialog. This allows the user to override the system default language.
      * @throws IOException if a Localization properties file cannot be found
-     * @return
+     * @return true if language selection was made, false if cancel button was clicked.
      */
     public static boolean showSettings() throws IOException {
         ChoiceDialog<String> changeLangDialog = new ChoiceDialog<>(
