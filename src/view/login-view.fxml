@@ -27,7 +27,7 @@
    <center>
       <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="TOP_RIGHT">
       
-          <Label fx:id="titleLabel" focusTraversable="false" text="%titleLabel">
+          <Label focusTraversable="false" text="%titleLabel">
             <font>
                <Font name="System Bold" size="24.0" />
             </font>
@@ -42,8 +42,8 @@
              <RowConstraints vgrow="SOMETIMES" />
            </rowConstraints>
             <children>
-               <Label fx:id="usernameLabel" alignment="CENTER" focusTraversable="false" text="%usernameLabel" />
-               <Label fx:id="passwordLabel" focusTraversable="false" text="%passwordLabel" GridPane.columnIndex="1" />
+               <Label alignment="CENTER" focusTraversable="false" text="%usernameLabel" />
+               <Label focusTraversable="false" text="%passwordLabel" GridPane.columnIndex="1" />
                <TextField fx:id="usernameTxt" minWidth="150.0" promptText="%usernameTxtPrompt" GridPane.rowIndex="1" />
                <PasswordField fx:id="passwordTxt" alignment="CENTER_RIGHT" minWidth="150.0" promptText="%passwordTxtPrompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </children>
@@ -56,7 +56,7 @@
                <Insets />
             </VBox.margin>
             <children>
-                <Button fx:id="loginButton" alignment="CENTER" defaultButton="true" onAction="#onActionLogin" prefHeight="40.0" prefWidth="330.0" style="-fx-background-radius: 15;" text="%loginButton">
+                <Button alignment="CENTER" defaultButton="true" onAction="#onActionLogin" prefHeight="40.0" prefWidth="330.0" style="-fx-background-radius: 15;" text="%loginButton">
                   <font>
                      <Font name="System Bold" size="15.0" />
                   </font></Button>
@@ -70,7 +70,7 @@
          <Label fx:id="languageLabel" text="%languageLabel" />
          <HBox alignment="TOP_CENTER" spacing="15.0">
             <children>
-               <Label fx:id="locationLabel" text="%locationLabel">
+               <Label text="%locationLabel">
                   <font>
                      <Font size="14.0" />
                   </font>

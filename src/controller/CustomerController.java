@@ -24,7 +24,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import model.*;
 import utility.*;
 
@@ -42,9 +41,17 @@ public class CustomerController implements AuthenticatedController, Initializabl
     Customer existingCustomer;  // The Customer in the database to modify
     User user;           // The currently logged-in user
 
+    @FXML private Label currentOperationLabel;
+    @FXML private TextField idTxt;
+    @FXML private TextField addressTxt;
+    @FXML private TextField nameTxt;
+    @FXML private TextField phoneTxt;
+    @FXML private TextField postCodeTxt;
+    @FXML private ComboBox<Country> countryComboBox;
+    @FXML private ComboBox<FirstLevelDivision> divisionComboBox;
+
     /**
-     * Authenticates user that is signed in.
-     * @param user currently logged-in user
+     * {@inheritDoc}
      */
     @Override
     public void passCurrentUser(DataTransferObject user) {
@@ -52,10 +59,7 @@ public class CustomerController implements AuthenticatedController, Initializabl
     }
 
     /**
-     * Sets all properties for edited item to populate to corresponding text fields.
-     * <p>The existing Customer in DB is passed when changing the scene</p>
-     * @see utility.GuiUtil#newStage(ActionEvent, DataTransferObject, DataTransferObject, String, String, Modality)
-     * @param passedObject existing customer to be edited
+     * {@inheritDoc}
      */
     @Override
     public void passExistingRecord(DataTransferObject passedObject) {
@@ -93,30 +97,6 @@ public class CustomerController implements AuthenticatedController, Initializabl
             countryComboBox.getItems().add(country);
         }
     }
-
-    @FXML
-    private Label currentOperationLabel;
-
-    @FXML
-    private TextField idTxt;
-
-    @FXML
-    private TextField addressTxt;
-
-    @FXML
-    private TextField nameTxt;
-
-    @FXML
-    private TextField phoneTxt;
-
-    @FXML
-    private TextField postCodeTxt;
-
-    @FXML
-    private ComboBox<Country> countryComboBox;
-
-    @FXML
-    private ComboBox<FirstLevelDivision> divisionComboBox;
 
     /**
      * Cancels add or modify operation and returns to the main menu.

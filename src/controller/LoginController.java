@@ -40,6 +40,13 @@ import java.util.*;
  */
 
 public class LoginController implements Initializable {
+
+    @FXML private MenuBar topMenuBar;
+    @FXML private Label errorLabel;
+    @FXML private Label timeZoneLabel;
+    @FXML private TextField usernameTxt;
+    @FXML private PasswordField passwordTxt;
+
     /**
      * Initializes the controller class
      * @param location The location used to resolve relative paths for the root object,
@@ -54,27 +61,6 @@ public class LoginController implements Initializable {
         // set label to show current time zone (system time)
         timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(GuiUtil.locale));
     }
-
-    @FXML
-    private MenuBar topMenuBar;
-    @FXML
-    private Label errorLabel;
-    @FXML
-    private Label locationLabel;
-    @FXML
-    private Label timeZoneLabel;
-    @FXML
-    private Button loginButton;
-    @FXML
-    private Label titleLabel;
-    @FXML
-    private Label passwordLabel;
-    @FXML
-    private PasswordField passwordTxt;
-    @FXML
-    private Label usernameLabel;
-    @FXML
-    private TextField usernameTxt;
 
     /**
      * Quits the application.
@@ -170,4 +156,5 @@ public class LoginController implements Initializable {
             }
         }
     }
+
 }

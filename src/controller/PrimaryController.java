@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 /**
@@ -52,6 +51,37 @@ import java.util.ResourceBundle;
 public class PrimaryController implements Initializable, AuthenticatedController {
 
     User user;      // The currently logged-in user
+
+    @FXML private MenuBar topMenuBar;
+    @FXML private TableView<Appointment> appointmentsTable;
+    @FXML private TableColumn<Appointment, Integer> appointment_id_col;
+    @FXML private TableColumn<Appointment, String> title_col;
+    @FXML private TableColumn<Appointment, String> description_col;
+    @FXML private TableColumn<Appointment, String> location_col;
+    @FXML private TableColumn<Appointment, String> contact_name_col;
+    @FXML private TableColumn<Appointment, String> contact_email_col;
+    @FXML private TableColumn<Appointment, String> type_col;
+    @FXML private TableColumn<Appointment, ?> start_datetime_col;
+    @FXML private TableColumn<Appointment, ?> end_datetime_col;
+    @FXML private TableColumn<Appointment, Integer> appointment_cust_id_col;
+    @FXML private TableColumn<Appointment, String> appointment_cust_name_col;
+    @FXML private TableColumn<Appointment, Integer> user_id_col;
+    @FXML private RadioButton radioViewAll;
+    @FXML private RadioButton radioViewMonth;
+    @FXML private RadioButton radioViewWeek;
+    @FXML private TableView<Customer> customersTable;
+    @FXML private TableColumn<Customer, Integer> customer_id_col;
+    @FXML private TableColumn<Customer, String> name_col;
+    @FXML private TableColumn<Customer, String> address_col;
+    @FXML private TableColumn<Customer, String> postalcode_col;
+    @FXML private TableColumn<Customer, String> phone_col;
+    @FXML private TableColumn<Customer, String> division_col;
+    @FXML private TableColumn<Customer, String> country_col;
+    @FXML private Label appDeleteConfirmLabel;
+    @FXML private Label custDeleteConfirmLabel;
+    @FXML private TabPane userOperationTabPane;
+    @FXML private Tab appointmentsTab;
+    @FXML private Tab customersTab;
 
     /**
      * Authenticates user that is signed in.
@@ -93,77 +123,21 @@ public class PrimaryController implements Initializable, AuthenticatedController
         setCustomersTable();
     }
 
-    @FXML
-    private MenuBar topMenuBar;
-    @FXML
-    private TableView<Appointment> appointmentsTable;
-    @FXML
-    private TableColumn<Appointment, Integer> appointment_id_col;
-    @FXML
-    private TableColumn<Appointment, String> title_col;
-    @FXML
-    private TableColumn<Appointment, String> description_col;
-    @FXML
-    private TableColumn<Appointment, String> location_col;
-    @FXML
-    private TableColumn<Appointment, String> contact_name_col;
-    @FXML
-    private TableColumn<Appointment, String> contact_email_col;
-    @FXML
-    private TableColumn<Appointment, String> type_col;
-    @FXML
-    private TableColumn<Appointment, ?> start_datetime_col;
-    @FXML
-    private TableColumn<Appointment, ?> end_datetime_col;
-    @FXML
-    private TableColumn<Appointment, Integer> appointment_cust_id_col;
-    @FXML
-    private TableColumn<Appointment, String> appointment_cust_name_col;
-    @FXML
-    private TableColumn<Appointment, Integer> user_id_col;
-    @FXML
-    private RadioButton radioViewAll;
-    @FXML
-    private RadioButton radioViewMonth;
-    @FXML
-    private RadioButton radioViewWeek;
-    @FXML
-    private TableView<Customer> customersTable;
-    @FXML
-    private TableColumn<Customer, Integer> customer_id_col;
-    @FXML
-    private TableColumn<Customer, String> name_col;
-    @FXML
-    private TableColumn<Customer, String> address_col;
-    @FXML
-    private TableColumn<Customer, String> postalcode_col;
-    @FXML
-    private TableColumn<Customer, String> phone_col;
-    @FXML
-    private TableColumn<Customer, String> division_col;
-    @FXML
-    private TableColumn<Customer, String> country_col;
-    @FXML
-    private Label appDeleteConfirmLabel;
-    @FXML
-    private Label custDeleteConfirmLabel;
-    @FXML
-    private TabPane userOperationTabPane;
-    @FXML
-    private Tab appointmentsTab;
-    @FXML
-    private Tab customersTab;
-
     /**
      * Quits the application.
      * <p>Displays a confirmation dialog before exiting.</p>
-     * @param event the user generated event (a button being clicked) that caused this to execute
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
      */
     @FXML
     void onActionExit(ActionEvent event) {
         GuiUtil.confirmExitApplication();
     }
 
+    /**
+     * Show the change language settings dialog. This allows the user to override the system default language.
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
+     * @throws IOException if a Localization properties file cannot be found
+     */
     @FXML
     void onActionSettings(ActionEvent event) throws IOException {
         if (GuiUtil.showSettings()) {
@@ -176,6 +150,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
     }
 
+    /**
+     * Show the About this Application dialog box
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
+     */
     @FXML
     void onActionAbout(ActionEvent event) {
         GuiUtil.showAbout();

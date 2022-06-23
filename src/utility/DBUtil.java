@@ -361,8 +361,8 @@ public abstract class DBUtil {
 
     /**
      * Checks database to authenticate valid username and password combination
-     * @param username
-     * @param password
+     * @param username login name
+     * @param password login password
      * @return the authenticated user, or an empty optional if lookup failed.
      */
     public static Optional<User> authenticateUser(String username, String password) {

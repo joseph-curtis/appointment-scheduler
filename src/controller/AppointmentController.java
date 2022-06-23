@@ -23,7 +23,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.stage.Modality;
 import model.*;
 import utility.*;
 
@@ -42,9 +41,23 @@ public class AppointmentController implements AuthenticatedController, Initializ
     Appointment existingAppointment;    // The Appointment in the database to modify
     User user;                          // The currently logged-in user
 
+    @FXML private Label currentOperationLabel;
+    @FXML private TextField descriptionTxt;
+    @FXML private TextField idTxt;
+    @FXML private TextField locationTxt;
+    @FXML private TextField titleTxt;
+    @FXML private TextField typeTxt;
+    @FXML private DatePicker startDatePicker;
+    @FXML private Spinner<Integer> startHourSpinner;
+    @FXML private Spinner<Integer> startMinuteSpinner;
+    @FXML private DatePicker endDatePicker;
+    @FXML private Spinner<Integer> endHourSpinner;
+    @FXML private Spinner<Integer> endMinuteSpinner;
+    @FXML private ComboBox<Contact> contactComboBox;
+    @FXML private ComboBox<Customer> customerComboBox;
+
     /**
-     * Authenticates user that is signed in.
-     * @param user currently logged-in user
+     * {@inheritDoc}
      */
     @Override
     public void passCurrentUser(DataTransferObject user) {
@@ -52,10 +65,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
     }
 
     /**
-     * Sets all properties for edited item to populate to corresponding text fields.
-     * <p>The existing Appointment in DB is passed when changing the scene</p>
-     * @see utility.GuiUtil#newStage(ActionEvent, DataTransferObject, DataTransferObject, String, String, Modality)
-     * @param passedObject existing appointment to be edited
+     * {@inheritDoc}
      */
     @Override
     public void passExistingRecord(DataTransferObject passedObject) {
@@ -135,53 +145,20 @@ public class AppointmentController implements AuthenticatedController, Initializ
         }
     }
 
-    @FXML
-    private Label currentOperationLabel;
-
-    @FXML
-    private TextField descriptionTxt;
-
-    @FXML
-    private TextField idTxt;
-
-    @FXML
-    private TextField locationTxt;
-
-    @FXML
-    private TextField titleTxt;
-
-    @FXML
-    private TextField typeTxt;
-
-    @FXML
-    private DatePicker startDatePicker;
-
-    @FXML
-    private Spinner<Integer> startHourSpinner;
-
-    @FXML
-    private Spinner<Integer> startMinuteSpinner;
-
-    @FXML
-    private DatePicker endDatePicker;
-
-    @FXML
-    private Spinner<Integer> endHourSpinner;
-
-    @FXML
-    private Spinner<Integer> endMinuteSpinner;
-
-    @FXML
-    private ComboBox<Contact> contactComboBox;
-
-    @FXML
-    private ComboBox<Customer> customerComboBox;
-
+    /**
+     * Cancels add or modify operation and returns to the main menu.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionCancel(ActionEvent event) {
         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     * Save this new or modified Appointment.
+     * <p>Updates existing appointment, or adds new appointment to database.</p>
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionSaveAppointment(ActionEvent event) {
         Appointment savedAppointment;
