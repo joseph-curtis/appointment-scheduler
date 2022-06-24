@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.23
+ * @version 2022.06.24
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -297,8 +297,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
         AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
         if (GuiUtil.confirmDeletion(
                 "Delete Appointment Confirmation",
-                "Delete Selected Appointment \"" + deletedAppointment.title() + "\" ?" ,
-                "Appointment will be deleted.  This CANNOT be undone!" ,
+                "Delete Selected Appointment (" + deletedAppointment.title() + ") ?" ,
+                "Appointment ID: " + deletedAppointment.id() +
+                        "\nType: " + deletedAppointment.type() +
+                        "\nAppointment will be deleted.  This CANNOT be undone!" ,
                 ()-> {
                     try {
                         return dbAppointments.delete(deletedAppointment.id());
@@ -309,10 +311,11 @@ public class PrimaryController implements Initializable, AuthenticatedController
                 }
         )) {
             appDeleteConfirmLabel.setTextFill(Paint.valueOf("RED"));
-            appDeleteConfirmLabel.setText("Appointment: \"" + deletedAppointment.title() + "\" was deleted.");
+            appDeleteConfirmLabel.setText("Appointment (" + deletedAppointment.title() + ") ID: "
+                    + deletedAppointment.id() + ", type: " + deletedAppointment.type() + " -- CANCELED.");
         } else {
             appDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
-            appDeleteConfirmLabel.setText("Canceled delete appointment.");
+            appDeleteConfirmLabel.setText("interrupted delete appointment.");
         }
         // refresh the tableview to reflect possible changes
         setAppointmentsTable();
@@ -351,7 +354,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
                     custDeleteConfirmLabel.setText("Customer: \"" + deletedCustomer.name() + "\" was deleted.");
                 } else {
                     custDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
-                    custDeleteConfirmLabel.setText("Canceled delete customer.");
+                    custDeleteConfirmLabel.setText("canceled delete customer.");
                 }
             }
             else {
