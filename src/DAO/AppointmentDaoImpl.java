@@ -23,7 +23,6 @@ import model.User;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**
@@ -53,6 +52,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              """)) {
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 appointmentsList.add(createRecordFromResultSet(resultSet));
             }
@@ -69,7 +69,6 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
      */
     public ObservableList<Appointment> getAllBetweenDates(LocalDate startDate, LocalDate endDate) throws SQLException {
         ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startDateTime = startDate.atTime(0, 0, 0);
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999);
 
@@ -87,11 +86,12 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                              WHERE Start BETWEEN ? AND ?
                              OR End BETWEEN ? AND ?;
                              """)) {
-            statement.setTimestamp(1, Timestamp.valueOf(startDateTime.format(formatter)));
-            statement.setTimestamp(2, Timestamp.valueOf(endDateTime.format(formatter)));
-            statement.setTimestamp(3, Timestamp.valueOf(startDateTime.format(formatter)));
-            statement.setTimestamp(4, Timestamp.valueOf(endDateTime.format(formatter)));
+            statement.setTimestamp(1, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(2, Timestamp.valueOf(endDateTime));
+            statement.setTimestamp(3, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(4, Timestamp.valueOf(endDateTime));
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 appointmentsList.add(createRecordFromResultSet(resultSet));
             }
@@ -119,6 +119,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                          """)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
                 return Optional.of(createRecordFromResultSet(resultSet));
             } else {
@@ -193,6 +194,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
             statement.setInt(9, appointment.contactId());
             statement.setString(10, user.name());
             statement.setInt(11, appointment.id());
+
             return statement.executeUpdate() > 0;
         }
     }
@@ -206,6 +208,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
              PreparedStatement statement = conn.prepareStatement(
                  "DELETE FROM client_schedule.appointments WHERE Appointment_ID = ?")) {
             statement.setInt(1, id);
+
             return statement.executeUpdate() > 0;
         }
     }
@@ -255,6 +258,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                              """)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 allAppointmentsByCustomer.add(createRecordFromResultSet(resultSet));
             }
