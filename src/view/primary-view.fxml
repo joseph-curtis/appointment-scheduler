@@ -123,7 +123,7 @@
                      <bottom>
                         <HBox alignment="CENTER_RIGHT" prefHeight="30.0" spacing="30.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="appDeleteConfirmLabel" accessibleHelp="Appointment Deletion Successful" accessibleText="Appointment Deletion Successful">
+                              <Label fx:id="appointmentCanceledLabel" accessibleHelp="Notification or Error" accessibleText="Notification or Error">
                                  <font>
                                     <Font name="System Bold Italic" size="18.0" />
                                  </font>
@@ -169,7 +169,7 @@
                      <bottom>
                         <HBox alignment="BOTTOM_RIGHT" prefHeight="30.0" spacing="30.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Label fx:id="custDeleteConfirmLabel" accessibleHelp="Appointment Deletion Successful" accessibleText="Appointment Deletion Successful">
+                              <Label fx:id="customerDeletedLabel" accessibleHelp="Appointment Deletion Successful" accessibleText="Appointment Deletion Successful">
                                  <font>
                                     <Font name="System Bold Italic" size="18.0" />
                                  </font>
