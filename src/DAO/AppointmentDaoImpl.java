@@ -28,7 +28,7 @@ import java.util.Optional;
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.06.23
+ * @version 2022.06.24
  */
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
@@ -51,6 +51,38 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                              INNER JOIN contacts
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              """)) {
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                appointmentsList.add(createRecordFromResultSet(resultSet));
+            }
+        }
+        return appointmentsList;
+    }
+
+    /**
+     * Get all the given user's appointments.
+     * @param userId ID of the user in question (usually the currently logged-in user)
+     * @return list of all appointments assigned to the user
+     * @throws SQLException if any error occurs.
+     */
+    public ObservableList<Appointment> getAll(Integer userId) throws SQLException {
+        ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Appointment_ID, Title, Description, Location, Type,
+                                    Start, End, appointments.Customer_ID, Customer_Name,
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email
+                             FROM client_schedule.appointments
+                             INNER JOIN customers
+                                  ON customers.Customer_ID = appointments.Customer_ID
+                             INNER JOIN contacts
+                                  ON contacts.Contact_ID = appointments.Contact_ID
+                             WHERE User_ID = ?
+                             """)) {
+            statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
