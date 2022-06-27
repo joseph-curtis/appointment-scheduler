@@ -185,7 +185,7 @@ public abstract class DBUtil {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
-                             SELECT Country_ID, Country \s
+                             SELECT Country_ID, Country
                              FROM client_schedule.countries
                              """)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -211,10 +211,10 @@ public abstract class DBUtil {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT countries.Country_ID, Country\s
-                             FROM client_schedule.countries\s
-                             INNER JOIN first_level_divisions\s
-                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             SELECT countries.Country_ID, Country
+                             FROM client_schedule.countries
+                             INNER JOIN first_level_divisions
+                                  ON countries.Country_ID = first_level_divisions.Country_ID
                              WHERE first_level_divisions.Division_ID = ?
                              """)) {
             statement.setInt(1, id);
@@ -244,10 +244,10 @@ public abstract class DBUtil {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT Division_ID, Division, first_level_divisions.Country_ID, Country\s
-                             FROM client_schedule.first_level_divisions\s
-                             INNER JOIN countries\s
-                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             SELECT Division_ID, Division, first_level_divisions.Country_ID, Country
+                             FROM client_schedule.first_level_divisions
+                             INNER JOIN countries
+                                  ON countries.Country_ID = first_level_divisions.Country_ID
                              WHERE first_level_divisions.Division_ID = ?
                              """)) {
             statement.setInt(1, id);
@@ -279,10 +279,10 @@ public abstract class DBUtil {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
-                             SELECT countries.Country_ID, Country, Division_ID, Division\s
-                             FROM client_schedule.countries\s
-                             INNER JOIN first_level_divisions\s
-                                  ON countries.Country_ID = first_level_divisions.Country_ID\s
+                             SELECT countries.Country_ID, Country, Division_ID, Division
+                             FROM client_schedule.countries
+                             INNER JOIN first_level_divisions
+                                  ON countries.Country_ID = first_level_divisions.Country_ID
                              WHERE countries.Country_ID = ?
                              """)) {
             preparedStatement.setInt(1, country.id());
@@ -310,7 +310,7 @@ public abstract class DBUtil {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
-                             SELECT Contact_ID, Contact_Name, Email \s
+                             SELECT Contact_ID, Contact_Name, Email
                              FROM client_schedule.contacts
                              """)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -337,8 +337,8 @@ public abstract class DBUtil {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                      """
-                             SELECT Contact_ID, Contact_Name, Email \s
-                             FROM client_schedule.contacts \s
+                             SELECT Contact_ID, Contact_Name, Email
+                             FROM client_schedule.contacts
                              WHERE Contact_ID = ?
                              """)) {
             statement.setInt(1, id);
@@ -369,8 +369,8 @@ public abstract class DBUtil {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      """
-                             SELECT User_ID, User_Name\s
-                             FROM client_schedule.users\s
+                             SELECT User_ID, User_Name
+                             FROM client_schedule.users
                              WHERE User_Name = ? AND Password = ?
                              """)) {
             preparedStatement.setString(1, username);

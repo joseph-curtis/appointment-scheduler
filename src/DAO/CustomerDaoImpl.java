@@ -43,12 +43,12 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,\s
-                                customers.Division_ID, Division, Country\s
-                         FROM client_schedule.customers\s
-                         INNER JOIN first_level_divisions\s
-                              ON customers.Division_ID = first_level_divisions.Division_ID\s
-                         INNER JOIN countries\s
+                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,
+                                customers.Division_ID, Division, Country
+                         FROM client_schedule.customers
+                         INNER JOIN first_level_divisions
+                              ON customers.Division_ID = first_level_divisions.Division_ID
+                         INNER JOIN countries
                               ON first_level_divisions.Country_ID = countries.Country_ID
                          """)) {
             ResultSet resultSet = statement.executeQuery();
@@ -67,13 +67,13 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,\s
-                                customers.Division_ID, Division, Country\s
-                         FROM client_schedule.customers\s
-                         INNER JOIN first_level_divisions\s
-                              ON customers.Division_ID = first_level_divisions.Division_ID\s
-                         INNER JOIN countries\s
-                              ON first_level_divisions.Country_ID = countries.Country_ID\s
+                         SELECT Customer_ID, Customer_Name, Address, Postal_Code, Phone,
+                                customers.Division_ID, Division, Country
+                         FROM client_schedule.customers
+                         INNER JOIN first_level_divisions
+                              ON customers.Division_ID = first_level_divisions.Division_ID
+                         INNER JOIN countries
+                              ON first_level_divisions.Country_ID = countries.Country_ID
                          WHERE Customer_ID = ?
                          """)) {
             statement.setInt(1, id);
@@ -97,9 +97,9 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         INSERT INTO client_schedule.customers\s
-                         (Customer_Name, Address, Postal_Code, Phone, Division_ID,\s
-                         Created_By, Last_Updated_By, Create_Date, Last_Update)\s
+                         INSERT INTO client_schedule.customers
+                         (Customer_Name, Address, Postal_Code, Phone, Division_ID,
+                         Created_By, Last_Updated_By, Create_Date, Last_Update)
                          VALUES (?,?,?,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
                          """)) {
             statement.setString(1, customer.name());
@@ -121,14 +121,14 @@ public class CustomerDaoImpl extends DataAccessObject<Customer, User> {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement statement = conn.prepareStatement(
                  """
-                         UPDATE client_schedule.customers SET\s
-                         Customer_Name = ?,\s
-                         Address = ?,\s
-                         Postal_Code = ?,\s
-                         Phone = ?,\s
-                         Division_ID = ?,\s
-                         Last_Update = CURRENT_TIMESTAMP,\s
-                         Last_Updated_By = ?\s
+                         UPDATE client_schedule.customers SET
+                         Customer_Name = ?,
+                         Address = ?,
+                         Postal_Code = ?,
+                         Phone = ?,
+                         Division_ID = ?,
+                         Last_Update = CURRENT_TIMESTAMP,
+                         Last_Updated_By = ?
                          WHERE Customer_ID = ?
                          """)) {
             statement.setString(1, customer.name());
