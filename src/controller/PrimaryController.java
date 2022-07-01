@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.06.24
+ * @version 2022.06.30
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -77,15 +77,14 @@ public class PrimaryController implements Initializable, AuthenticatedController
     @FXML private TableColumn<Customer, String> phone_col;
     @FXML private TableColumn<Customer, String> division_col;
     @FXML private TableColumn<Customer, String> country_col;
-    @FXML private Label appDeleteConfirmLabel;
-    @FXML private Label custDeleteConfirmLabel;
+    @FXML private Label appointmentCanceledLabel;
+    @FXML private Label customerDeletedLabel;
     @FXML private TabPane userOperationTabPane;
     @FXML private Tab appointmentsTab;
     @FXML private Tab customersTab;
 
     /**
-     * Authenticates user that is signed in.
-     * @param user currently logged-in user
+     * {@inheritDoc}
      */
     @Override
     public void passCurrentUser(DataTransferObject user) {
@@ -94,6 +93,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     /**
      * {@inheritDoc}
+     * <p><em>This controller has no object to pass in. As such, this method does nothing.</em></p>
      */
     @Override
     public void passExistingRecord(DataTransferObject passedObject) {
@@ -113,14 +113,10 @@ public class PrimaryController implements Initializable, AuthenticatedController
         // set listener for tab selection change:
         userOperationTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if(newTab == appointmentsTab)
-                appDeleteConfirmLabel.setText("");
+                appointmentCanceledLabel.setText("");
             if(newTab == customersTab)
-                custDeleteConfirmLabel.setText("");
+                customerDeletedLabel.setText("");
         });
-
-        // initialize Appointments and Customers table
-        setAppointmentsTable();
-        setCustomersTable();
     }
 
     /**
@@ -192,7 +188,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionAddAppointment(ActionEvent event) {
-        appDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         String fxmlFile = "/view/editAppointment-view.fxml";
         try {
             GuiUtil.newStage(event,
@@ -206,6 +201,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
         // refresh the tableview to reflect possible changes
         setAppointmentsTable();
+        appointmentCanceledLabel.setText("");      // clear any previous deletion notification
     }
 
     /**
@@ -214,7 +210,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionAddCustomer(ActionEvent event) {
-        custDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         String fxmlFile = "/view/editCustomer-view.fxml";
         try {
             GuiUtil.newStage(event,
@@ -228,6 +223,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
         // refresh the tableview to reflect possible changes
         setCustomersTable();
+        customerDeletedLabel.setText("");      // clear any previous deletion notification
     }
 
     /**
@@ -236,7 +232,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionUpdateAppointment(ActionEvent event) {
-        appDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         Appointment selectedAppointment = appointmentsTable.getSelectionModel().getSelectedItem();
         if (selectedAppointment == null)
             return;     // if nothing is selected, do nothing
@@ -255,6 +250,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
         // refresh the tableview to reflect possible changes
         setAppointmentsTable();
+        appointmentCanceledLabel.setText("");      // clear any previous deletion notification
     }
 
     /**
@@ -263,7 +259,6 @@ public class PrimaryController implements Initializable, AuthenticatedController
      */
     @FXML
     void onActionUpdateCustomer(ActionEvent event) {
-        custDeleteConfirmLabel.setText("");      // clear any previous deletion notification
         Customer selectedCustomer = customersTable.getSelectionModel().getSelectedItem();
         if (selectedCustomer == null)
             return;     // if nothing is selected, do nothing
@@ -282,6 +277,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
         // refresh the tableview to reflect possible changes
         setCustomersTable();
+        customerDeletedLabel.setText("");      // clear any previous deletion notification
     }
 
     /**
@@ -310,12 +306,12 @@ public class PrimaryController implements Initializable, AuthenticatedController
                     return false;
                 }
         )) {
-            appDeleteConfirmLabel.setTextFill(Paint.valueOf("RED"));
-            appDeleteConfirmLabel.setText("Appointment (" + deletedAppointment.title() + ") ID: "
+            appointmentCanceledLabel.setTextFill(Paint.valueOf("RED"));
+            appointmentCanceledLabel.setText("Appointment (" + deletedAppointment.title() + ") ID: "
                     + deletedAppointment.id() + ", type: " + deletedAppointment.type() + " -- CANCELED.");
         } else {
-            appDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
-            appDeleteConfirmLabel.setText("interrupted delete appointment.");
+            appointmentCanceledLabel.setTextFill(Paint.valueOf("BLACK"));
+            appointmentCanceledLabel.setText("interrupted delete appointment.");
         }
         // refresh the tableview to reflect possible changes
         setAppointmentsTable();
@@ -350,11 +346,11 @@ public class PrimaryController implements Initializable, AuthenticatedController
                             return false;
                         }
                 )) {
-                    custDeleteConfirmLabel.setTextFill(Paint.valueOf("RED"));
-                    custDeleteConfirmLabel.setText("Customer: \"" + deletedCustomer.name() + "\" was deleted.");
+                    customerDeletedLabel.setTextFill(Paint.valueOf("RED"));
+                    customerDeletedLabel.setText("Customer: \"" + deletedCustomer.name() + "\" was deleted.");
                 } else {
-                    custDeleteConfirmLabel.setTextFill(Paint.valueOf("BLACK"));
-                    custDeleteConfirmLabel.setText("canceled delete customer.");
+                    customerDeletedLabel.setTextFill(Paint.valueOf("BLACK"));
+                    customerDeletedLabel.setText("canceled delete customer.");
                 }
             }
             else {
@@ -378,7 +374,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
     /**
      * Initializes or updates the Appointments table.
      */
-    private void setAppointmentsTable() {
+    public void setAppointmentsTable() {
         AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
         try {
             if (radioViewMonth.isSelected()) {
@@ -392,7 +388,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
                         LocalDate.now(), LocalDate.now().plusWeeks(1)
                 ));
             }
-            else appointmentsTable.setItems(appointmentsDb.getAll());
+            else appointmentsTable.setItems(appointmentsDb.getAll(user.id()));
 
             appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
             title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
@@ -414,7 +410,7 @@ public class PrimaryController implements Initializable, AuthenticatedController
     /**
      * Initializes or updates the Customers table.
      */
-    private void setCustomersTable() {
+    public void setCustomersTable() {
         CustomerDaoImpl customersDb = new CustomerDaoImpl();
         try {
             customersTable.setItems(customersDb.getAll());

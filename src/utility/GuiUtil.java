@@ -15,7 +15,11 @@
 
 package utility;
 
+import DAO.AppointmentDaoImpl;
 import controller.AuthenticatedController;
+import controller.PrimaryController;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -27,21 +31,27 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Appointment;
 import model.DataTransferObject;
+import model.User;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.BooleanSupplier;
+import java.util.stream.Collectors;
 
 /**
  * Contains helper functions for changing scenes and displaying dialog boxes to user.
  * <p>Use for easier maintenance of code
  * instead of code duplication</p>
  * @author Joseph Curtis
- * @version 2022.06.19
+ * @version 2022.06.30
  */
 public final class GuiUtil {
     public static Locale locale = Locale.getDefault();
@@ -141,6 +151,14 @@ public final class GuiUtil {
         controller.passCurrentUser(user);
         controller.passExistingRecord(passedObject);
 
+        if (controller instanceof PrimaryController) {
+            // initialize Appointments and Customers table
+            ((PrimaryController) controller).setAppointmentsTable();
+            ((PrimaryController) controller).setCustomersTable();
+            // display upcoming appointment dialog(s)
+            stage.setOnShown((windowEvent) -> showAppointmentAlert((User) user));
+        }
+
         stage.showAndWait();
     }
 
@@ -162,8 +180,8 @@ public final class GuiUtil {
 
         // Fully lambda approach to showing confirmation dialog:
         confirmExit.showAndWait()
-                .filter(response -> response == okButton)
-                .ifPresent(response -> System.exit(0));
+                .filter((ButtonType response) -> response == okButton)
+                .ifPresent((ButtonType response) -> System.exit(0));
     }
 
     /**
@@ -274,6 +292,59 @@ public final class GuiUtil {
             return true;    // delete successful!
         }
         return false;   // user canceled delete operation
+    }
+
+    /**
+     * Displays a dialog for each upcoming appointment.
+     * <p>If the user has no appointments within 15 minutes, dialog shows no upcoming appointments.</p>
+     */
+    public static void showAppointmentAlert(User user) {
+        AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
+        try {
+            LocalDateTime now = LocalDateTime.now();
+
+            ObservableList<Appointment> upcomingAppointments = appointmentsDb.getAll(user.id())
+                    // Using a Stream to filter out only appointments that are upcoming
+                    .stream().filter((Appointment appointment) ->
+                            appointment.start().isAfter(now.minusMinutes(1))
+                                    && (appointment.start().isBefore(now.plusMinutes(15))
+                                    || appointment.start().isEqual(now.plusMinutes(15))))
+                    // turn stream back into collection
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+            if (upcomingAppointments.isEmpty()) {
+                // show "no upcoming appointments" dialog
+                Alert scheduleClearDialog = new Alert(Alert.AlertType.INFORMATION);
+                scheduleClearDialog.setHeaderText("No upcoming appointments");
+                scheduleClearDialog.setContentText("Greetings " + user.name()
+                        + "!\nYou have no appointments within the next 15 minutes.");
+                scheduleClearDialog.getDialogPane().getStylesheets().add(
+                        GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+
+                scheduleClearDialog.showAndWait();
+
+            } else {
+                for (Appointment appointment: upcomingAppointments) {
+                    int minutesAway = (int) Duration.between(now, appointment.start()).toMinutes();
+                    // Display upcoming appointment alert
+                    Alert appointmentAlert = new Alert(Alert.AlertType.WARNING);
+                    appointmentAlert.getDialogPane().getStylesheets().add(
+                            GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+                    appointmentAlert.setHeaderText("You have an upcoming appointment in "
+                            + minutesAway + " minutes!");
+                    appointmentAlert.setContentText("ID: " + appointment.id()
+                            + "\nTitle: " + appointment.title()
+                            + "\nDate: " + appointment.start().toLocalDate()
+                            + "\nStart Time: " + appointment.start().toLocalTime()
+                            + "\nCustomer: " + appointment.customerName()
+                            + "\nContact: " + appointment.contactName());
+
+                    appointmentAlert.showAndWait();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
