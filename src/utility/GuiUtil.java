@@ -303,7 +303,7 @@ public final class GuiUtil {
         try {
             LocalDateTime now = LocalDateTime.now();
 
-            ObservableList<Appointment> upcomingAppointments = appointmentsDb.getAll(user.id())
+            ObservableList<Appointment> upcomingAppointments = appointmentsDb.getAllByUser(user)
                     // Using a Stream to filter out only appointments that are upcoming
                     .stream().filter((Appointment appointment) ->
                             appointment.start().isAfter(now.minusMinutes(1))

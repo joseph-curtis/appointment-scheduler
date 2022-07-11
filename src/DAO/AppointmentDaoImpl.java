@@ -18,6 +18,7 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointment;
+import model.Customer;
 import model.User;
 
 import java.sql.*;
@@ -62,11 +63,11 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
     /**
      * Get all the given user's appointments.
-     * @param userId ID of the user in question (usually the currently logged-in user)
+     * @param user the current user (the one logged-in)
      * @return list of all appointments assigned to the user
      * @throws SQLException if any error occurs.
      */
-    public ObservableList<Appointment> getAll(Integer userId) throws SQLException {
+    public ObservableList<Appointment> getAllByUser(User user) throws SQLException {
         ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
 
         try (Connection conn = dataSource.getConnection();
@@ -82,7 +83,7 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              WHERE User_ID = ?
                              """)) {
-            statement.setInt(1, userId);
+            statement.setInt(1, user.id());
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -93,13 +94,16 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
     }
 
     /**
-     * Gets all DTO records that fall between the start and end dates (inclusive)
+     * Gets all DTO records that fall between the start and end dates (inclusive) for given user
+     * @param user the current user (the one logged-in)
      * @param startDate beginning of date range
      * @param endDate end of date range
-     * @return list of appointments between date range
+     * @return list of user's appointments between date range
      * @throws SQLException if any error occurs.
      */
-    public ObservableList<Appointment> getAllBetweenDates(LocalDate startDate, LocalDate endDate) throws SQLException {
+    public ObservableList<Appointment> getAllByUserBetweenDates(User user,
+                                                                LocalDate startDate,
+                                                                LocalDate endDate) throws SQLException {
         ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
         LocalDateTime startDateTime = startDate.atTime(0, 0, 0);
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999);
@@ -115,13 +119,57 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                                   ON customers.Customer_ID = appointments.Customer_ID
                              INNER JOIN contacts
                                   ON contacts.Contact_ID = appointments.Contact_ID
-                             WHERE Start BETWEEN ? AND ?
-                             OR End BETWEEN ? AND ?;
+                             WHERE User_ID = ?
+                             AND Start BETWEEN ? AND ?
+                             OR End BETWEEN ? AND ?
                              """)) {
-            statement.setTimestamp(1, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(2, Timestamp.valueOf(endDateTime));
-            statement.setTimestamp(3, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(4, Timestamp.valueOf(endDateTime));
+            statement.setInt(1, user.id());
+            statement.setTimestamp(2, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(3, Timestamp.valueOf(endDateTime));
+            statement.setTimestamp(4, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(5, Timestamp.valueOf(endDateTime));
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                appointmentsList.add(createRecordFromResultSet(resultSet));
+            }
+        }
+        return appointmentsList;
+    }
+
+    /**
+     * Gets all DTO records for customer that fall between the start and end DateTimes (inclusive)
+     * @param customer the customer in question (checking for overlapping appointments)
+     * @param startDateTime beginning of LocalDateTime range
+     * @param endDateTime end of LocalDateTime range
+     * @return list of customer's appointments within LocalDateTime range
+     * @throws SQLException if any error occurs.
+     */
+    public ObservableList<Appointment> getAllByCustomerBetweenDateTime(Customer customer,
+                                                                       LocalDateTime startDateTime,
+                                                                       LocalDateTime endDateTime) throws SQLException {
+        ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement statement = conn.prepareStatement(
+                     """
+                             SELECT Appointment_ID, Title, Description, Location, Type,
+                                    Start, End, appointments.Customer_ID, Customer_Name,
+                                    User_ID, appointments.Contact_ID, Contact_Name, Email
+                             FROM client_schedule.appointments
+                             INNER JOIN customers
+                                  ON customers.Customer_ID = appointments.Customer_ID
+                             INNER JOIN contacts
+                                  ON contacts.Contact_ID = appointments.Contact_ID
+                             WHERE appointments.Customer_ID = ?
+                             AND Start BETWEEN ? AND ?
+                             OR End BETWEEN ? AND ?
+                             """)) {
+            statement.setInt(1, customer.id());
+            statement.setTimestamp(2, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(3, Timestamp.valueOf(endDateTime));
+            statement.setTimestamp(4, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(5, Timestamp.valueOf(endDateTime));
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

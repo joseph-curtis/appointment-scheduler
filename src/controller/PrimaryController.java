@@ -379,16 +379,16 @@ public class PrimaryController implements Initializable, AuthenticatedController
         try {
             if (radioViewMonth.isSelected()) {
 
-                appointmentsTable.setItems(appointmentsDb.getAllBetweenDates(
-                        LocalDate.now(), LocalDate.now().plusMonths(1)
+                appointmentsTable.setItems(appointmentsDb.getAllByUserBetweenDates(
+                        user, LocalDate.now(), LocalDate.now().plusMonths(1)
                 ));
             }
             else if (radioViewWeek.isSelected()) {
-                appointmentsTable.setItems(appointmentsDb.getAllBetweenDates(
-                        LocalDate.now(), LocalDate.now().plusWeeks(1)
+                appointmentsTable.setItems(appointmentsDb.getAllByUserBetweenDates(
+                        user, LocalDate.now(), LocalDate.now().plusWeeks(1)
                 ));
             }
-            else appointmentsTable.setItems(appointmentsDb.getAll(user.id()));
+            else appointmentsTable.setItems(appointmentsDb.getAllByUser(user));
 
             appointment_id_col.setCellValueFactory(a -> new SimpleIntegerProperty(a.getValue().id()).asObject());
             title_col.setCellValueFactory(a -> new SimpleStringProperty(a.getValue().title()));
