@@ -380,20 +380,17 @@ public final class GuiUtil {
 
     /**
      * Displays dialog box in response to a logical error (input validation).
-     * @param content details given to user about the logical error
-     * @throws InvalidInputException for controller to handle by halting its operation
+     * @param exception the logical error in question
      */
-    public static void handleLogicalError(String content) throws InvalidInputException {
+    public static void handleLogicalError(InvalidInputException exception) {
         Alert inputWarning = new Alert(Alert.AlertType.WARNING);
         inputWarning.setHeaderText("Input Validation Failed");
-        inputWarning.setContentText(content);
+        inputWarning.setContentText(exception.getMessage());
         // set css theme
         inputWarning.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
 
         inputWarning.showAndWait();
-
-        throw new InvalidInputException("Logical error check:\n" + content);
     }
 
 }

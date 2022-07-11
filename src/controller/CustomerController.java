@@ -142,13 +142,13 @@ public class CustomerController implements AuthenticatedController, Initializabl
 
             // validate input:
             if (name.length() > 50)
-                GuiUtil.handleLogicalError("Name cannot exceed 50 characters");
+                throw new InvalidInputException("Name cannot exceed 50 characters");
             if (address.length() > 100)
-                GuiUtil.handleLogicalError("Address cannot exceed 100 characters");
+                throw new InvalidInputException("Address cannot exceed 100 characters");
             if (postCode.length() > 50)
-                GuiUtil.handleLogicalError("Postal code is too long!");
+                throw new InvalidInputException("Postal code is too long!");
             if (phone.length() > 50)
-                GuiUtil.handleLogicalError("Phone number is too long!");
+                throw new InvalidInputException("Phone number is too long!");
 
             // create Customer to save:
             savedCustomer = new Customer(id, name, address, postCode, phone, divisionId, "", "");
@@ -178,7 +178,7 @@ public class CustomerController implements AuthenticatedController, Initializabl
         } catch(BlankInputException e) {
             GuiUtil.handleBlankInputException(e);
         } catch(InvalidInputException e) {
-            // Do nothing and return to add/modify customer screen
+            GuiUtil.handleLogicalError(e);
         } catch (SQLException e) {
             System.out.println("Database Error! Check connection and SQL");
             e.printStackTrace();

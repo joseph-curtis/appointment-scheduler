@@ -203,15 +203,17 @@ public class AppointmentController implements AuthenticatedController, Initializ
             LocalDateTime endLdt = endDatePicker.getValue().atTime(
                     endHourSpinner.getValue(), endMinuteSpinner.getValue());
 
-            // validate input:
+            // validate input string lengths:
             if (title.length() > 50)
-                GuiUtil.handleLogicalError("Title cannot exceed 50 characters");
+                throw new InvalidInputException("Title cannot exceed 50 characters");
             if (description.length() > 50)
-                GuiUtil.handleLogicalError("Description cannot exceed 50 characters");
+                throw new InvalidInputException("Description cannot exceed 50 characters");
             if (location.length() > 50)
-                GuiUtil.handleLogicalError("Location cannot exceed 50 characters");
+                throw new InvalidInputException("Location cannot exceed 50 characters");
             if (type.length() > 50)
-                GuiUtil.handleLogicalError("Type cannot exceed 50 characters");
+                throw new InvalidInputException("Type cannot exceed 50 characters");
+
+            // validate input logical error checks:
 
             // create Appointment to save:
             savedAppointment = new Appointment(id, title, description, location, type,
@@ -243,7 +245,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
         } catch (BlankInputException e) {
             GuiUtil.handleBlankInputException(e);
         } catch (InvalidInputException e) {
-            // Do nothing and return to add/modify appointment screen
+            GuiUtil.handleLogicalError(e);
         } catch (SQLException e) {
             System.out.println("Database Error! Check connection and SQL");
             e.printStackTrace();
