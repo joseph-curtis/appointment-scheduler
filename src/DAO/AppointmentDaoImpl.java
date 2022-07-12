@@ -18,7 +18,6 @@ package DAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointment;
-import model.Customer;
 import model.User;
 
 import java.sql.*;
@@ -29,7 +28,7 @@ import java.util.Optional;
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.06.24
+ * @version 2022.07.11
  */
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
@@ -95,15 +94,13 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
     /**
      * Gets all DTO records that fall between the start and end dates (inclusive) for given user
-     * @param user the current user (the one logged-in)
      * @param startDate beginning of date range
      * @param endDate end of date range
-     * @return list of user's appointments between date range
+     * @return list of all appointments between date range
      * @throws SQLException if any error occurs.
      */
-    public ObservableList<Appointment> getAllByUserBetweenDates(User user,
-                                                                LocalDate startDate,
-                                                                LocalDate endDate) throws SQLException {
+    public ObservableList<Appointment> getAllBetweenDates(LocalDate startDate,
+                                                          LocalDate endDate) throws SQLException {
         ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
         LocalDateTime startDateTime = startDate.atTime(0, 0, 0);
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59, 999999999);
@@ -119,15 +116,13 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                                   ON customers.Customer_ID = appointments.Customer_ID
                              INNER JOIN contacts
                                   ON contacts.Contact_ID = appointments.Contact_ID
-                             WHERE User_ID = ?
-                             AND Start BETWEEN ? AND ?
+                             WHERE Start BETWEEN ? AND ?
                              OR End BETWEEN ? AND ?
                              """)) {
-            statement.setInt(1, user.id());
-            statement.setTimestamp(2, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(3, Timestamp.valueOf(endDateTime));
-            statement.setTimestamp(4, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(5, Timestamp.valueOf(endDateTime));
+            statement.setTimestamp(1, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(2, Timestamp.valueOf(endDateTime));
+            statement.setTimestamp(3, Timestamp.valueOf(startDateTime));
+            statement.setTimestamp(4, Timestamp.valueOf(endDateTime));
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -138,16 +133,12 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
     }
 
     /**
-     * Gets all DTO records for customer that fall between the start and end DateTimes (inclusive)
-     * @param customer the customer in question (checking for overlapping appointments)
-     * @param startDateTime beginning of LocalDateTime range
-     * @param endDateTime end of LocalDateTime range
-     * @return list of customer's appointments within LocalDateTime range
+     * Gets all DTO records for a given customer
+     * @param customerId the customer ID in question (checking for overlapping appointments)
+     * @return list of all appointments for customer
      * @throws SQLException if any error occurs.
      */
-    public ObservableList<Appointment> getAllByCustomerBetweenDateTime(Customer customer,
-                                                                       LocalDateTime startDateTime,
-                                                                       LocalDateTime endDateTime) throws SQLException {
+    public ObservableList<Appointment> getAllByCustomer(int customerId) throws SQLException {
         ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
 
         try (Connection conn = dataSource.getConnection();
@@ -162,14 +153,8 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
                              INNER JOIN contacts
                                   ON contacts.Contact_ID = appointments.Contact_ID
                              WHERE appointments.Customer_ID = ?
-                             AND Start BETWEEN ? AND ?
-                             OR End BETWEEN ? AND ?
                              """)) {
-            statement.setInt(1, customer.id());
-            statement.setTimestamp(2, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(3, Timestamp.valueOf(endDateTime));
-            statement.setTimestamp(4, Timestamp.valueOf(startDateTime));
-            statement.setTimestamp(5, Timestamp.valueOf(endDateTime));
+            statement.setInt(1, customerId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

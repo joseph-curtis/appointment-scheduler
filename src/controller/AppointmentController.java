@@ -28,13 +28,13 @@ import utility.*;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.ResourceBundle;
 
 /**
  * Controller for the add or modify Appointment form.
  * @author Joseph Curtis
- * @version 2022.06.07
+ * @version 2022.07.11
  */
 public class AppointmentController implements AuthenticatedController, Initializable {
 
@@ -198,9 +198,9 @@ public class AppointmentController implements AuthenticatedController, Initializ
 
             // get LocalDate from date pickers, and convert to LocalDateTime
             // using Integers from spinners as hour and minute
-            LocalDateTime startLdt = startDatePicker.getValue().atTime(
+            LocalDateTime startLocalDT = startDatePicker.getValue().atTime(
                     startHourSpinner.getValue(), startMinuteSpinner.getValue());
-            LocalDateTime endLdt = endDatePicker.getValue().atTime(
+            LocalDateTime endLocalDT = endDatePicker.getValue().atTime(
                     endHourSpinner.getValue(), endMinuteSpinner.getValue());
 
             // validate input string lengths:
@@ -213,15 +213,77 @@ public class AppointmentController implements AuthenticatedController, Initializ
             if (type.length() > 50)
                 throw new InvalidInputException("Type cannot exceed 50 characters");
 
-            // validate input logical error checks:
+
+
+            // setup AppointmentDaoImpl and Appointment List for Logical error checks:
+            AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
+            ObservableList<Appointment> overlappingAppointmentList =
+                    dbAppointments.getAllByCustomer(customerId);
+            // skip over the current appointment we are editing (using lambda)
+            overlappingAppointmentList.removeIf(a -> a.id().equals(id));
+
+            // // // // // // // // // // // // // // // // // // // // // // //
+            // ======  Validate start/end input logical error checks: ======= //
+            // // // // // // // // // // // // // // // // // // // // // // //
+
+            ////////  convert LDT to ZDT with user's default date zone
+            ZonedDateTime startZonedDT = startLocalDT.atZone(ZoneId.systemDefault());
+            ZonedDateTime endZonedDT = endLocalDT.atZone(ZoneId.systemDefault());
+            ////////  convert to EST
+            ZonedDateTime startEstZonedDT = startZonedDT.withZoneSameInstant(ZoneId.of("US/Eastern"));
+            ZonedDateTime endEstZonedDT = endZonedDT.withZoneSameInstant(ZoneId.of("US/Eastern"));
+            ////////  extract LocalTime(EST) for comparison
+            LocalTime startEst = startEstZonedDT.toLocalTime();
+            LocalTime endEst = endEstZonedDT.toLocalTime();
+            ////////  set business hours start and end times
+            LocalTime businessStartEst = LocalTime.of(8,0,0);
+            LocalTime businessEndEst = LocalTime.of(22,0,0);
+            ////////  Duration of appointment and total business hours (allowed) per day
+            LocalDate startDate = startZonedDT.toLocalDate();
+            LocalDate endDate = endZonedDT.toLocalDate();
+
+            //// check for incorrect start dateTime
+            if (startLocalDT.isAfter(endLocalDT))
+                throw new InvalidInputException("Appointment start time must be BEFORE end time!");
+
+            //// check for outside of business hours
+            if (!startDate.isEqual(endDate)) {      // appointment spans several days
+                throw new InvalidInputException("Appointment cannot be longer than one full business day!\n"
+                        + "Must be between business hours (8:00am - 10:00pm EST)");
+            }
+            if (startEst.isBefore(businessStartEst)
+                    || startEst.isAfter(businessEndEst)
+                    || startEst.equals(businessEndEst)
+                    || endEst.isAfter(businessEndEst)
+                    || endEst.isBefore(businessStartEst))
+                throw new InvalidInputException("Appointment must be between business hours\n (8:00am - 10:00pm EST)");
+
+            //// check for customer overlapping appointments
+            {
+                LocalDateTime start = startLocalDT;
+                LocalDateTime end = endLocalDT;
+                //// check for overlapping appointments
+                for (Appointment a : overlappingAppointmentList) {
+                    if (start.isEqual(a.start()) || end.isEqual(a.end())  // edge cases
+                            // when start is in the window
+                            || (start.isAfter(a.start()) && start.isBefore(a.end()))
+                            // when end is in the window
+                            || (end.isAfter(a.start()) && end.isBefore(a.end()))
+                            // when start AND end are both outside of the window
+                            || (start.isBefore(a.start()) && end.isAfter(a.end()))
+                    ) {
+                        throw new InvalidInputException("Proposed Appointment Time conflicts with an existing appointment!");
+                    }
+                }
+            }
+
 
             // create Appointment to save:
             savedAppointment = new Appointment(id, title, description, location, type,
-                    startLdt, endLdt,
+                    startLocalDT, endLocalDT,
                     customerId, "", user.id(), contactId, "", "");
 
             // update database with Appointment (add or modify):
-            AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
             if (existingAppointment == null) {
                 // add new appointment:
                 if (!dbAppointments.add(savedAppointment, user))
