@@ -30,13 +30,13 @@ public record Customer(Integer id,
             return true;
         }
 
-        /* Check if o is an instance of Country or not.
+        /* Check if o is an instance of Customer or not.
           "null instanceof [type]" also returns false */
         if (!(o instanceof Customer)) {
             return false;
         }
 
-        // typecast o to Country so that we can compare data members
+        // typecast o to Customer so that we can compare data members
         Customer c = (Customer) o;
 
         // Compare the data members and return accordingly

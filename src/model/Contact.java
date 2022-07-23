@@ -21,13 +21,13 @@ public record Contact(Integer id,
             return true;
         }
 
-        /* Check if o is an instance of Country or not.
+        /* Check if o is an instance of Contact or not.
           "null instanceof [type]" also returns false */
         if (!(o instanceof Contact)) {
             return false;
         }
 
-        // typecast o to Country so that we can compare data members
+        // typecast o to Contact so that we can compare data members
         Contact c = (Contact) o;
 
         // Compare the data members and return accordingly
