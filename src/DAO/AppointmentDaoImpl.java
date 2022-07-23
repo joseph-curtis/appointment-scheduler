@@ -28,7 +28,7 @@ import java.util.Optional;
 /**
  * Implementation of {@link DAO.DataAccessObject} to persist Appointment objects from a database.
  * @author Joseph Curtis
- * @version 2022.07.11
+ * @version 2022.07.23
  */
 public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
 
@@ -123,38 +123,6 @@ public class AppointmentDaoImpl extends DataAccessObject<Appointment, User> {
             statement.setTimestamp(2, Timestamp.valueOf(endDateTime));
             statement.setTimestamp(3, Timestamp.valueOf(startDateTime));
             statement.setTimestamp(4, Timestamp.valueOf(endDateTime));
-            ResultSet resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                appointmentsList.add(createRecordFromResultSet(resultSet));
-            }
-        }
-        return appointmentsList;
-    }
-
-    /**
-     * Gets all DTO records for a given customer
-     * @param customerId the customer ID in question (checking for overlapping appointments)
-     * @return list of all appointments for customer
-     * @throws SQLException if any error occurs.
-     */
-    public ObservableList<Appointment> getAllByCustomer(int customerId) throws SQLException {
-        ObservableList<Appointment> appointmentsList = FXCollections.observableArrayList();
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement statement = conn.prepareStatement(
-                     """
-                             SELECT Appointment_ID, Title, Description, Location, Type,
-                                    Start, End, appointments.Customer_ID, Customer_Name,
-                                    User_ID, appointments.Contact_ID, Contact_Name, Email
-                             FROM client_schedule.appointments
-                             INNER JOIN customers
-                                  ON customers.Customer_ID = appointments.Customer_ID
-                             INNER JOIN contacts
-                                  ON contacts.Contact_ID = appointments.Contact_ID
-                             WHERE appointments.Customer_ID = ?
-                             """)) {
-            statement.setInt(1, customerId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {

@@ -218,7 +218,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
             // setup AppointmentDaoImpl and Appointment List for Logical error checks:
             AppointmentDaoImpl dbAppointments = new AppointmentDaoImpl();
             ObservableList<Appointment> overlappingAppointmentList =
-                    dbAppointments.getAllByCustomer(customerId);
+                    dbAppointments.getAllByCustomerId(customerId);
             // skip over the current appointment we are editing (using lambda)
             overlappingAppointmentList.removeIf(a -> a.id().equals(id));
 
