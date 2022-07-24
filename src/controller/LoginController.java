@@ -15,6 +15,7 @@
 
 package controller;
 
+import DAO.UserDaoImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -128,7 +129,7 @@ public class LoginController implements Initializable {
             errorLabel.setText(GuiUtil.languageRb.getString("errorLabel.blankInput"));
         } else {
             // Check database for user authentication:
-            Optional<User> user = DBUtil.authenticateUser(usernameTxt.getText(), passwordTxt.getText());
+            Optional<User> user = UserDaoImpl.authenticateUser(usernameTxt.getText(), passwordTxt.getText());
 
             if (user.isPresent()) {
                 currentUserLogin = user.get();
