@@ -16,7 +16,9 @@
 package controller;
 
 import DAO.AppointmentDaoImpl;
+import DAO.ContactDaoImpl;
 import DAO.CustomerDaoImpl;
+import DAO.UserDaoImpl;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +36,7 @@ import java.util.ResourceBundle;
 /**
  * Controller for the add or modify Appointment form.
  * @author Joseph Curtis
- * @version 2022.07.11
+ * @version 2022.07.23
  */
 public class AppointmentController implements AuthenticatedController, Initializable {
 
@@ -55,6 +57,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
     @FXML private Spinner<Integer> endMinuteSpinner;
     @FXML private ComboBox<Contact> contactComboBox;
     @FXML private ComboBox<Customer> customerComboBox;
+    @FXML private ComboBox<User> userComboBox;
 
     /**
      * {@inheritDoc}
@@ -98,8 +101,14 @@ public class AppointmentController implements AuthenticatedController, Initializ
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         // set contact combo box:
-        contactComboBox.setValue(DBUtil.getContactById(existingAppointment.contactId()).get());
+        ContactDaoImpl dbContacts = new ContactDaoImpl();
+        contactComboBox.setValue(dbContacts.getById(existingAppointment.contactId()).get());
+
+        // set user combo box:
+        UserDaoImpl dbUsers = new UserDaoImpl();
+        userComboBox.setValue(dbUsers.getById(existingAppointment.userId()).get());
     }
 
     /**
@@ -138,10 +147,19 @@ public class AppointmentController implements AuthenticatedController, Initializ
         }
 
         // set contact combo-box:
-        ObservableList<Contact> allContactsList = DBUtil.getAllContacts();
+        ContactDaoImpl dbContacts = new ContactDaoImpl();
+        ObservableList<Contact> allContactsList = dbContacts.getAll();
 
         for (Contact contact: allContactsList) {
             contactComboBox.getItems().add(contact);
+        }
+
+        // set user combo-box:
+        UserDaoImpl dbUsers = new UserDaoImpl();
+        ObservableList<User> allUsersList = dbUsers.getAll();
+
+        for (User user: allUsersList) {
+            userComboBox.getItems().add(user);
         }
     }
 
@@ -171,6 +189,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
                     || typeTxt.getText().isBlank()
                     || customerComboBox.getValue() == null
                     || contactComboBox.getValue() == null
+                    || userComboBox.getValue() == null
             )
                 throw new BlankInputException("Fields Cannot be Blank");
             if (startDatePicker.getValue() == null || endDatePicker.getValue() == null)
@@ -195,6 +214,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
             String type = typeTxt.getText();
             int customerId = customerComboBox.getValue().id();
             int contactId = contactComboBox.getValue().id();
+            int inputUserId = userComboBox.getValue().id();
 
             // get LocalDate from date pickers, and convert to LocalDateTime
             // using Integers from spinners as hour and minute
@@ -281,7 +301,7 @@ public class AppointmentController implements AuthenticatedController, Initializ
             // create Appointment to save:
             savedAppointment = new Appointment(id, title, description, location, type,
                     startLocalDT, endLocalDT,
-                    customerId, "", user.id(), contactId, "", "");
+                    customerId, "", inputUserId, contactId, "", "");
 
             // update database with Appointment (add or modify):
             if (existingAppointment == null) {
