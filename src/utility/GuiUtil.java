@@ -163,8 +163,10 @@ public final class GuiUtil {
     }
 
     /**
-     * Quits the application.
-     * <p>Displays a confirmation dialog before exiting.</p>
+     * Quits the application. Displays a confirmation dialog before exiting.
+     * <p>Uses lambdas to process the data stream when calling Alert.showAndWait() method. Here we use a lambda to
+     * filter the response, and one to check if response is present (user did not close window) before we exit
+     * the application.</p>
      */
     public static void confirmExitApplication() {
         ButtonType okButton = new ButtonType(languageRb.getString("okButton"), ButtonBar.ButtonData.OK_DONE);
@@ -253,6 +255,10 @@ public final class GuiUtil {
      * <p>When the user confirms by clicking "OK", the lambda function will execute.
      * If the lambda returns false, this indicates the delete operation was not successful.
      * In this case an error dialog is shown.</p>
+     * <p>Using a lambda as a parameter here allows flexibility when calling this method. Different code can be
+     * executed depending on the return state of the lambda. In this case, since we are dealing with a
+     * Boolean Supplier, the state returned will be either true or false.  Lambda is implemented during function
+     * call.</p>
      * @param title Dialog box window title
      * @param header Dialog box header text
      * @param content details within confirmation dialog box
@@ -297,6 +303,8 @@ public final class GuiUtil {
     /**
      * Displays a dialog for each upcoming appointment.
      * <p>If the user has no appointments within 15 minutes, dialog shows no upcoming appointments.</p>
+     * <p>Here we convert the ObservableList collection of all users into a data stream for processing.
+     * We use a lambda to filter the data stream for upcoming appointments.</p>
      */
     public static void showAppointmentAlert(User user) {
         AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();

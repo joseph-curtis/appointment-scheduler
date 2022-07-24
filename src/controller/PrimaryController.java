@@ -42,6 +42,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
+import java.util.function.BooleanSupplier;
 
 /**
  * Controller for the main menu.
@@ -101,8 +102,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
     }
 
     /**
-     * Initializes the controller class, formatting the TableView columns
-     * <p>This uses Lambdas in order to make use of Java Records classes.</p>
+     * Initializes the controller class, formatting the TableView columns.
+     * <p>This uses a lambda in order to add a listener to an FXML object.</p>
      * @param location The location used to resolve relative paths for the root object,
      *            or null if the location is not known.
      * @param resources The resources used to localize the root object,
@@ -282,7 +283,16 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     /**
      * Removes selected Appointment from database.
+     * <p>This uses a lambda to specify what happens after a user clicks "OK" to confirm the deletion.
+     * By using a lambda here, we can re-use the method <code>GuiUtil.confirmDeletion</code> to specify
+     * other use cases where confirming deleting some other kind of object has a different effect
+     * (different code to be run in response).</p>
+     * <p>For example, here we declare a different lambda depending on if it is a Customer or an Appointment that
+     * the user is confirming the deletion of. Both supply a boolean to declare if the deletion was successful
+     * or not.</p>
+     * <p>Check under "See Also:" below for the method where the lambda is declared.</p>
      * @param event the user generated event (a button being clicked) that caused this to execute
+     * @see utility.GuiUtil#confirmDeletion(String, String, String, BooleanSupplier) utility.GuiUtil #confirmDeletion(String, String, String, BooleanSupplier)
      */
     @FXML
     void onActionDeleteAppointment(ActionEvent event) {
@@ -373,6 +383,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     /**
      * Initializes or updates the Appointments table.
+     * <p>This uses Lambdas in order to make use of Java Records classes
+     * when setting table cell-value factories.</p>
      */
     public void setAppointmentsTable() {
         AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
@@ -409,6 +421,8 @@ public class PrimaryController implements Initializable, AuthenticatedController
 
     /**
      * Initializes or updates the Customers table.
+     * <p>This uses Lambdas in order to make use of Java Records classes
+     *      * when setting table cell-value factories.</p>
      */
     public void setCustomersTable() {
         CustomerDaoImpl customersDb = new CustomerDaoImpl();

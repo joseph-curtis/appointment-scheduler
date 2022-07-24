@@ -175,6 +175,10 @@ public class AppointmentController implements AuthenticatedController, Initializ
     /**
      * Save this new or modified Appointment.
      * <p>Updates existing appointment, or adds new appointment to database.</p>
+     * <p>A lambda is used to filter out the current appointment we are editing when checking for
+     * overlapping appointments. The collections method <code>removeIf</code> is a much cleaner, more concise way of
+     * filtering without using if statements nested in for or while loops. The <code>removeIf</code> method
+     * requires a predicate, and so provide a lambda as an anonymous function (in this case a one-line statement).</p>
      * @param event the user generated event (a button being clicked) that caused this to execute
      */
     @FXML
