@@ -18,10 +18,8 @@ package utility;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.Contact;
 import model.Country;
 import model.FirstLevelDivision;
-import model.User;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
