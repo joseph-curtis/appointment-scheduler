@@ -3,7 +3,7 @@
 
 # Log files
 *.log
-login_activity.txt
+login_activity.txt*
 
 # BlueJ files
 *.ctxt
