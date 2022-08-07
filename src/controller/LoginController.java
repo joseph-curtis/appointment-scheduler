@@ -27,20 +27,25 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.User;
-import utility.DBUtil;
 import utility.GuiUtil;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.TimeZone;
+import java.util.logging.*;
 
 /**
  * The Controller class for the login window.
  * @author Joseph Curtis
- * @version 2022.06.19
+ * @version 2022.08.06
  */
 
 public class LoginController implements Initializable {
+
+    protected static final Logger activityLog = Logger.getLogger(LoginController.class.getName());
 
     @FXML private MenuBar topMenuBar;
     @FXML private Label errorLabel;
@@ -61,6 +66,13 @@ public class LoginController implements Initializable {
 //        loginButton.setDefaultButton(true);
         // set label to show current time zone (system time)
         timeZoneLabel.setText(TimeZone.getDefault().getDisplayName(GuiUtil.locale));
+
+        // read logger properties file
+        try {
+            LogManager.getLogManager().readConfiguration(new FileInputStream("src/resources/LoginActivityLogger.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -134,6 +146,10 @@ public class LoginController implements Initializable {
             if (user.isPresent()) {
                 currentUserLogin = user.get();
 
+                // log the login activity
+                activityLog.info("user [" + usernameTxt.getText().toLowerCase()
+                        + "] successfully logged in.");
+
                 // Go to primary stage
                 GuiUtil.newStage(event,
                         currentUserLogin,
@@ -142,6 +158,10 @@ public class LoginController implements Initializable {
                         Modality.NONE,
                         GuiUtil.languageRb);
             } else {
+                // log the user login attempt
+                activityLog.warning("username [" + usernameTxt.getText().toLowerCase()
+                        + "] attempted login and was unsuccessful.");
+
                 // Show alert for login failure
                 Alert loginFail = new Alert(Alert.AlertType.WARNING,
                         GuiUtil.languageRb.getString("loginFail.content"),

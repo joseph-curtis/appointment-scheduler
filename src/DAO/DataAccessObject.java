@@ -22,16 +22,14 @@ import utility.DBUtil;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 /**
  * Data Access Object that interacts with Data Transfer Objects.
  * @author Joseph Curtis
- * @version 2022.05.24
+ * @version 2022.08.06
  */
 public abstract class DataAccessObject <T extends DataTransferObject, U> {
 
-    protected static final Logger log = Logger.getLogger("log.txt");
     protected final DataSource dataSource;
 
     /**
