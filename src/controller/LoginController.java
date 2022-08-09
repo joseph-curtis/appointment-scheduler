@@ -23,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -136,6 +137,9 @@ public class LoginController implements Initializable {
             // set css theme
             blankTextInfo.getDialogPane().getStylesheets().add(
                     getClass().getResource("/view/modena-red.css").toExternalForm());
+            // add window icon:
+            Stage stage = (Stage) blankTextInfo.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image("/images/dialog-information.png"));
 
             blankTextInfo.showAndWait();
             errorLabel.setText(GuiUtil.languageRb.getString("errorLabel.blankInput"));
@@ -171,6 +175,9 @@ public class LoginController implements Initializable {
                 // set css theme
                 loginFail.getDialogPane().getStylesheets().add(
                         getClass().getResource("/view/modena-red.css").toExternalForm());
+                // add window icon:
+                Stage stage = (Stage) loginFail.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image("/images/dialog-warning.png"));
 
                 loginFail.showAndWait();
                 errorLabel.setText(GuiUtil.languageRb.getString("errorLabel.loginFail"));

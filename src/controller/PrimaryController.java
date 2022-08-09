@@ -28,6 +28,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -366,12 +367,15 @@ public class PrimaryController implements Initializable, AuthenticatedController
             else {
                 // customer with associated appointments cannot be deleted
                 Alert warningDelete = new Alert(Alert.AlertType.WARNING);
-                // set css theme
-                warningDelete.getDialogPane().getStylesheets().add(
-                        getClass().getResource("/view/modena-red.css").toExternalForm());
                 warningDelete.setHeaderText("Unable to Delete \"" + deletedCustomer.name() + "\"");
                 warningDelete.setContentText("This Customer has " + appointmentsList.size()
                         + " associated Appointments.\nPlease remove all associated Appointments first.");
+                // set css theme
+                warningDelete.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/view/modena-red.css").toExternalForm());
+                // add window icon:
+                Stage stage = (Stage) warningDelete.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image("/images/wile-e.png"));
                 warningDelete.showAndWait();
             }
         } catch (SQLException e) {

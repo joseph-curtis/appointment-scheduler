@@ -143,6 +143,7 @@ public final class GuiUtil {
         stage.setScene(new Scene(root));
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner( ((Node)event.getSource()).getScene().getWindow() );
+        stage.getIcons().add(new Image("/images/wile-e.png"));
 
         if(modality.equals(Modality.NONE))
             ((Node)(event.getSource())).getScene().getWindow().hide();  // close parent window
@@ -174,7 +175,7 @@ public final class GuiUtil {
         Stage stage = new Stage();
         Scene scene = new Scene(root);
 
-        stage.getIcons().add(new Image("/images/ACME_Catalog.png"));
+        stage.getIcons().add(new Image("/images/dialog-information.png"));
         stage.setTitle(windowTitle);
         stage.setResizable(false);
         stage.initModality(Modality.WINDOW_MODAL);
@@ -199,6 +200,9 @@ public final class GuiUtil {
         // set css theme
         confirmExit.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) confirmExit.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-confirm.png"));
 
         // Fully lambda approach to showing confirmation dialog:
         confirmExit.showAndWait()
@@ -227,6 +231,9 @@ public final class GuiUtil {
         // set css theme
         changeLangDialog.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) changeLangDialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-confirm.png"));
 
         Optional<String> result = changeLangDialog.showAndWait();
 
@@ -266,6 +273,9 @@ public final class GuiUtil {
         // set css theme
         aboutDialog.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) aboutDialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-information.png"));
 
         aboutDialog.showAndWait();
     }
@@ -297,6 +307,9 @@ public final class GuiUtil {
         // set css theme
         confirmRemove.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) confirmRemove.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-confirm.png"));
 
         Optional<ButtonType> result = confirmRemove.showAndWait();
 
@@ -311,6 +324,9 @@ public final class GuiUtil {
                 // set css theme
                 deletionError.getDialogPane().getStylesheets().add(
                         GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+                // add window icon:
+                Stage errorStage = (Stage) deletionError.getDialogPane().getScene().getWindow();
+                errorStage.getIcons().add(new Image("/images/dialog-error.png"));
 
                 deletionError.showAndWait();
                 return false;   // an error occurred when trying to delete
@@ -346,8 +362,12 @@ public final class GuiUtil {
                 scheduleClearDialog.setHeaderText("No upcoming appointments");
                 scheduleClearDialog.setContentText("Greetings " + user.name()
                         + "!\nYou have no appointments within the next 15 minutes.");
+                // set css theme
                 scheduleClearDialog.getDialogPane().getStylesheets().add(
                         GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+                // add window icon:
+                Stage stage = (Stage) scheduleClearDialog.getDialogPane().getScene().getWindow();
+                stage.getIcons().add(new Image("/images/dialog-information.png"));
 
                 scheduleClearDialog.showAndWait();
 
@@ -356,8 +376,6 @@ public final class GuiUtil {
                     int minutesAway = (int) Duration.between(now, appointment.start()).toMinutes();
                     // Display upcoming appointment alert
                     Alert appointmentAlert = new Alert(Alert.AlertType.WARNING);
-                    appointmentAlert.getDialogPane().getStylesheets().add(
-                            GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
                     appointmentAlert.setHeaderText("You have an upcoming appointment in "
                             + minutesAway + " minutes!");
                     appointmentAlert.setContentText("ID: " + appointment.id()
@@ -366,6 +384,12 @@ public final class GuiUtil {
                             + "\nStart Time: " + appointment.start().toLocalTime()
                             + "\nCustomer: " + appointment.customerName()
                             + "\nContact: " + appointment.contactName());
+                    // set css theme
+                    appointmentAlert.getDialogPane().getStylesheets().add(
+                            GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+                    // add window icon:
+                    Stage stage = (Stage) appointmentAlert.getDialogPane().getScene().getWindow();
+                    stage.getIcons().add(new Image("/images/dialog-warning.png"));
 
                     appointmentAlert.showAndWait();
                 }
@@ -387,6 +411,9 @@ public final class GuiUtil {
         // set css theme
         dbError.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) dbError.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-error.png"));
 
         dbError.showAndWait();
     }
@@ -402,6 +429,9 @@ public final class GuiUtil {
         // set css theme
         blankTextInfo.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) blankTextInfo.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-information.png"));
 
         blankTextInfo.showAndWait();
     }
@@ -417,6 +447,9 @@ public final class GuiUtil {
         // set css theme
         inputWarning.getDialogPane().getStylesheets().add(
                 GuiUtil.class.getResource("/view/modena-red.css").toExternalForm());
+        // add window icon:
+        Stage stage = (Stage) inputWarning.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image("/images/dialog-warning.png"));
 
         inputWarning.showAndWait();
     }
