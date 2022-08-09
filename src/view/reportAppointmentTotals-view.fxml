@@ -16,9 +16,9 @@
    <center>
       <GridPane hgap="10.0" vgap="10.0" BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="100.0" prefWidth="75.0" />
-          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="100.0" prefWidth="150.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="50.0" prefWidth="50.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="150.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="200.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="75.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -40,7 +40,7 @@
                </font>
             </Label>
             <ComboBox fx:id="monthComboBox" onAction="#onActionListAppointmentTypes" prefWidth="150.0" promptText="Month" GridPane.rowIndex="1" />
-            <ComboBox fx:id="typeComboBox" onAction="#onActionShowTotal" prefWidth="150.0" promptText="Appointment Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="typeComboBox" onAction="#onActionShowTotal" prefWidth="175.0" promptText="Appointment Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="totalTxtField" alignment="CENTER" editable="false" promptText="Total" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -69,7 +69,7 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onActionOk" prefHeight="30.0" prefWidth="55.0" text="OK" />
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#onActionOk" prefHeight="30.0" prefWidth="55.0" text="OK" />
          </children>
          <BorderPane.margin>
             <Insets bottom="15.0" right="15.0" />
