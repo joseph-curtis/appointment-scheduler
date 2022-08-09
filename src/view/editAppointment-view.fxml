@@ -90,7 +90,7 @@
       <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
             <Button mnemonicParsing="false" onAction="#onActionSaveAppointment" prefHeight="30.0" prefWidth="55.0" text="Save" />
-            <Button mnemonicParsing="false" onAction="#onActionCancel" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#onActionCancel" prefHeight="30.0" prefWidth="55.0" text="Cancel" />
          </children>
          <BorderPane.margin>
             <Insets bottom="15.0" right="15.0" />

@@ -63,6 +63,13 @@
                   <MenuItem mnemonicParsing="false" onAction="#onActionSettings" text="%settingsMenuItem" />
               </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="\%reportsMenu">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onActionReportTotals" text="\%totalsMenuItem" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionReportContactSchedule" text="\%contactScheduleMenuItem" />
+                  <MenuItem mnemonicParsing="false" onAction="#onActionCustomReport" text="\%customReportMenuItem" />
+              </items>
+            </Menu>
         <Menu mnemonicParsing="false" text="%helpMenu">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#onActionAbout" text="%aboutMenuItem" />
