@@ -47,7 +47,7 @@ import java.util.function.BooleanSupplier;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.07.11
+ * @version 2022.08.08
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -379,6 +379,45 @@ public class PrimaryController implements Initializable, AuthenticatedController
         }
         // refresh the tableview to reflect possible changes
         setCustomersTable();
+    }
+
+    /**
+     * Display the report menu showing a schedule for each contact in the organization
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
+     */
+    @FXML
+    void onActionReportContactSchedule(ActionEvent event) {
+        String fxmlFile = "/view/reportContactSchedule-view.fxml";
+        try {
+            GuiUtil.showReport(fxmlFile,
+                    "REPORT: Contact's Schedule");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Display the report menu showing the total number of customer appointments by type and month
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
+     */
+    @FXML
+    void onActionReportTotals(ActionEvent event) {
+        String fxmlFile = "/view/reportAppointmentTotals-view.fxml";
+        try {
+            GuiUtil.showReport(fxmlFile,
+                    "REPORT: appointment type totals by month");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * -----------
+     * @param event the user generated event (a menu item being clicked) that caused this to execute
+     */
+    @FXML
+    void onActionCustomReport(ActionEvent event) {
+
     }
 
     /**

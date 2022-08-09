@@ -162,6 +162,26 @@ public final class GuiUtil {
         stage.showAndWait();
     }
 
+
+    /**
+     * Displays a report pop up window.
+     * @param fxmlFileName the .fxml file holding the report scene
+     * @param windowTitle the new window title to set
+     * @throws IOException if .fxml filename cannot be found
+     */
+    public static void showReport(String fxmlFileName, String windowTitle) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(GuiUtil.class.getResource(fxmlFileName)));
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+
+        stage.getIcons().add(new Image("/images/ACME_Catalog.png"));
+        stage.setTitle(windowTitle);
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     /**
      * Quits the application. Displays a confirmation dialog before exiting.
      * <p>Uses lambdas to process the data stream when calling Alert.showAndWait() method. Here we use a lambda to
