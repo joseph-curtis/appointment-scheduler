@@ -43,14 +43,10 @@ public class CustomersReportController implements Initializable {
     List<Customer> canadaCustomers;
     List<Customer> otherCustomers;
 
-    @FXML
-    private TextField usTxtField;
-    @FXML
-    private TextField ukTxtField;
-    @FXML
-    private TextField canadaTxtField;
-    @FXML
-    private TextField otherTxtField;
+    @FXML private TextField usTxtField;
+    @FXML private TextField ukTxtField;
+    @FXML private TextField canadaTxtField;
+    @FXML private TextField otherTxtField;
 
     /**
      * Initializes the controller class, getting the list of all customers from the database,
@@ -97,6 +93,10 @@ public class CustomersReportController implements Initializable {
         otherTxtField.setText(String.valueOf((long) otherCustomers.size()));
     }
 
+    /**
+     * Closes the report.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionOk(ActionEvent event) {
         ((Node)(event.getSource())).getScene().getWindow().hide();

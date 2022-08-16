@@ -43,12 +43,9 @@ public class TotalsReportController implements Initializable {
     ObservableList<Appointment> allAppointments;
     HashSet<String> allTypes = new HashSet<>();
 
-    @FXML
-    private ComboBox<Month> monthComboBox;
-    @FXML
-    private ComboBox<String> typeComboBox;
-    @FXML
-    private TextField totalTxtField;
+    @FXML private ComboBox<Month> monthComboBox;
+    @FXML private ComboBox<String> typeComboBox;
+    @FXML private TextField totalTxtField;
 
     /**
      * Initializes the controller class, setting the combo-box properties
@@ -82,17 +79,29 @@ public class TotalsReportController implements Initializable {
         }
     }
 
+    /**
+     * Closes the report.
+     * @param event the user generated event (a button being clicked) that caused this to execute
+     */
     @FXML
     void onActionOk(ActionEvent event) {
         ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
+    /**
+     * Select the month to filter total. If both inputs are selected, display the total.
+     * @param event the user generated event (a combo-box being selected) that caused this to execute
+     */
     @FXML
     void onActionChangeMonth(ActionEvent event) {
         if(typeComboBox.getValue() != null)
             showTotal(monthComboBox.getValue(), typeComboBox.getValue());
     }
 
+    /**
+     * Select appointment type. If both inputs are selected, display the total.
+     * @param event the user generated event (a combo-box being selected) that caused this to execute
+     */
     @FXML
     void onActionChangeType(ActionEvent event) {
         if(monthComboBox.getValue() != null)
