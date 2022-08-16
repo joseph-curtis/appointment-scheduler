@@ -48,7 +48,7 @@ import java.util.function.BooleanSupplier;
 /**
  * Controller for the main menu.
  * @author Joseph Curtis
- * @version 2022.08.08
+ * @version 2022.08.15
  */
 public class PrimaryController implements Initializable, AuthenticatedController {
 
@@ -416,12 +416,18 @@ public class PrimaryController implements Initializable, AuthenticatedController
     }
 
     /**
-     * -----------
+     * Display the report showing total number of customers by country (my custom report)
      * @param event the user generated event (a menu item being clicked) that caused this to execute
      */
     @FXML
     void onActionCustomReport(ActionEvent event) {
-
+        String fxmlFile = "/view/reportCountryTotalCustomers-view.fxml";
+        try {
+            GuiUtil.showReport(fxmlFile,
+                    "REPORT: customer totals by country");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
