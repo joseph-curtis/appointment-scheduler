@@ -39,8 +39,8 @@
                   <Font name="System Bold Italic" size="12.0" />
                </font>
             </Label>
-            <ComboBox fx:id="monthComboBox" onAction="#onActionListAppointmentTypes" prefWidth="150.0" promptText="Month" GridPane.rowIndex="1" />
-            <ComboBox fx:id="typeComboBox" onAction="#onActionShowTotal" prefWidth="175.0" promptText="Appointment Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ComboBox fx:id="monthComboBox" onAction="#onActionChangeMonth" prefWidth="150.0" promptText="Month" GridPane.rowIndex="1" />
+            <ComboBox fx:id="typeComboBox" onAction="#onActionChangeType" prefWidth="175.0" promptText="Appointment Type" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <TextField fx:id="totalTxtField" alignment="CENTER" editable="false" promptText="Total" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -55,7 +55,7 @@
    <top>
       <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="currentOperationLabel" text="Appointment Totals Report" textAlignment="CENTER">
+            <Label text="Appointment Totals Report" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

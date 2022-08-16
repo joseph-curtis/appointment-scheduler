@@ -15,37 +15,44 @@
 
 package controller;
 
+import DAO.AppointmentDaoImpl;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import model.Appointment;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.Month;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * Controller for the Appointment-totals Report.
  * @author Joseph Curtis
- * @version 2022.08.08
+ * @version 2022.08.15
  */
 public class TotalsReportController implements Initializable {
 
+    ObservableList<Appointment> allAppointments;
+    HashSet<String> allTypes = new HashSet<>();
 
-
-    @FXML
-    private Label currentOperationLabel;
     @FXML
     private ComboBox<Month> monthComboBox;
     @FXML
-    private TextField totalTxtField;
+    private ComboBox<String> typeComboBox;
     @FXML
-    private ComboBox<?> typeComboBox;
+    private TextField totalTxtField;
 
     /**
      * Initializes the controller class, setting the combo-box properties
+     * and getting the list of all appointments from the database (will for type later in java method)
      * @param location The location used to resolve relative paths for the root object,
      *            or null if the location is not known.
      * @param resources The resources used to localize the root object,
@@ -53,25 +60,62 @@ public class TotalsReportController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // set month combo box
         Month[] months = Month.values();
-
         for (int x = 0; x < 12; x++) {
             monthComboBox.getItems().add(months[x]);
+        }
+        // save all appointments as list
+        try {
+            AppointmentDaoImpl appointmentsDb = new AppointmentDaoImpl();
+            allAppointments = appointmentsDb.getAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // get all unique appointment types
+        for (Appointment appointment : allAppointments) {
+            allTypes.add(appointment.type());
+        }
+        // set type combo box
+        for (String type : allTypes) {
+            typeComboBox.getItems().add(type);
         }
     }
 
     @FXML
-    void onActionListAppointmentTypes(ActionEvent event) {
-
-    }
-
-    @FXML
     void onActionOk(ActionEvent event) {
-
+        ((Node)(event.getSource())).getScene().getWindow().hide();
     }
 
     @FXML
-    void onActionShowTotal(ActionEvent event) {
+    void onActionChangeMonth(ActionEvent event) {
+        if(typeComboBox.getValue() != null)
+            showTotal(monthComboBox.getValue(), typeComboBox.getValue());
+    }
 
+    @FXML
+    void onActionChangeType(ActionEvent event) {
+        if(monthComboBox.getValue() != null)
+            showTotal(monthComboBox.getValue(), typeComboBox.getValue());
+    }
+
+    /**
+     * Calculates total and displays it inside the total text box.
+     * This utilizes a data stream to filter out the list of all appointments to only those
+     * which match the criteria set by the user; namely by month and appointment type.
+     * We must use a lambda to set the conditions for which each appointment item will be filtered out
+     * or included in the filtered list.  We then convert back to ta collection so that we may easily count
+     * the total filtered items by using <code>size()</code> method.
+     * @param month month total filter
+     * @param type type total filter
+     */
+    void showTotal(Month month, String type) {
+    ObservableList<Appointment> filteredAppointments =
+            allAppointments.stream().filter((Appointment appointment) ->
+                appointment.type().equals(type) && appointment.start().getMonth().equals(month))
+                    // turn stream back into collection
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        totalTxtField.setText(String.valueOf((long) filteredAppointments.size()));
     }
 }
