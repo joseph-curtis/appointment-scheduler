@@ -69,7 +69,7 @@
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="25.0" BorderPane.alignment="CENTER">
          <children>
-            <Button cancelButton="true" mnemonicParsing="false" onAction="#onActionOk" prefHeight="30.0" prefWidth="55.0" text="OK" />
+            <Button cancelButton="true" defaultButton="true" mnemonicParsing="false" onAction="#onActionOk" prefHeight="30.0" prefWidth="55.0" text="OK" />
          </children>
          <BorderPane.margin>
             <Insets bottom="15.0" right="15.0" />
