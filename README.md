@@ -44,6 +44,11 @@ Called "Appointment Totals by Country", it is located in the top menu **Reports*
   - [@joseph-curtis](https://github.com/joseph-curtis "Github")
   - [jcur175@wgu.edu](mailto:jcur175@wgu.edu "e-Mail")
 
+## Documentation
+
+Source documentation provided via 
+[JavaDocs here](https://htmlpreview.github.io/?https://raw.githubusercontent.com/joseph-curtis/appointment-scheduler/master/javadocs/index.html "JavaDocs here")
+
 ## Tech Stack
 
 **Client:**
